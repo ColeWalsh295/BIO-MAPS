@@ -10,7 +10,7 @@ source('EcoEvo_UI.R', local = TRUE)
 source('EcoEvo_Server.R', local = TRUE)
 
 # Get Complete dataset
-df <- fread('EcoEvo-MAPS_Concat.csv')
+df <- fread('C:/Users/Cole/Documents/GRA_Summer2019/BIOMAPS_Shiny/EcoEvo-MAPS_Concat.csv')
 df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
 
 Your_tab = tabItem(
