@@ -1,16 +1,33 @@
 DownloadClassData <- function(input, output, session, data) {
   
   data.class <- reactive({
-    data.class <- subset(data, Class_ID == input$classID)
+    data.class <- subset(data, Course == input$classID)
     return(data.class)
+  })
+  
+  observe({
+    toggleState("downloadData", condition = data.class()[1, 'Data_Available'])
+    shinyalert("Oops!", "There are too few students the dataset.", type = "error")
+  })
+  
+  data.out <- reactive({
+    data.out <- data.class() %>%
+      mutate(Class = ifelse(Class_Avail_Down, Class, NA_character_),
+             Trans = ifelse(Trans_Avail_Down, Trans, NA_character_),
+             Maj = ifelse(Maj_Avail_Down, Maj, NA_character_),
+             Gen = ifelse(Gen_Avail_Down, Gen, NA_character_),
+             Eng = ifelse(Eng_Avail_Down, Eng, NA_character_),
+             Educ = ifelse(Educ_Avail_Down, Educ, NA_character_),
+             Ethn = ifelse(Ethn_Avail_Down, Ethn, NA_character_))
+    return(data.out)
   })
   
   output$downloadData <- downloadHandler(
     filename = function (){
-      paste("EcoEvo-MAPS_", input$classID, ".csv", sep = "")
+      paste("GenBio-MAPS_", input$classID, ".csv", sep = "")
     },
     content = function(file) {
-      write.csv(data.class() %>%
+      write.csv(data.out() %>%
                   select(-c('N.Students')), file, row.names = FALSE)
     }
   )
@@ -43,34 +60,16 @@ ScalePlot <- function(input, output, session, data, Class.var = NULL){
   output$plotScale = renderPlot({
     data.temp <- data.frame(data())
     if(input$scale == 'Overall Scores') {
-      Scores.cols <- c('SC_T_Ecology', 'SC_T_Evolution', 'SC_Total_Score')
-      Labels <- c('Ecology', 'Evolution', 'Total Score')
-    } else if(input$scale == 'Vision and Change') {
+      Scores.cols <- c('SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 
+                       'SC_T_Ecology_and_Evolution', 'SC_Total_Score')
+      Labels <- c('Cellular and Molecular', 'Physiology', 'Ecology and Evolution', 'Total Score')
+    } else {
       Scores.cols <- c('SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure_Function',
                       'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems')
       Labels <- c('Evolution', 'Information Flow', 'Structure/Function',
                   'Transformations of\nEnergy and Matter', 'Systems')
-    } else if(input$scale == 'Ecology and Evolution Core Concepts') {
-      Scores.cols <- c('SC_EE_Heritable_Variation', 'SC_EE_Modes_of_Change',
-                      'SC_EE_Phylogeny_and_Evolutionary_History', 'SC_EE_Biological_Diversity',
-                      'SC_EE_Populations', 'SC_EE_Energy_and_Matter',
-                      'SC_EE_Interactions_with_Ecosystems', 'SC_EE_Human_Impact')
-      Labels <- c('Heritable\nVariation', 'Modes of\nChange', 'Phylogeny and\nEvolutionary History', 
-                  'Biological\nDiversity', 'Populations', 'Energy\nand Matter', 
-                  'Interactions\nwith Ecosystems', 'Human\nImpact')
-    } else {
-      Scores.cols <- c('SC_FDEE_Populations', 'SC_FDEE_Communities', 'SC_FDEE_Ecosystems',
-                       'SC_FDEE_Biomes', 'SC_FDEE_Biosphere', 'SC_FDEE_Quantitative_Reasoning',
-                       'SC_FDEE_Designing_and_Critiquing', 'SC_FDEE_Human_Change',
-                       'SC_FDEE_Human_Shape', 'SC_FDEE_Matter_and_Energy', 'SC_FDEE_Systems',
-                       'SC_FDEE_Space_and_Time')
-      Labels <- c('Populations', 'Communities', 'Ecosystems', 'Biomes', 'Biosphere', 
-                  'Quantitative reasoning\nand computational thinking', 
-                  'Designing and\ncritiquing investigations', 
-                  'Human accelerated\nenvironmental change',
-                  'Humans shape resources\n/ecosystems/environment', 
-                  'Transformations of\nenergy and matter', 'Systems', 'Space\nand Time')
     }
+    
     if(!is.null(Class.var)) {
       Scores.cols <- c(Scores.cols, Class.var)
       data.scale <- data.temp[, Scores.cols] %>%

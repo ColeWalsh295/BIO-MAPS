@@ -1,16 +1,18 @@
 library(tidyverse)
 library(shiny)
+library(shinyjs)
+library(shinyalert)
 shiny_theme <- theme_classic(base_size = 18)
 library(shinydashboard)
 library(data.table)
 library(reshape2)
 library(rsconnect)
 #source('PLIC_DataProcessing.R', local = TRUE)
-source('EcoEvo_UI.R', local = TRUE)
-source('EcoEvo_Server.R', local = TRUE)
+source('GenBio_UI.R', local = TRUE)
+source('GenBio_Server.R', local = TRUE)
 
 # Get Complete dataset
-df <- fread('GenBio-MAPS_MasterFile.csv')
+df <- fread('C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS_Shiny/GenBio-MAPS/GenBio-MAPS_MasterFile.csv')
 df <- data.table(df)[, N.Students := .N, by = .(Course)]
 
 Your_tab = tabItem(

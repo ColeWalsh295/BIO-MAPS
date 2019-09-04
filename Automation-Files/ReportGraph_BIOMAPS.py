@@ -409,11 +409,11 @@ def GenerateGraphs_GenBioMAPS(df):
     StatementsList = []
     StatementsList.append(len(df_Correct.columns))
 
-    df_Correct['SC_Total Score'] = df_Correct.sum(axis = 1) / df_Correct.count(axis = 1)
+    df_Correct['SC_Total_Score'] = df_Correct.sum(axis = 1) / df_Correct.count(axis = 1)
 
     plt.figure(figsize = (12, 9))
-    sns.boxplot(data = df_Correct['SC_Total Score'], color = 'w', showfliers = False)
-    sns.stripplot(data = df_Correct['SC_Total Score'], jitter = 0.25, alpha = min(1, C * 67/len(df.index)), size = 10, edgecolor = None)
+    sns.boxplot(data = df_Correct['SC_Total_Score'], color = 'w', showfliers = False)
+    sns.stripplot(data = df_Correct['SC_Total_Score'], jitter = 0.25, alpha = min(1, C * 67/len(df.index)), size = 10, edgecolor = None)
     plt.tick_params(bottom = False, labelbottom = False)
     plt.yticks((0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), ('0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'))
     plt.text(0, 1.05, 'Total Scores', ha = 'center', va = 'center')
@@ -441,14 +441,14 @@ def GenerateGraphs_GenBioMAPS(df):
     StatementsList.append(len(VC_S_Questions))
 
     df_Correct['SC_VC_Evolution'] = df_Correct[VC_Evo_Questions].sum(axis = 1) / df_Correct[VC_Evo_Questions].count(axis = 1)
-    df_Correct['SC_VC_Information Flow'] = df_Correct[VC_IF_Questions].sum(axis = 1) / df_Correct[VC_IF_Questions].count(axis = 1)
-    df_Correct['SC_VC_Structure Function'] = df_Correct[VC_SF_Questions].sum(axis = 1) / df_Correct[VC_SF_Questions].count(axis = 1)
-    df_Correct['SC_VC_Transformations of Energy and Matter'] = df_Correct[VC_TEM_Questions].sum(axis = 1) / df_Correct[VC_TEM_Questions].count(axis = 1)
+    df_Correct['SC_VC_Information_Flow'] = df_Correct[VC_IF_Questions].sum(axis = 1) / df_Correct[VC_IF_Questions].count(axis = 1)
+    df_Correct['SC_VC_Structure_Function'] = df_Correct[VC_SF_Questions].sum(axis = 1) / df_Correct[VC_SF_Questions].count(axis = 1)
+    df_Correct['SC_VC_Transformations_of_Energy_and_Matter'] = df_Correct[VC_TEM_Questions].sum(axis = 1) / df_Correct[VC_TEM_Questions].count(axis = 1)
     df_Correct['SC_VC_Systems'] = df_Correct[VC_S_Questions].sum(axis = 1) / df_Correct[VC_S_Questions].count(axis = 1)
 
     plt.figure(figsize = (12, 9))
-    sns.boxplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information Flow', 'SC_VC_Structure Function', 'SC_VC_Transformations of Energy and Matter', 'SC_VC_Systems']], color = 'w', showfliers = False)
-    sns.stripplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information Flow', 'SC_VC_Structure Function', 'SC_VC_Transformations of Energy and Matter', 'SC_VC_Systems']], jitter = 0.25, alpha = min(1, C * 10/(5 * len(df.index))), size = 10, edgecolor = None)
+    sns.boxplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure_Function', 'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems']], color = 'w', showfliers = False)
+    sns.stripplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure_Function', 'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems']], jitter = 0.25, alpha = min(1, C * 10/(5 * len(df.index))), size = 10, edgecolor = None)
     plt.xticks((0, 1, 2, 3, 4), ('Evolution', 'Information Flow', 'Structure Function', u'Transformations of\nEnergy and Matter', 'Systems'), rotation = 40)
     #plt.yticks((0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), ('0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'))
     plt.yticks((0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), ('0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'))
@@ -475,13 +475,13 @@ def GenerateGraphs_GenBioMAPS(df):
     StatementsList.append(len(Phys_Questions))
     StatementsList.append(len(EcoEvo_Questions))
 
-    df_Correct['SC_T_Cellular and Molecular'] = df_Correct[CellMol_Questions].sum(axis = 1) / df_Correct[CellMol_Questions].count(axis = 1)
+    df_Correct['SC_T_Cellular_and_Molecular'] = df_Correct[CellMol_Questions].sum(axis = 1) / df_Correct[CellMol_Questions].count(axis = 1)
     df_Correct['SC_T_Physiology'] = df_Correct[Phys_Questions].sum(axis = 1) / df_Correct[Phys_Questions].count(axis = 1)
-    df_Correct['SC_T_Ecology and Evolution'] = df_Correct[EcoEvo_Questions].sum(axis = 1) / df_Correct[EcoEvo_Questions].count(axis = 1)
+    df_Correct['SC_T_Ecology_and_Evolution'] = df_Correct[EcoEvo_Questions].sum(axis = 1) / df_Correct[EcoEvo_Questions].count(axis = 1)
 
     plt.figure(figsize = (12, 9))
-    sns.boxplot(data = df_Correct[['SC_T_Cellular and Molecular', 'SC_T_Physiology', 'SC_T_Ecology and Evolution']], color = 'w', showfliers = False)
-    sns.stripplot(data = df_Correct[['SC_T_Cellular and Molecular', 'SC_T_Physiology', 'SC_T_Ecology and Evolution']], jitter = 0.25, alpha = min(1, C * 16/(3 * len(df.index))), size = 10, edgecolor = None)
+    sns.boxplot(data = df_Correct[['SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 'SC_T_Ecology_and_Evolution']], color = 'w', showfliers = False)
+    sns.stripplot(data = df_Correct[['SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 'SC_T_Ecology_and_Evolution']], jitter = 0.25, alpha = min(1, C * 16/(3 * len(df.index))), size = 10, edgecolor = None)
     plt.xticks((0, 1, 2), (u'Cellular and\nMolecular', 'Physiology', u'Ecology and\nEvolution'), rotation = 60)
     plt.yticks((0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), ('0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'))
     plt.text(3.5, 1.1, 'Subdisciplines', ha = 'center', va = 'center')
