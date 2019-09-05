@@ -5,9 +5,13 @@ DownloadClassData <- function(input, output, session, data) {
     return(data.class)
   })
   
-  observe({
-    toggleState("downloadData", condition = data.class()[1, 'Data_Available'])
-    shinyalert("Oops!", "There are too few students the dataset.", type = "error")
+  observeEvent(input$classID, {
+    toggleState("downloadData", condition = !data.class()[1, 'Data_Available'])
+    # if(!data.class()[1, 'Data_Available']){
+    #   shinyalert("Oops!", "There are too few students the dataset.", type = "error")
+    # } else {
+    #   DisableRadio(data.class)
+    # }
   })
   
   data.out <- reactive({
@@ -78,7 +82,7 @@ ScalePlot <- function(input, output, session, data, Class.var = NULL){
       p <- ggplot(data.scale, aes_string(x = 'variable', y = 'value', color = Class.var))
     } else {
       Demographic <- reactive({
-        Demographic <- Demographitize(input$demographic)
+        Demographic <- input$demographic
       })
       if(Demographic() == 'None'){
         data.scale <- data.temp[, Scores.cols] %>%
@@ -108,28 +112,21 @@ ScalePlot <- function(input, output, session, data, Class.var = NULL){
   }
 }
 
-ResponsesPlot <- function(input, output, session, data, Demo = NULL, Class.var = NULL){
-  if(!is.null(Demo)){
-    Demographic <- reactive({
-      Demographic <- Demographitize(Demo())
-    })
+ResponsesPlot <- function(input, output, session, data, Demographic = NULL, Class.var = NULL){
+  if(!is.null(Demographic)){
     Responses.df <- reactive({
       if(Demographic() == 'None'){
         Responses.df <- data() %>%
-          select(c(grep(paste('^(', input$question, '_[0-9]*S$)', sep = ''), names(.)))) %>% 
-          replace(is.na(.), 0) %>%
-          summarize_all(funs(mean)) %>%
+          select(c(grep(paste('^(BM-', input$question, '_[0-9]*S$)', sep = ''), names(.)))) %>%
+          summarize_all(funs(mean), na.rm = TRUE) %>%
           melt(.)
       } else {
-        data.temp <- data.frame(data())
-        Responses.df <- data.temp[data.temp[, Demographic()] != '',] %>%
-          select(c(grep(paste('^(', input$question, '_[0-9]*S$)', sep = ''), names(.))), 
-                 Demographic()) %>% 
-          replace(is.na(.), 0) %>%
+        Responses.df <- data() %>%
+          select(c(grep(paste('^(BM-', input$question, '_[0-9]*S$)', sep = ''), names(.))), Demographic()) %>%
           group_by_(Demographic()) %>%
-          summarize_all(funs(mean)) %>%
+          summarize_all(funs(mean), na.rm = TRUE) %>%
           melt(.)
-        Responses.df <- Responses.df[!is.na(Responses.df[, Demographic()]),]
+        Responses.df <- Responses.df[Responses.df[, Demographic()] != '',]
       }
       return(Responses.df)
     })
@@ -151,11 +148,10 @@ ResponsesPlot <- function(input, output, session, data, Demo = NULL, Class.var =
   } else {
     Responses.df <- reactive({
       Responses.df <- data() %>%
-        select(c(grep(paste('^(', input$question, '_[0-9]*S$)', sep = ''), names(.))), 
-               Class.var) %>% 
-        replace(is.na(.), 0) %>%
+        select(c(grep(paste('^(BM-', input$question, '_[0-9]*S$)', sep = ''), names(.))), 
+               Class.var) %>%
         group_by_(Class.var) %>%
-        summarize_all(funs(mean)) %>%
+        summarize_all(funs(mean), na.rm = TRUE) %>%
         melt(.)
       return(Responses.df)
     })
@@ -172,13 +168,15 @@ ResponsesPlot <- function(input, output, session, data, Demo = NULL, Class.var =
   }
 }
 
-
-Demographitize <- function(demo){
-  Demo <- case_when(demo == 'Gender' ~ 'Gender',
-                    demo == 'Major' ~ 'Major',
-                    demo == 'URM Status' ~ 'URM_Status',
-                    demo == 'Class Standing' ~ 'Class_Standing',
-                    demo == 'First Generation Status' ~ 'First_Gen_Status',
-                    TRUE ~ 'None')
-  return(Demo)
+DisableRadio <- function(df){
+  for(Option in c('Gen', 'Ethn', 'Educ', 'Class', 'Maj', 'Trans', 'Eng')){
+    if(!isTRUE(df()[1, paste(Option, '_Avail_Radio', sep = '')])){
+      shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').parent().parent().css('opacity', 0.4)", sep = ''))
+      shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').prop('disabled', true)", sep = ''))
+    } else {
+      shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').parent().parent().css('opacity', 1)", sep = ''))
+      shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').prop('disabled', false)", sep = ''))
+      }
+  }
+  return(0)  
 }

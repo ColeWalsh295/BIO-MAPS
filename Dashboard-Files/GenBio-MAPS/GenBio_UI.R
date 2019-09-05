@@ -23,19 +23,20 @@ ScalePlotUI <- function(id, Demos = TRUE){
   if(Demos) {
     fluidRow(
       column(4, selectInput(ns("scale"), "Scale:", 
-                            choices = c('Overall Scores', 'Vision and Change',
-                                        'Ecology and Evolution Core Concepts', '4DEE Framework'))),
+                            choices = c('Overall Scores', 'Vision and Change'))),
       column(8, radioButtons(ns("demographic"), 'Separate by:',
-                             choices = c('None', 'Gender', 'URM Status', 'Major', 'Class Standing',
-                                         'First Generation Status'), inline = TRUE)),
+                             choiceNames = c('None', 'Gender', 'URM Status', 'First Generation Status', 
+                                              'Class Standing', 'Major', 'Transfer Status', 
+                                              'English Language Learners'),
+                             choiceValues = c('None', 'Gen', 'Ethn', 'Educ', 'Class', 'Maj', 'Trans', 
+                                              'Eng'), inline = TRUE)),
       br(),
       plotOutput(ns("plotScale"))
     )
   } else {
     fluidRow(
       column(4, selectInput(ns("scale"), "Scale:", 
-                            choices = c('Overall Scores', 'Vision and Change',
-                                        'Ecology and Evolution Core Concepts', '4DEE Framework'))),
+                            choices = c('Overall Scores', 'Vision and Change'))),
       br(),
       plotOutput(ns("plotScale"))
     )
@@ -47,7 +48,10 @@ ResponsesPlotUI <- function(id, Demos = TRUE){
   
   fluidRow(
     column(2, selectInput(ns("question"), "Question:", 
-                          choices = c('Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9'))),
+                          choices = c('01', '02', '03', '04', '07', '08', '12', '13', '14', '15', 
+                                      '16', '18', '19', '20', '21', '22', '23', '24', '27', '28',
+                                      '30', '31', '32', '33', '35', '36', '37', '38', '40', '43',
+                                      '44', '45', '49', '50', '54', '55', '59', '60', '61'))),
     column(10, plotOutput(ns("plotResponses")))
   )
 }

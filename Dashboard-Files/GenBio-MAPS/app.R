@@ -70,7 +70,7 @@ server = function(input, output) {
   callModule(ClassStatistics, 'Class.Main.Statistics', data = df.Class)
   demographic <- reactiveVal()
   demographic <- callModule(ScalePlot, 'Class.Main.Scale', data = df.Class)
-  callModule(ResponsesPlot, 'Class.Main.Responses', data = df.Class, Demo = demographic)
+  callModule(ResponsesPlot, 'Class.Main.Responses', data = df.Class, Demographic = demographic)
   
   ### Compare Classes ###
   
