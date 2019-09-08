@@ -37,7 +37,7 @@ Compare_tab = tabItem(
   br(),
   ClassStatisticsOutput('Class1.Statistics'),
   DownloadClassDataUI('Class2.Download', label = 'Your second Class ID:',
-                      value = 'R_3m4zpoFjt1eXUAI'),
+                      value = 'R_30dBvfCyCitJwFR'),
   br(),
   ClassStatisticsOutput('Class2.Statistics'),
   ScalePlotUI('Class.Compare.Scale', Demos = FALSE),
@@ -82,8 +82,8 @@ server = function(input, output) {
   df.Compare <- reactive({
     rbind(df.Class1(), df.Class2())
   })
-  callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, Class.var = 'Class_ID')
-  callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare, Class.var = 'Class_ID')
+  callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, Class.var = 'Course')
+  callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare, Class.var = 'Course')
   
   ### Compare to overall PLIC dataset ###
   
@@ -96,7 +96,7 @@ server = function(input, output) {
     return(df.Class.You)
   })
   df.Class.Other <- reactive({
-    df.Class.Other <- df[df$Class_ID != df.Class.You_temp()$Class_ID[1],] %>%
+    df.Class.Other <- df[df$Course != df.Class.You_temp()$Course[1],] %>%
       mutate(Class = 'Other Classes')
     return(df.Class.Other)
   })
@@ -110,7 +110,7 @@ server = function(input, output) {
 }
 
 # Set up the Header of the dashboard
-dhead = dashboardHeader(title = h1(HTML("EcoEvo-MAPS<br>Data Explorer")))
+dhead = dashboardHeader(title = h4(HTML("GenBio-MAPS<br>Data Explorer")))
 
 # Set up the sidebar which links to two pages
 dside = dashboardSidebar(sidebarMenu(
@@ -131,7 +131,7 @@ dbody = dashboardBody(
 )
 
 # Combining header, sidebar, and body
-ui = dashboardPage(dhead, dside, dbody)
+ui = tagList(useShinyjs(), useShinyalert(), dashboardPage(dhead, dside, dbody))
 
 # Generating a local instance of your dashboard
 shinyApp(ui, server)

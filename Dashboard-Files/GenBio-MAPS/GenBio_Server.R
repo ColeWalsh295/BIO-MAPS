@@ -5,13 +5,14 @@ DownloadClassData <- function(input, output, session, data) {
     return(data.class)
   })
   
-  observeEvent(input$classID, {
-    toggleState("downloadData", condition = !data.class()[1, 'Data_Available'])
-    # if(!data.class()[1, 'Data_Available']){
-    #   shinyalert("Oops!", "There are too few students the dataset.", type = "error")
-    # } else {
-    #   DisableRadio(data.class)
-    # }
+  observe({
+    if(!data.class()[1, 'Data_Available']){
+      shinyalert("Oops!", "There are too few students the dataset.", type = "error")
+      disable('downloadData')
+    } else {
+      enable('downloadData')
+      DisableRadio(data.class)
+    }
   })
   
   data.out <- reactive({
@@ -46,7 +47,7 @@ ClassStatistics <- function(input, output, session, data, Overall = FALSE){
               icon = icon("list"), color = "blue", width = 12)
     } else {
       infoBox(HTML("Number of<br>Students"),
-              sum(data()[!duplicated(data()$Class_ID), 'N.Students']),
+              sum(data()[!duplicated(data()$Course), 'N.Students']),
               icon = icon("list"), color = "blue", width = 12)
     }
   })
@@ -139,7 +140,7 @@ ResponsesPlot <- function(input, output, session, data, Demographic = NULL, Clas
       p <- p + geom_bar(stat = 'identity', position = 'dodge') +
         coord_flip() +
         labs(x = 'Statement', y = 'Fraction of Correct Selections', 
-             title = "Your students' selections") +
+             title = "Your students' performance by statement") +
         scale_fill_manual(values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7")) +
         shiny_theme
 
@@ -160,7 +161,7 @@ ResponsesPlot <- function(input, output, session, data, Demographic = NULL, Clas
         geom_bar(stat = 'identity', position = 'dodge') +
         coord_flip() +
         labs(x = 'Statement', y = 'Fraction of Correct Selections', 
-             title = "Your students' selections") +
+             title = "Your students' performance by statement") +
         scale_fill_manual(values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7")) +
         shiny_theme
       return(p)
@@ -169,8 +170,12 @@ ResponsesPlot <- function(input, output, session, data, Demographic = NULL, Clas
 }
 
 DisableRadio <- function(df){
+  dataFrame <- reactive({
+    dataFrame <- data.frame(df())
+    return(dataFrame)
+  })
   for(Option in c('Gen', 'Ethn', 'Educ', 'Class', 'Maj', 'Trans', 'Eng')){
-    if(!isTRUE(df()[1, paste(Option, '_Avail_Radio', sep = '')])){
+    if(!dataFrame()[1, paste(Option, '_Avail_Radio', sep = '')]){
       shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').parent().parent().css('opacity', 0.4)", sep = ''))
       shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').prop('disabled', true)", sep = ''))
     } else {
