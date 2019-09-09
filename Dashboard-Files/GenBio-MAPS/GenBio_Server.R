@@ -24,6 +24,8 @@ DownloadClassData <- function(input, output, session, data) {
              Eng = ifelse(Eng_Avail_Down, Eng, NA_character_),
              Educ = ifelse(Educ_Avail_Down, Educ, NA_character_),
              Ethn = ifelse(Ethn_Avail_Down, Ethn, NA_character_))
+    data.out <- rbind(Header.df[, cols, with = FALSE], data.out[, cols])
+    data.out[is.na(data.out)] <- ''
     return(data.out)
   })
   
@@ -32,11 +34,20 @@ DownloadClassData <- function(input, output, session, data) {
       paste("GenBio-MAPS_", input$classID, ".csv", sep = "")
     },
     content = function(file) {
-      write.csv(data.out() %>%
-                  select(-c('N.Students')), file, row.names = FALSE)
+      write.csv(data.out(), file, row.names = FALSE)
     }
   )
-  return(data.class)
+  
+  df.return <- reactive({
+    if(as.logical(data.class()[1, 'Data_Available'])){
+      df.return <- data.class()
+    } else {
+      df.return <- data.class()[0, ]
+      df.return[1, ] <- NA
+    }
+    return(df.return)
+  })
+  return(df.return)
 }
 
 ClassStatistics <- function(input, output, session, data, Overall = FALSE){
@@ -118,12 +129,12 @@ ResponsesPlot <- function(input, output, session, data, Demographic = NULL, Clas
     Responses.df <- reactive({
       if(Demographic() == 'None'){
         Responses.df <- data() %>%
-          select(c(grep(paste('^(BM-', input$question, '_[0-9]*S$)', sep = ''), names(.)))) %>%
+          select(c(grep(paste('^(BM-', input$question, '_[0-9]*$)', sep = ''), names(.)))) %>%
           summarize_all(funs(mean), na.rm = TRUE) %>%
           melt(.)
       } else {
         Responses.df <- data() %>%
-          select(c(grep(paste('^(BM-', input$question, '_[0-9]*S$)', sep = ''), names(.))), Demographic()) %>%
+          select(c(grep(paste('^(BM-', input$question, '_[0-9]*$)', sep = ''), names(.))), Demographic()) %>%
           group_by_(Demographic()) %>%
           summarize_all(funs(mean), na.rm = TRUE) %>%
           melt(.)
@@ -149,7 +160,7 @@ ResponsesPlot <- function(input, output, session, data, Demographic = NULL, Clas
   } else {
     Responses.df <- reactive({
       Responses.df <- data() %>%
-        select(c(grep(paste('^(BM-', input$question, '_[0-9]*S$)', sep = ''), names(.))), 
+        select(c(grep(paste('^(BM-', input$question, '_[0-9]*$)', sep = ''), names(.))), 
                Class.var) %>%
         group_by_(Class.var) %>%
         summarize_all(funs(mean), na.rm = TRUE) %>%

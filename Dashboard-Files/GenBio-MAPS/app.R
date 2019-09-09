@@ -11,8 +11,37 @@ library(rsconnect)
 source('GenBio_UI.R', local = TRUE)
 source('GenBio_Server.R', local = TRUE)
 
+Header.df <- fread('C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS_Shiny/GenBio-MAPS/GenBioMAPS_Headers.csv',
+                   header = TRUE) %>%
+  select(-c('Class', 'Trans', 'Maj','Eng', 'Educ'))
+names(Header.df) = gsub(x = names(Header.df), pattern = "#1", replacement = "")
+
+Header.df2 <- data.frame(SC_Total_Score = 'Total GenBio-MAPS score',
+                         SC_VC_Evolution = 'Vision & Change Evolution subscore',
+                         SC_VC_Information_Flow = 'Vision & Change Information Flow subscore',
+                         SC_VC_Structure_Function = 'Vision & Change Structure/Function subscore',
+                         SC_VC_Transformations_of_Energy_and_Matter = 'Vision & Change 
+                         Transformations of energy and matter subscore',
+                         SC_VC_Systems = 'Vision & Change Systems subscore',
+                         SC_T_Cellular_and_Molecular = 'Cellular and Molecular biology subscore',
+                         SC_T_Physiology = 'Physiology subscore',
+                         SC_T_Ecology_and_Evolution = 'Ecology and Evolution subscore',
+                         Class = 'Class Standing',
+                         Trans = 'Transfer Status',
+                         Maj = 'Intended Major',
+                         Gen = 'Sex/Gender',
+                         Eng = 'English Language Learner Status',
+                         Educ = 'First Generation Status',
+                         Ethn = 'URM Status')
+
+Header.df <- cbind(Header.df, Header.df2)
+
 # Get Complete dataset
 df <- fread('C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS_Shiny/GenBio-MAPS/GenBio-MAPS_MasterFile.csv')
+names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
+
+cols <- intersect(colnames(Header.df), colnames(df))
+
 df <- data.table(df)[, N.Students := .N, by = .(Course)]
 
 Your_tab = tabItem(
