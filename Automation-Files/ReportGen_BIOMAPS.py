@@ -169,6 +169,40 @@ def Generate_EcoEvoMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
         doc.append(NewPage())
 
+        with doc.create(Subsection('Scores divided by 4DEE framework alignment.', numbering = False)):
+
+            with doc.create(Center()) as centered:
+                doc.append(NoEscape(r"\includegraphics[width = \linewidth]{EcoEvoMAPS_4DEE_Scores.png}"))
+                doc.append(NoEscape(r"\captionof{figure}{Boxplots of scores based on 4DEE framework alignment.}"))
+
+            with doc.create(Center()) as centered:
+                with centered.create(Table(position = 'h!')) as Tab:
+                    with doc.create(Tabular('l c c c c')) as Tab2:
+                        Tab2.add_row(("", 'Core Ecology Concepts', 'Ecology Practices', 'Human-Environment Interactions', 'Cross-Cutting Themes'))
+                        Tab2.add_hline()
+
+                        Tab2.add_row(("No. Statements", Statements[16], Statements[17], Statements[18], Statements[19]))
+
+                        Tab2.add_row(("Average", Tablefy(df['SC_FDEE_Core Ecology'], np.mean), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.mean), Tablefy(df['SC_FDEE_Human Environment'], np.mean), Tablefy(df['SC_FDEE_Cross-Cutting'], np.mean)))
+
+                        Tab2.add_row(("Std. Error", Tablefy(df['SC_FDEE_Core Ecology'], StdErr), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], StdErr), Tablefy(df['SC_FDEE_Human Environment'], StdErr), Tablefy(df['SC_FDEE_Cross-Cutting'], StdErr)))
+
+                        Tab2.add_row(("Minimum", Tablefy(df['SC_FDEE_Core Ecology'], np.min), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.min), Tablefy(df['SC_FDEE_Human Environment'], np.min), Tablefy(df['SC_FDEE_Cross-Cutting'], np.min)))
+
+                        Tab2.add_row(("1st Quartile", Tablefy(df['SC_FDEE_Core Ecology'], np.percentile, q = 25), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.percentile, q = 25), Tablefy(df['SC_FDEE_Human Environment'], np.percentile, q = 25), Tablefy(df['SC_FDEE_Cross-Cutting'], np.percentile, q = 25)))
+
+                        Tab2.add_row(("Median", Tablefy(df['SC_FDEE_Core Ecology'], np.median), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.median), Tablefy(df['SC_FDEE_Human Environment'], np.median), Tablefy(df['SC_FDEE_Cross-Cutting'], np.median)))
+
+                        Tab2.add_row(("3rd Quartile", Tablefy(df['SC_FDEE_Core Ecology'], np.percentile, q = 75), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.percentile, q = 75), Tablefy(df['SC_FDEE_Human Environment'], np.percentile, q = 75), Tablefy(df['SC_FDEE_Cross-Cutting'], np.percentile, q = 75)))
+
+                        Tab2.add_row(("Maximum", Tablefy(df['SC_FDEE_Core Ecology'], np.max), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.max), Tablefy(df['SC_FDEE_Human Environment'], np.max), Tablefy(df['SC_FDEE_Cross-Cutting'], np.max)))
+
+                        Tab2.add_hline()
+
+                    Tab.add_caption(NoEscape("Summary statistics of scores subdivided by 4DEE framework dimensions."))
+
+        doc.append(NewPage())
+
         with doc.create(Subsection('Student Performance on Individual Statements', numbering = False)):
 
             with doc.create(Center()) as centered:

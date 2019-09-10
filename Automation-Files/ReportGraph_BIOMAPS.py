@@ -185,6 +185,88 @@ def GenerateGraphs_EcoEvoMAPS(df):
     plt.close()
     plt.clf()
 
+    FDEE_Pop_Questions = ['Q1_6S', 'Q2_9S', 'Q3_2S', 'Q3_3S', 'Q3_5S', 'Q5_5S', 'Q7_7S']
+    FDEE_Com_Questions = ['Q1_2S', 'Q1_3S', 'Q3_1S', 'Q3_4S', 'Q7_1S', 'Q9_1S', 'Q9_2S']
+    FDEE_Eco_Questions = ['Q1_1S', 'Q1_4S', 'Q1_5S', 'Q1_7S', 'Q7_2S', 'Q7_3S', 'Q8_7S', 'Q9_4S', 'Q9_6S', 'Q9_7S']
+    FDEE_Biomes_Questions = ['Q8_1S', 'Q8_2S', 'Q8_5S']
+    FDEE_Biosphere_Questions = ['Q8_3S', 'Q8_6S', 'Q9_5S']
+    FDEE_Quant_Questions = ['Q1_4S', 'Q1_6S', 'Q3_2S', 'Q3_5S', 'Q5_5S']
+    FDEE_Design_Questions = ['Q1_1S', 'Q1_2S', 'Q1_3S', 'Q1_5S', 'Q1_7S', 'Q3_1S', 'Q8_1S', 'Q8_2S', 'Q8_3S', 'Q8_5S', 'Q9_1S']
+    FDEE_HumanAcc_Questions = ['Q1_5S', 'Q8_6S']
+    FDEE_HumanShape_Questions = ['Q1_1S', 'Q1_2S', 'Q1_3S', 'Q1_4S', 'Q1_6S', 'Q1_7S', 'Q2_9S', 'Q5_5S', 'Q8_7S']
+    FDEE_TME_Questions = ['Q1_4S', 'Q1_5S', 'Q7_2S', 'Q7_3S', 'Q8_2S', 'Q8_5S', 'Q8_7S', 'Q9_4S', 'Q9_5S', 'Q9_6S', 'Q9_7S']
+    FDEE_Systems_Questions = ['Q1_1S', 'Q1_2S', 'Q1_3S', 'Q1_6S', 'Q1_7S', 'Q2_9S', 'Q3_1S', 'Q3_2S', 'Q3_3S', 'Q3_5S', 'Q5_5S', 'Q7_1S', 'Q7_7S', 'Q8_1S', 'Q8_6S', 'Q9_1S', 'Q9_2S']
+    FDEE_SpaceTime_Questions = ['Q2_1S', 'Q2_2S', 'Q2_3S', 'Q2_4S', 'Q2_5S', 'Q2_6S', 'Q2_7S', 'Q2_8S', 'Q3_4S', 'Q4_1S', 'Q4_2S', 'Q4_3S', 'Q4_4S', 'Q4_5S', 'Q4_6S', 'Q4_7S', 'Q5_1S', 'Q5_2S', 'Q5_3S', 'Q5_4S', 'Q5_6S', 'Q5_7S', 'Q6_1S',
+    'Q6_2S', 'Q6_3S', 'Q6_4S', 'Q6_5S', 'Q6_6S', 'Q6_7S', 'Q7_4S', 'Q7_5S', 'Q7_6S', 'Q8_3S', 'Q8_4S', 'Q9_3S']
+
+    FDEE_CoreEcology = FDEE_Pop_Questions + FDEE_Com_Questions + FDEE_Eco_Questions + FDEE_Biomes_Questions + FDEE_Biosphere_Questions
+    FDEE_EcologyPractices = FDEE_Quant_Questions + FDEE_Design_Questions
+    FDEE_HumanEnvironment = FDEE_HumanAcc_Questions + FDEE_HumanShape_Questions
+    FDEE_CrossCutting = FDEE_TME_Questions + FDEE_Systems_Questions + FDEE_SpaceTime_Questions
+
+    StatementsList.append(len(FDEE_CoreEcology))
+    StatementsList.append(len(FDEE_EcologyPractices))
+    StatementsList.append(len(FDEE_HumanEnvironment))
+    StatementsList.append(len(FDEE_CrossCutting))
+
+    df_Correct['SC_FDEE_Populations'] = df_Correct[FDEE_Pop_Questions].sum(axis = 1) / len(FDEE_Pop_Questions)
+    df_Correct['SC_FDEE_Communities'] = df_Correct[FDEE_Com_Questions].sum(axis = 1) / len(FDEE_Com_Questions)
+    df_Correct['SC_FDEE_Ecosystems'] = df_Correct[FDEE_Eco_Questions].sum(axis = 1) / len(FDEE_Eco_Questions)
+    df_Correct['SC_FDEE_Biomes'] = df_Correct[FDEE_Biomes_Questions].sum(axis = 1) / len(FDEE_Biomes_Questions)
+    df_Correct['SC_FDEE_Biosphere'] = df_Correct[FDEE_Biosphere_Questions].sum(axis = 1) / len(FDEE_Biosphere_Questions)
+    df_Correct['SC_FDEE_Quantitative Reasoning'] = df_Correct[FDEE_Quant_Questions].sum(axis = 1) / len(FDEE_Quant_Questions)
+    df_Correct['SC_FDEE_Designing and Critiquing'] = df_Correct[FDEE_Design_Questions].sum(axis = 1) / len(FDEE_Design_Questions)
+    df_Correct['SC_FDEE_Human Change'] = df_Correct[FDEE_HumanAcc_Questions].sum(axis = 1) / len(FDEE_HumanAcc_Questions)
+    df_Correct['SC_FDEE_Human Shape'] = df_Correct[FDEE_HumanShape_Questions].sum(axis = 1) / len(FDEE_HumanShape_Questions)
+    df_Correct['SC_FDEE_Matter and Energy'] = df_Correct[FDEE_TME_Questions].sum(axis = 1) / len(FDEE_TME_Questions)
+    df_Correct['SC_FDEE_Systems'] = df_Correct[FDEE_Systems_Questions].sum(axis = 1) / len(FDEE_Systems_Questions)
+    df_Correct['SC_FDEE_Space and Time'] = df_Correct[FDEE_SpaceTime_Questions].sum(axis = 1) / len(FDEE_SpaceTime_Questions)
+
+    df_Correct['SC_FDEE_Core Ecology'] = df_Correct[FDEE_CoreEcology].sum(axis = 1) / len(FDEE_CoreEcology)
+    df_Correct['SC_FDEE_FDEE_Ecology Practices'] = df_Correct[FDEE_EcologyPractices].sum(axis = 1) / len(FDEE_EcologyPractices)
+    df_Correct['SC_FDEE_Human Environment'] = df_Correct[FDEE_HumanEnvironment].sum(axis = 1) / len(FDEE_HumanEnvironment)
+    df_Correct['SC_FDEE_Cross-Cutting'] = df_Correct[FDEE_CrossCutting].sum(axis = 1) / len(FDEE_CrossCutting)
+
+    matplotlib.rcParams.update({'font.size': 16})
+    fig, axes = plt.subplots(2, 2, figsize = (12, 9))
+
+    plt.sca(axes[0, 0])
+    sns.boxplot(data = df_Correct[['SC_FDEE_Populations', 'SC_FDEE_Communities', 'SC_FDEE_Ecosystems', 'SC_FDEE_Biomes', 'SC_FDEE_Biosphere']], color = 'w', showfliers = False)
+    sns.stripplot(data = df_Correct[['SC_FDEE_Populations', 'SC_FDEE_Communities', 'SC_FDEE_Ecosystems', 'SC_FDEE_Biomes', 'SC_FDEE_Biosphere']], jitter = 0.25, alpha = min(1, C * 3/(8 * len(df.index))), size = 10, edgecolor = None, color = sns.color_palette()[0])
+    plt.xticks((0, 1, 2, 3, 4), ('Populations', 'Communities', 'Ecosystems', 'Biomes', 'Biosphere'), rotation = 40)
+    plt.ylabel('Percent Correct')
+    plt.yticks((0, 0.2, 0.4, 0.6, 0.8, 1), ('0', '20', '40', '60', '80', '100'))
+    plt.text(2, 1.15, 'Dimension 1: Core Ecology Concepts', ha = 'center', va = 'center')
+
+    plt.sca(axes[0, 1])
+    sns.boxplot(data = df_Correct[['SC_FDEE_Quantitative Reasoning', 'SC_FDEE_Designing and Critiquing']], color = 'w', showfliers = False)
+    sns.stripplot(data = df_Correct[['SC_FDEE_Quantitative Reasoning', 'SC_FDEE_Designing and Critiquing']], jitter = 0.25, alpha = min(1, C * 3/(8 * len(df.index))), size = 10, edgecolor = None, color = sns.color_palette()[1])
+    plt.xticks((0, 1), (u'Quant. Reasoning\n& Comp. Thinking', u'Designing & Critiquing\nInvestigations'), rotation = 20)
+    plt.ylabel('Percent Correct')
+    plt.yticks((0, 0.2, 0.4, 0.6, 0.8, 1), ('0', '20', '40', '60', '80', '100'))
+    plt.text(0.5, 1.15, 'Dimension 2: Ecology Practices', ha = 'center', va = 'center')
+
+    plt.sca(axes[1, 0])
+    sns.boxplot(data = df_Correct[['SC_FDEE_Human Change', 'SC_FDEE_Human Shape']], color = 'w', showfliers = False)
+    sns.stripplot(data = df_Correct[['SC_FDEE_Human Change', 'SC_FDEE_Human Shape']], jitter = 0.25, alpha = min(1, C * 3/(8 * len(df.index))), size = 10, edgecolor = None, color = sns.color_palette()[2])
+    plt.xticks((0, 1), (u'Human Accelerated\nEnvironmental Change', u'Humans shape resources\n/ecosystems/environment'), rotation = 20)
+    plt.ylabel('Percent Correct')
+    plt.yticks((0, 0.2, 0.4, 0.6, 0.8, 1), ('0', '20', '40', '60', '80', '100'))
+    plt.text(0.5, 1.15, 'Dimension 3: Human-Environment Interactions', ha = 'center', va = 'center')
+
+    plt.sca(axes[1, 1])
+    sns.boxplot(data = df_Correct[['SC_FDEE_Matter and Energy', 'SC_FDEE_Systems', 'SC_FDEE_Space and Time']], color = 'w', showfliers = False)
+    sns.stripplot(data = df_Correct[['SC_FDEE_Matter and Energy', 'SC_FDEE_Systems', 'SC_FDEE_Space and Time']], jitter = 0.25, alpha = min(1, C * 3/(8 * len(df.index))), size = 10, edgecolor = None, color = sns.color_palette()[3])
+    plt.xticks((0, 1, 2), (u'Transformations of\nmatter & energy', 'Systems', 'Space & time'), rotation = 30)
+    plt.ylabel('Percent Correct')
+    plt.yticks((0, 0.2, 0.4, 0.6, 0.8, 1), ('0', '20', '40', '60', '80', '100'))
+    plt.text(1, 1.15, 'Dimension 4:Cross-Cutting Themes', ha = 'center', va = 'center')
+
+    plt.subplots_adjust(hspace = 0.6, bottom = 0.2)
+    fig.savefig('EcoEvoMAPS_4DEE_Scores.png')
+    plt.close()
+    plt.clf()
+
     df = pd.concat([df, df_Correct], axis = 1)
 
     return df, StatementsList
