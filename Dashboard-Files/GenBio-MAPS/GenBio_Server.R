@@ -1,7 +1,7 @@
 DownloadClassData <- function(input, output, session, data) {
   
   data.class <- reactive({
-    data.class <- subset(data, Course == input$classID)
+    data.class <- subset(data, Class_ID == input$classID)
     return(data.class)
   })
   
@@ -58,7 +58,7 @@ ClassStatistics <- function(input, output, session, data, Overall = FALSE){
               icon = icon("list"), color = "blue", width = 12)
     } else {
       infoBox(HTML("Number of<br>Students"),
-              sum(data()[!duplicated(data()$Course), 'N.Students']),
+              sum(data()[!duplicated(data()$Class_ID), 'N.Students']),
               icon = icon("list"), color = "blue", width = 12)
     }
   })

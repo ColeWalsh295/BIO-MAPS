@@ -42,7 +42,7 @@ names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
 
 cols <- intersect(colnames(Header.df), colnames(df))
 
-df <- data.table(df)[, N.Students := .N, by = .(Course)]
+df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
 
 Your_tab = tabItem(
   tabName = "Your_Class",
@@ -111,8 +111,8 @@ server = function(input, output) {
   df.Compare <- reactive({
     rbind(df.Class1(), df.Class2())
   })
-  callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, Class.var = 'Course')
-  callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare, Class.var = 'Course')
+  callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, Class.var = 'Class_ID')
+  callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare, Class.var = 'Class_ID')
   
   ### Compare to overall PLIC dataset ###
   
@@ -125,7 +125,7 @@ server = function(input, output) {
     return(df.Class.You)
   })
   df.Class.Other <- reactive({
-    df.Class.Other <- df[df$Course != df.Class.You_temp()$Course[1],] %>%
+    df.Class.Other <- df[df$Class_ID != df.Class.You_temp()$Class_ID[1],] %>%
       mutate(Class = 'Other Classes')
     return(df.Class.Other)
   })
