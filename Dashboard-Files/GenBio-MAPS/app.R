@@ -7,42 +7,13 @@ library(shinydashboard)
 library(data.table)
 library(reshape2)
 library(rsconnect)
-#source('PLIC_DataProcessing.R', local = TRUE)
+source('BioMAPS_Processing.R', local = TRUE)
 source('GenBio_UI.R', local = TRUE)
 source('GenBio_Server.R', local = TRUE)
 
-Header.df <- fread('C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS_Shiny/GenBio-MAPS/GenBioMAPS_Headers.csv',
-                   header = TRUE) %>%
-  select(-c('Class', 'Trans', 'Maj','Eng', 'Educ'))
-names(Header.df) = gsub(x = names(Header.df), pattern = "#1", replacement = "")
-
-Header.df2 <- data.frame(SC_Total_Score = 'Total GenBio-MAPS score',
-                         SC_VC_Evolution = 'Vision & Change Evolution subscore',
-                         SC_VC_Information_Flow = 'Vision & Change Information Flow subscore',
-                         SC_VC_Structure_Function = 'Vision & Change Structure/Function subscore',
-                         SC_VC_Transformations_of_Energy_and_Matter = 'Vision & Change 
-                         Transformations of energy and matter subscore',
-                         SC_VC_Systems = 'Vision & Change Systems subscore',
-                         SC_T_Cellular_and_Molecular = 'Cellular and Molecular biology subscore',
-                         SC_T_Physiology = 'Physiology subscore',
-                         SC_T_Ecology_and_Evolution = 'Ecology and Evolution subscore',
-                         Class = 'Class Standing',
-                         Trans = 'Transfer Status',
-                         Maj = 'Intended Major',
-                         Gen = 'Sex/Gender',
-                         Eng = 'English Language Learner Status',
-                         Educ = 'First Generation Status',
-                         Ethn = 'URM Status')
-
-Header.df <- cbind(Header.df, Header.df2)
-
-# Get Complete dataset
-df <- fread('C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS_Shiny/GenBio-MAPS/GenBio-MAPS_MasterFile.csv')
-names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
-
-cols <- intersect(colnames(Header.df), colnames(df))
-
-df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
+GenBio <- Clean.GenBio()
+GenBio.df <- GenBio$dataFrame
+GenBio.header <- GenBio$header
 
 Your_tab = tabItem(
   tabName = "Your_Class",
@@ -91,32 +62,60 @@ Overall_tab = tabItem(
   ResponsesPlotUI('Overall.Compare.Responses', Demos = FALSE)
 )
 
-server = function(input, output) {
+server = function(input, output, session) {
+  df <- reactive({
+    if(input$assessment == 'GenBio-MAPS'){
+      df <- GenBio.df
+    } else if(input$assessment == 'EcoEvo-MAPS') {
+      df <- EcoEvo.df
+    }
+    return(df)
+  })
+  
+  header.df <- reactive({
+    if(input$assessment == 'GenBio-MAPS'){
+      header.df <- GenBio.header
+    } else if(input$assessment == 'EcoEvo-MAPS') {
+      header.df <- EcoEvo.header
+    }
+    return(header.df)
+  })
+  
+  cols <- reactive({
+    cols <- intersect(colnames(header.df()), colnames(df()))
+    return(cols)
+  })
+  
+  Assessment <- reactive({
+    Assessment <- input$assessment
+    return(Assessment)
+  })
   
   ### Your Class ###
   
-  df.Class <- callModule(DownloadClassData, 'Class.Main.Download', data = df)
+  df.Class <- callModule(DownloadClassData, 'Class.Main.Download', data = df, header = header.df, cols = cols)
   callModule(ClassStatistics, 'Class.Main.Statistics', data = df.Class)
   demographic <- reactiveVal()
-  demographic <- callModule(ScalePlot, 'Class.Main.Scale', data = df.Class)
+  demographic <- callModule(ScalePlot, 'Class.Main.Scale', data = df.Class, ass = Assessment)
   callModule(ResponsesPlot, 'Class.Main.Responses', data = df.Class, Demographic = demographic)
   
   ### Compare Classes ###
   
-  df.Class1 <- callModule(DownloadClassData, 'Class1.Download', data = df)
+  df.Class1 <- callModule(DownloadClassData, 'Class1.Download', data = df, header = header.df, cols = cols)
   callModule(ClassStatistics, 'Class1.Statistics', data = df.Class1)
-  df.Class2 <- callModule(DownloadClassData, 'Class2.Download', data = df)
+  df.Class2 <- callModule(DownloadClassData, 'Class2.Download', data = df, header = header.df, cols = cols)
   callModule(ClassStatistics, 'Class2.Statistics', data = df.Class2)
   
   df.Compare <- reactive({
     rbind(df.Class1(), df.Class2())
   })
-  callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, Class.var = 'Class_ID')
+  callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, ass = Assessment, 
+             Class.var = 'Class_ID')
   callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare, Class.var = 'Class_ID')
   
   ### Compare to overall PLIC dataset ###
   
-  df.Class.You_temp <- callModule(DownloadClassData, 'Class.You.Download', data = df)
+  df.Class.You_temp <- callModule(DownloadClassData, 'Class.You.Download', data = df, header = header.df, cols = cols)
   callModule(ClassStatistics, 'Class.You.Statistics', data = df.Class.You_temp)
   
   df.Class.You <- reactive({
@@ -134,7 +133,8 @@ server = function(input, output) {
   df.Overall <- reactive({
     rbind(df.Class.You(), df.Class.Other())
   })
-  callModule(ScalePlot, 'Overall.Compare.Scale', data = df.Overall, Class.var = 'Class')
+  callModule(ScalePlot, 'Overall.Compare.Scale', data = df.Overall, ass = Assessment,
+             Class.var = 'Class')
   callModule(ResponsesPlot, 'Overall.Compare.Responses', data = df.Overall, Class.var = 'Class')
 }
 
@@ -144,6 +144,7 @@ dhead = dashboardHeader(title = h4(HTML("GenBio-MAPS<br>Data Explorer")))
 # Set up the sidebar which links to two pages
 dside = dashboardSidebar(sidebarMenu(
   id = 'tabs',
+  selectInput('assessment', "Assessment:", choices = c('GenBio-MAPS', 'EcoEvo-MAPS')),
   menuItem("View of your class", tabName = "Your_Class", icon = icon("dashboard")),
   menuItem(HTML("Compare two of<br>your classes"), tabName = "Compare_Classes", icon = icon("dashboard")),
   menuItem(HTML("Compare your class<br>to other classes"), tabName = "Compare_Overall", 
@@ -151,6 +152,7 @@ dside = dashboardSidebar(sidebarMenu(
 ))
 
 # Here we set up the body of the dashboard
+
 dbody = dashboardBody(
  tags$head(
    tags$link(rel = "stylesheet", type = "text/css",

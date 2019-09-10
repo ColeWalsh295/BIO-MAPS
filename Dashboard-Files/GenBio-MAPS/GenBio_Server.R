@@ -1,7 +1,7 @@
-DownloadClassData <- function(input, output, session, data) {
+DownloadClassData <- function(input, output, session, data, header, cols) {
   
   data.class <- reactive({
-    data.class <- subset(data, Class_ID == input$classID)
+    data.class <- subset(data(), Class_ID == input$classID)
     return(data.class)
   })
   
@@ -24,7 +24,7 @@ DownloadClassData <- function(input, output, session, data) {
              Eng = ifelse(Eng_Avail_Down, Eng, NA_character_),
              Educ = ifelse(Educ_Avail_Down, Educ, NA_character_),
              Ethn = ifelse(Ethn_Avail_Down, Ethn, NA_character_))
-    data.out <- rbind(Header.df[, cols, with = FALSE], data.out[, cols])
+    data.out <- rbind(header()[, cols(), with = FALSE], data.out[, cols()])
     data.out[is.na(data.out)] <- ''
     return(data.out)
   })
@@ -72,19 +72,57 @@ ClassStatistics <- function(input, output, session, data, Overall = FALSE){
   })
 }
 
-ScalePlot <- function(input, output, session, data, Class.var = NULL){
+ScalePlot <- function(input, output, session, data, ass, Class.var = NULL){
+  observe({
+    if(ass() == 'GenBio-MAPS'){
+      scales <- list('Overall Scores', 'Vision and Change')
+    } else if(ass() == 'EcoEvo-MAPS') {
+      scales <- list('Overall Scores', 'Vision and Change', 'Ecology and Evolution Core Concepts', 
+                     '4DEE Framework')
+    }
+    updateSelectInput(session, "scale", label = "Scale:", choices = scales)
+  })
+  
   output$plotScale = renderPlot({
     data.temp <- data.frame(data())
-    if(input$scale == 'Overall Scores') {
-      Scores.cols <- c('SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 
+    if(ass() == 'GenBio-MAPS') {
+      if(input$scale == 'Overall Scores') {
+        Scores.cols <- c('SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 
                        'SC_T_Ecology_and_Evolution', 'SC_Total_Score')
-      Labels <- c('Cellular and Molecular', 'Physiology', 'Ecology and Evolution', 'Total Score')
+        Labels <- c('Cellular and Molecular', 'Physiology', 'Ecology and Evolution', 'Total Score')
+      }
+    } else if(ass() == 'EcoEvo-MAPS') {
+      if(input$scale == 'Overall Scores') {
+        Scores.cols <- c('SC_T_Ecology', 'SC_T_Evolution', 'SC_Total_Score')
+        Labels <- c('Ecology', 'Evolution', 'Total Score')
+      } else if(input$scale == 'Ecology and Evolution Core Concepts') {
+        Scores.cols <- c('SC_EE_Heritable_Variation', 'SC_EE_Modes_of_Change',
+                         'SC_EE_Phylogeny_and_Evolutionary_History', 'SC_EE_Biological_Diversity',
+                         'SC_EE_Populations', 'SC_EE_Energy_and_Matter',
+                         'SC_EE_Interactions_with_Ecosystems', 'SC_EE_Human_Impact')
+        Labels <- c('Heritable\nVariation', 'Modes of\nChange', 'Phylogeny and\nEvolutionary History', 
+                    'Biological\nDiversity', 'Populations', 'Energy\nand Matter', 
+                    'Interactions\nwith Ecosystems', 'Human\nImpact')
+      } else if(input$scale == '4DEE Framework (Elements)') {
+        Scores.cols <- c('SC_FDEE_Populations', 'SC_FDEE_Communities', 'SC_FDEE_Ecosystems',
+                         'SC_FDEE_Biomes', 'SC_FDEE_Biosphere', 'SC_FDEE_Quantitative_Reasoning',
+                         'SC_FDEE_Designing_and_Critiquing', 'SC_FDEE_Human_Change',
+                         'SC_FDEE_Human_Shape', 'SC_FDEE_Matter_and_Energy', 'SC_FDEE_Systems',
+                         'SC_FDEE_Space_and_Time')
+        Labels <- c('Populations', 'Communities', 'Ecosystems', 'Biomes', 'Biosphere', 
+                    'Quantitative reasoning\nand computational thinking', 
+                    'Designing and\ncritiquing investigations', 
+                    'Human accelerated\nenvironmental change',
+                    'Humans shape resources\n/ecosystems/environment', 
+                    'Transformations of\nenergy and matter', 'Systems', 'Space\nand Time')
+      }
     } else {
       Scores.cols <- c('SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure_Function',
                       'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems')
       Labels <- c('Evolution', 'Information Flow', 'Structure/Function',
                   'Transformations of\nEnergy and Matter', 'Systems')
     }
+  })
     
     if(!is.null(Class.var)) {
       Scores.cols <- c(Scores.cols, Class.var)

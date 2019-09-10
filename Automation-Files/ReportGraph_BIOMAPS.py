@@ -225,7 +225,7 @@ def GenerateGraphs_EcoEvoMAPS(df):
     df_Correct['SC_FDEE_Core_Ecology'] = df_Correct[FDEE_CoreEcology].sum(axis = 1) / len(FDEE_CoreEcology)
     df_Correct['SC_FDEE_FDEE_Ecology_Practices'] = df_Correct[FDEE_EcologyPractices].sum(axis = 1) / len(FDEE_EcologyPractices)
     df_Correct['SC_FDEE_Human_Environment'] = df_Correct[FDEE_HumanEnvironment].sum(axis = 1) / len(FDEE_HumanEnvironment)
-    df_Correct['SC_FDEE_Cross-Cutting'] = df_Correct[FDEE_CrossCutting].sum(axis = 1) / len(FDEE_CrossCutting)
+    df_Correct['SC_FDEE_CrossCutting'] = df_Correct[FDEE_CrossCutting].sum(axis = 1) / len(FDEE_CrossCutting)
 
     matplotlib.rcParams.update({'font.size': 16})
     fig, axes = plt.subplots(2, 2, figsize = (12, 9))

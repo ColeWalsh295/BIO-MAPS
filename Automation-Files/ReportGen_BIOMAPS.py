@@ -183,19 +183,19 @@ def Generate_EcoEvoMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
                         Tab2.add_row(("No. Statements", Statements[16], Statements[17], Statements[18], Statements[19]))
 
-                        Tab2.add_row(("Average", Tablefy(df['SC_FDEE_Core Ecology'], np.mean), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.mean), Tablefy(df['SC_FDEE_Human Environment'], np.mean), Tablefy(df['SC_FDEE_Cross-Cutting'], np.mean)))
+                        Tab2.add_row(("Average", Tablefy(df['SC_FDEE_Core Ecology'], np.mean), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.mean), Tablefy(df['SC_FDEE_Human Environment'], np.mean), Tablefy(df['SC_FDEE_CrossCutting'], np.mean)))
 
-                        Tab2.add_row(("Std. Error", Tablefy(df['SC_FDEE_Core Ecology'], StdErr), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], StdErr), Tablefy(df['SC_FDEE_Human Environment'], StdErr), Tablefy(df['SC_FDEE_Cross-Cutting'], StdErr)))
+                        Tab2.add_row(("Std. Error", Tablefy(df['SC_FDEE_Core Ecology'], StdErr), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], StdErr), Tablefy(df['SC_FDEE_Human Environment'], StdErr), Tablefy(df['SC_FDEE_CrossCutting'], StdErr)))
 
-                        Tab2.add_row(("Minimum", Tablefy(df['SC_FDEE_Core Ecology'], np.min), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.min), Tablefy(df['SC_FDEE_Human Environment'], np.min), Tablefy(df['SC_FDEE_Cross-Cutting'], np.min)))
+                        Tab2.add_row(("Minimum", Tablefy(df['SC_FDEE_Core Ecology'], np.min), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.min), Tablefy(df['SC_FDEE_Human Environment'], np.min), Tablefy(df['SC_FDEE_CrossCutting'], np.min)))
 
-                        Tab2.add_row(("1st Quartile", Tablefy(df['SC_FDEE_Core Ecology'], np.percentile, q = 25), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.percentile, q = 25), Tablefy(df['SC_FDEE_Human Environment'], np.percentile, q = 25), Tablefy(df['SC_FDEE_Cross-Cutting'], np.percentile, q = 25)))
+                        Tab2.add_row(("1st Quartile", Tablefy(df['SC_FDEE_Core Ecology'], np.percentile, q = 25), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.percentile, q = 25), Tablefy(df['SC_FDEE_Human Environment'], np.percentile, q = 25), Tablefy(df['SC_FDEE_CrossCutting'], np.percentile, q = 25)))
 
-                        Tab2.add_row(("Median", Tablefy(df['SC_FDEE_Core Ecology'], np.median), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.median), Tablefy(df['SC_FDEE_Human Environment'], np.median), Tablefy(df['SC_FDEE_Cross-Cutting'], np.median)))
+                        Tab2.add_row(("Median", Tablefy(df['SC_FDEE_Core Ecology'], np.median), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.median), Tablefy(df['SC_FDEE_Human Environment'], np.median), Tablefy(df['SC_FDEE_CrossCutting'], np.median)))
 
-                        Tab2.add_row(("3rd Quartile", Tablefy(df['SC_FDEE_Core Ecology'], np.percentile, q = 75), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.percentile, q = 75), Tablefy(df['SC_FDEE_Human Environment'], np.percentile, q = 75), Tablefy(df['SC_FDEE_Cross-Cutting'], np.percentile, q = 75)))
+                        Tab2.add_row(("3rd Quartile", Tablefy(df['SC_FDEE_Core Ecology'], np.percentile, q = 75), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.percentile, q = 75), Tablefy(df['SC_FDEE_Human Environment'], np.percentile, q = 75), Tablefy(df['SC_FDEE_CrossCutting'], np.percentile, q = 75)))
 
-                        Tab2.add_row(("Maximum", Tablefy(df['SC_FDEE_Core Ecology'], np.max), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.max), Tablefy(df['SC_FDEE_Human Environment'], np.max), Tablefy(df['SC_FDEE_Cross-Cutting'], np.max)))
+                        Tab2.add_row(("Maximum", Tablefy(df['SC_FDEE_Core Ecology'], np.max), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.max), Tablefy(df['SC_FDEE_Human Environment'], np.max), Tablefy(df['SC_FDEE_CrossCutting'], np.max)))
 
                         Tab2.add_hline()
 
