@@ -70,19 +70,19 @@ def Generate_EcoEvoMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
                         Tab1.add_row(("No. Statements", Statements[0], Statements[1], Statements[2]))
 
-                        Tab1.add_row(("Average", Tablefy(df['SC_Total Score'], np.mean), Tablefy(df['SC_T_Ecology'], np.mean), Tablefy(df['SC_T_Evolution'], np.mean)))
+                        Tab1.add_row(("Average", Tablefy(df['SC_Total_Score'], np.mean), Tablefy(df['SC_T_Ecology'], np.mean), Tablefy(df['SC_T_Evolution'], np.mean)))
 
-                        Tab1.add_row(("Std. Error", Tablefy(df['SC_Total Score'], StdErr), Tablefy(df['SC_T_Ecology'], StdErr), Tablefy(df['SC_T_Evolution'], StdErr)))
+                        Tab1.add_row(("Std. Error", Tablefy(df['SC_Total_Score'], StdErr), Tablefy(df['SC_T_Ecology'], StdErr), Tablefy(df['SC_T_Evolution'], StdErr)))
 
-                        Tab1.add_row(("Minimum", Tablefy(df['SC_Total Score'], np.min), Tablefy(df['SC_T_Ecology'], np.min), Tablefy(df['SC_T_Evolution'], np.min)))
+                        Tab1.add_row(("Minimum", Tablefy(df['SC_Total_Score'], np.min), Tablefy(df['SC_T_Ecology'], np.min), Tablefy(df['SC_T_Evolution'], np.min)))
 
-                        Tab1.add_row(("1st Quartile", Tablefy(df['SC_Total Score'], np.percentile, q = 25), Tablefy(df['SC_T_Ecology'], np.percentile, q = 25), Tablefy(df['SC_T_Evolution'], np.percentile, q = 25)))
+                        Tab1.add_row(("1st Quartile", Tablefy(df['SC_Total_Score'], np.percentile, q = 25), Tablefy(df['SC_T_Ecology'], np.percentile, q = 25), Tablefy(df['SC_T_Evolution'], np.percentile, q = 25)))
 
-                        Tab1.add_row(("Median", Tablefy(df['SC_Total Score'], np.median), Tablefy(df['SC_T_Ecology'], np.median), Tablefy(df['SC_T_Evolution'], np.median)))
+                        Tab1.add_row(("Median", Tablefy(df['SC_Total_Score'], np.median), Tablefy(df['SC_T_Ecology'], np.median), Tablefy(df['SC_T_Evolution'], np.median)))
 
-                        Tab1.add_row(("3rd Quartile", Tablefy(df['SC_Total Score'], np.percentile, q = 75), Tablefy(df['SC_T_Ecology'], np.percentile, q = 75), Tablefy(df['SC_T_Evolution'], np.percentile, q = 75)))
+                        Tab1.add_row(("3rd Quartile", Tablefy(df['SC_Total_Score'], np.percentile, q = 75), Tablefy(df['SC_T_Ecology'], np.percentile, q = 75), Tablefy(df['SC_T_Evolution'], np.percentile, q = 75)))
 
-                        Tab1.add_row(("Maximum", Tablefy(df['SC_Total Score'], np.max), Tablefy(df['SC_T_Ecology'], np.max), Tablefy(df['SC_T_Evolution'], np.max)))
+                        Tab1.add_row(("Maximum", Tablefy(df['SC_Total_Score'], np.max), Tablefy(df['SC_T_Ecology'], np.max), Tablefy(df['SC_T_Evolution'], np.max)))
 
                         Tab1.add_hline()
 
@@ -106,21 +106,21 @@ def Generate_EcoEvoMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
                         Tab2.add_row(("No. Statements", Statements[3], Statements[4], Statements[5], Statements[6], Statements[7]))
 
-                        Tab2.add_row(("Average", Tablefy(df['SC_VC_Evolution'], np.mean), Tablefy(df['SC_VC_Information Flow'], np.mean), Tablefy(df['SC_VC_Structure Function'], np.mean), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.mean), Tablefy(df['SC_VC_Systems'], np.mean)))
+                        Tab2.add_row(("Average", Tablefy(df['SC_VC_Evolution'], np.mean), Tablefy(df['SC_VC_Information_Flow'], np.mean), Tablefy(df['SC_VC_Structure_Function'], np.mean), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.mean), Tablefy(df['SC_VC_Systems'], np.mean)))
 
-                        Tab2.add_row(("Std. Error", Tablefy(df['SC_VC_Evolution'], StdErr), Tablefy(df['SC_VC_Information Flow'], StdErr), Tablefy(df['SC_VC_Structure Function'], StdErr), Tablefy(df['SC_VC_Transformations of Energy and Matter'], StdErr), Tablefy(df['SC_VC_Systems'], StdErr)))
+                        Tab2.add_row(("Std. Error", Tablefy(df['SC_VC_Evolution'], StdErr), Tablefy(df['SC_VC_Information_Flow'], StdErr), Tablefy(df['SC_VC_Structure_Function'], StdErr), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], StdErr), Tablefy(df['SC_VC_Systems'], StdErr)))
 
-                        Tab2.add_row(("Minimum", Tablefy(df['SC_VC_Evolution'], np.min), Tablefy(df['SC_VC_Information Flow'], np.min), Tablefy(df['SC_VC_Structure Function'], np.min), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.min), Tablefy(df['SC_VC_Systems'], np.min)))
+                        Tab2.add_row(("Minimum", Tablefy(df['SC_VC_Evolution'], np.min), Tablefy(df['SC_VC_Information_Flow'], np.min), Tablefy(df['SC_VC_Structure_Function'], np.min), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.min), Tablefy(df['SC_VC_Systems'], np.min)))
 
-                        Tab2.add_row(("1st Quartile", Tablefy(df['SC_VC_Evolution'], np.percentile, q = 25), Tablefy(df['SC_VC_Information Flow'], np.percentile, q = 25), Tablefy(df['SC_VC_Structure Function'], np.percentile, q = 25), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.percentile, q = 25),
+                        Tab2.add_row(("1st Quartile", Tablefy(df['SC_VC_Evolution'], np.percentile, q = 25), Tablefy(df['SC_VC_Information_Flow'], np.percentile, q = 25), Tablefy(df['SC_VC_Structure_Function'], np.percentile, q = 25), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.percentile, q = 25),
                                         Tablefy(df['SC_VC_Systems'], np.percentile, q = 25)))
 
-                        Tab2.add_row(("Median", Tablefy(df['SC_VC_Evolution'], np.median), Tablefy(df['SC_VC_Information Flow'], np.median), Tablefy(df['SC_VC_Structure Function'], np.median), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.median), Tablefy(df['SC_VC_Systems'], np.median)))
+                        Tab2.add_row(("Median", Tablefy(df['SC_VC_Evolution'], np.median), Tablefy(df['SC_VC_Information_Flow'], np.median), Tablefy(df['SC_VC_Structure_Function'], np.median), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.median), Tablefy(df['SC_VC_Systems'], np.median)))
 
-                        Tab2.add_row(("3rd Quartile", Tablefy(df['SC_VC_Evolution'], np.percentile, q = 75), Tablefy(df['SC_VC_Information Flow'], np.percentile, q = 75), Tablefy(df['SC_VC_Structure Function'], np.percentile, q = 75), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.percentile, q = 75),
+                        Tab2.add_row(("3rd Quartile", Tablefy(df['SC_VC_Evolution'], np.percentile, q = 75), Tablefy(df['SC_VC_Information_Flow'], np.percentile, q = 75), Tablefy(df['SC_VC_Structure_Function'], np.percentile, q = 75), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.percentile, q = 75),
                                         Tablefy(df['SC_VC_Systems'], np.percentile, q = 75)))
 
-                        Tab2.add_row(("Maximum", Tablefy(df['SC_VC_Evolution'], np.max), Tablefy(df['SC_VC_Information Flow'], np.max), Tablefy(df['SC_VC_Structure Function'], np.max), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.max), Tablefy(df['SC_VC_Systems'], np.max)))
+                        Tab2.add_row(("Maximum", Tablefy(df['SC_VC_Evolution'], np.max), Tablefy(df['SC_VC_Information_Flow'], np.max), Tablefy(df['SC_VC_Structure_Function'], np.max), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.max), Tablefy(df['SC_VC_Systems'], np.max)))
 
                         Tab2.add_hline()
 
@@ -142,26 +142,26 @@ def Generate_EcoEvoMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
                         Tab3.add_row("No. Statements", Statements[8], Statements[9], Statements[10], Statements[11], Statements[12], Statements[13], Statements[14], Statements[15])
 
-                        Tab3.add_row(("Average", Tablefy(df['SC_EE_Heritable Variation'], np.mean), Tablefy(df['SC_EE_Modes of Change'], np.mean), Tablefy(df['SC_EE_Phylogeny and Evolutionary History'], np.mean), Tablefy(df['SC_EE_Biological Diversity'], np.mean), Tablefy(df['SC_EE_Populations'], np.mean),
-                                        Tablefy(df['SC_EE_Energy and Matter'], np.mean), Tablefy(df['SC_EE_Interactions with Ecosystems'], np.mean), Tablefy(df['SC_EE_Human Impact'], np.mean)))
+                        Tab3.add_row(("Average", Tablefy(df['SC_EE_Heritable_Variation'], np.mean), Tablefy(df['SC_EE_Modes_of_Change'], np.mean), Tablefy(df['SC_EE_Phylogeny_and_Evolutionary_History'], np.mean), Tablefy(df['SC_EE_Biological_Diversity'], np.mean), Tablefy(df['SC_EE_Populations'], np.mean),
+                                        Tablefy(df['SC_EE_Energy_and_Matter'], np.mean), Tablefy(df['SC_EE_Interactions_with_Ecosystems'], np.mean), Tablefy(df['SC_EE_Human_Impact'], np.mean)))
 
-                        Tab3.add_row(("Std. Error", Tablefy(df['SC_EE_Heritable Variation'], StdErr), Tablefy(df['SC_EE_Modes of Change'], StdErr), Tablefy(df['SC_EE_Phylogeny and Evolutionary History'], StdErr), Tablefy(df['SC_EE_Biological Diversity'], StdErr), Tablefy(df['SC_EE_Populations'], StdErr),
-                                        Tablefy(df['SC_EE_Energy and Matter'], StdErr), Tablefy(df['SC_EE_Interactions with Ecosystems'], StdErr), Tablefy(df['SC_EE_Human Impact'], StdErr)))
+                        Tab3.add_row(("Std. Error", Tablefy(df['SC_EE_Heritable_Variation'], StdErr), Tablefy(df['SC_EE_Modes_of_Change'], StdErr), Tablefy(df['SC_EE_Phylogeny_and_Evolutionary_History'], StdErr), Tablefy(df['SC_EE_Biological_Diversity'], StdErr), Tablefy(df['SC_EE_Populations'], StdErr),
+                                        Tablefy(df['SC_EE_Energy_and_Matter'], StdErr), Tablefy(df['SC_EE_Interactions_with_Ecosystems'], StdErr), Tablefy(df['SC_EE_Human_Impact'], StdErr)))
 
-                        Tab3.add_row(("Minimum", Tablefy(df['SC_EE_Heritable Variation'], np.min), Tablefy(df['SC_EE_Modes of Change'], np.min), Tablefy(df['SC_EE_Phylogeny and Evolutionary History'], np.min), Tablefy(df['SC_EE_Biological Diversity'], np.min), Tablefy(df['SC_EE_Populations'], np.min),
-                                        Tablefy(df['SC_EE_Energy and Matter'], np.min), Tablefy(df['SC_EE_Interactions with Ecosystems'], np.min), Tablefy(df['SC_EE_Human Impact'], np.min)))
+                        Tab3.add_row(("Minimum", Tablefy(df['SC_EE_Heritable_Variation'], np.min), Tablefy(df['SC_EE_Modes_of_Change'], np.min), Tablefy(df['SC_EE_Phylogeny_and_Evolutionary_History'], np.min), Tablefy(df['SC_EE_Biological_Diversity'], np.min), Tablefy(df['SC_EE_Populations'], np.min),
+                                        Tablefy(df['SC_EE_Energy_and_Matter'], np.min), Tablefy(df['SC_EE_Interactions_with_Ecosystems'], np.min), Tablefy(df['SC_EE_Human_Impact'], np.min)))
 
-                        Tab3.add_row(("1st Quartile", Tablefy(df['SC_EE_Heritable Variation'], np.percentile, q = 25), Tablefy(df['SC_EE_Modes of Change'], np.percentile, q = 25), Tablefy(df['SC_EE_Phylogeny and Evolutionary History'], np.percentile, q = 25), Tablefy(df['SC_EE_Biological Diversity'], np.percentile, q = 25),
-                                        Tablefy(df['SC_EE_Populations'], np.percentile, q = 25), Tablefy(df['SC_EE_Energy and Matter'], np.percentile, q = 25), Tablefy(df['SC_EE_Interactions with Ecosystems'], np.percentile, q = 25), Tablefy(df['SC_EE_Human Impact'], np.percentile, q = 25)))
+                        Tab3.add_row(("1st Quartile", Tablefy(df['SC_EE_Heritable_Variation'], np.percentile, q = 25), Tablefy(df['SC_EE_Modes_of_Change'], np.percentile, q = 25), Tablefy(df['SC_EE_Phylogeny_and_Evolutionary_History'], np.percentile, q = 25), Tablefy(df['SC_EE_Biological_Diversity'], np.percentile, q = 25),
+                                        Tablefy(df['SC_EE_Populations'], np.percentile, q = 25), Tablefy(df['SC_EE_Energy_and_Matter'], np.percentile, q = 25), Tablefy(df['SC_EE_Interactions_with_Ecosystems'], np.percentile, q = 25), Tablefy(df['SC_EE_Human_Impact'], np.percentile, q = 25)))
 
-                        Tab3.add_row(("Median", Tablefy(df['SC_EE_Heritable Variation'], np.median), Tablefy(df['SC_EE_Modes of Change'], np.median), Tablefy(df['SC_EE_Phylogeny and Evolutionary History'], np.median), Tablefy(df['SC_EE_Biological Diversity'], np.median), Tablefy(df['SC_EE_Populations'], np.median),
-                                        Tablefy(df['SC_EE_Energy and Matter'], np.median), Tablefy(df['SC_EE_Interactions with Ecosystems'], np.median), Tablefy(df['SC_EE_Human Impact'], np.median)))
+                        Tab3.add_row(("Median", Tablefy(df['SC_EE_Heritable_Variation'], np.median), Tablefy(df['SC_EE_Modes_of_Change'], np.median), Tablefy(df['SC_EE_Phylogeny_and_Evolutionary_History'], np.median), Tablefy(df['SC_EE_Biological_Diversity'], np.median), Tablefy(df['SC_EE_Populations'], np.median),
+                                        Tablefy(df['SC_EE_Energy_and_Matter'], np.median), Tablefy(df['SC_EE_Interactions_with_Ecosystems'], np.median), Tablefy(df['SC_EE_Human_Impact'], np.median)))
 
-                        Tab3.add_row(("3rd Quartile", Tablefy(df['SC_EE_Heritable Variation'], np.percentile, q = 75), Tablefy(df['SC_EE_Modes of Change'], np.percentile, q = 75), Tablefy(df['SC_EE_Phylogeny and Evolutionary History'], np.percentile, q = 75), Tablefy(df['SC_EE_Biological Diversity'], np.percentile, q = 75),
-                                        Tablefy(df['SC_EE_Populations'], np.percentile, q = 75), Tablefy(df['SC_EE_Energy and Matter'], np.percentile, q = 75), Tablefy(df['SC_EE_Interactions with Ecosystems'], np.percentile, q = 75), Tablefy(df['SC_EE_Human Impact'], np.percentile, q = 75)))
+                        Tab3.add_row(("3rd Quartile", Tablefy(df['SC_EE_Heritable_Variation'], np.percentile, q = 75), Tablefy(df['SC_EE_Modes_of_Change'], np.percentile, q = 75), Tablefy(df['SC_EE_Phylogeny_and_Evolutionary_History'], np.percentile, q = 75), Tablefy(df['SC_EE_Biological_Diversity'], np.percentile, q = 75),
+                                        Tablefy(df['SC_EE_Populations'], np.percentile, q = 75), Tablefy(df['SC_EE_Energy_and_Matter'], np.percentile, q = 75), Tablefy(df['SC_EE_Interactions_with_Ecosystems'], np.percentile, q = 75), Tablefy(df['SC_EE_Human_Impact'], np.percentile, q = 75)))
 
-                        Tab3.add_row(("Maximum", Tablefy(df['SC_EE_Heritable Variation'], np.max), Tablefy(df['SC_EE_Modes of Change'], np.max), Tablefy(df['SC_EE_Phylogeny and Evolutionary History'], np.max), Tablefy(df['SC_EE_Biological Diversity'], np.max), Tablefy(df['SC_EE_Populations'], np.max),
-                                        Tablefy(df['SC_EE_Energy and Matter'], np.max), Tablefy(df['SC_EE_Interactions with Ecosystems'], np.max), Tablefy(df['SC_EE_Human Impact'], np.max)))
+                        Tab3.add_row(("Maximum", Tablefy(df['SC_EE_Heritable_Variation'], np.max), Tablefy(df['SC_EE_Modes_of_Change'], np.max), Tablefy(df['SC_EE_Phylogeny_and_Evolutionary_History'], np.max), Tablefy(df['SC_EE_Biological_Diversity'], np.max), Tablefy(df['SC_EE_Populations'], np.max),
+                                        Tablefy(df['SC_EE_Energy_and_Matter'], np.max), Tablefy(df['SC_EE_Interactions_with_Ecosystems'], np.max), Tablefy(df['SC_EE_Human_Impact'], np.max)))
 
                         Tab3.add_hline()
 
@@ -183,19 +183,19 @@ def Generate_EcoEvoMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
                         Tab2.add_row(("No. Statements", Statements[16], Statements[17], Statements[18], Statements[19]))
 
-                        Tab2.add_row(("Average", Tablefy(df['SC_FDEE_Core Ecology'], np.mean), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.mean), Tablefy(df['SC_FDEE_Human Environment'], np.mean), Tablefy(df['SC_FDEE_CrossCutting'], np.mean)))
+                        Tab2.add_row(("Average", Tablefy(df['SC_FDEE_Core_Ecology'], np.mean), Tablefy(df['SC_FDEE_FDEE_Ecology_Practices'], np.mean), Tablefy(df['SC_FDEE_Human_Environment'], np.mean), Tablefy(df['SC_FDEE_CrossCutting'], np.mean)))
 
-                        Tab2.add_row(("Std. Error", Tablefy(df['SC_FDEE_Core Ecology'], StdErr), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], StdErr), Tablefy(df['SC_FDEE_Human Environment'], StdErr), Tablefy(df['SC_FDEE_CrossCutting'], StdErr)))
+                        Tab2.add_row(("Std. Error", Tablefy(df['SC_FDEE_Core_Ecology'], StdErr), Tablefy(df['SC_FDEE_FDEE_Ecology_Practices'], StdErr), Tablefy(df['SC_FDEE_Human_Environment'], StdErr), Tablefy(df['SC_FDEE_CrossCutting'], StdErr)))
 
-                        Tab2.add_row(("Minimum", Tablefy(df['SC_FDEE_Core Ecology'], np.min), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.min), Tablefy(df['SC_FDEE_Human Environment'], np.min), Tablefy(df['SC_FDEE_CrossCutting'], np.min)))
+                        Tab2.add_row(("Minimum", Tablefy(df['SC_FDEE_Core_Ecology'], np.min), Tablefy(df['SC_FDEE_FDEE_Ecology_Practices'], np.min), Tablefy(df['SC_FDEE_Human_Environment'], np.min), Tablefy(df['SC_FDEE_CrossCutting'], np.min)))
 
-                        Tab2.add_row(("1st Quartile", Tablefy(df['SC_FDEE_Core Ecology'], np.percentile, q = 25), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.percentile, q = 25), Tablefy(df['SC_FDEE_Human Environment'], np.percentile, q = 25), Tablefy(df['SC_FDEE_CrossCutting'], np.percentile, q = 25)))
+                        Tab2.add_row(("1st Quartile", Tablefy(df['SC_FDEE_Core_Ecology'], np.percentile, q = 25), Tablefy(df['SC_FDEE_FDEE_Ecology_Practices'], np.percentile, q = 25), Tablefy(df['SC_FDEE_Human_Environment'], np.percentile, q = 25), Tablefy(df['SC_FDEE_CrossCutting'], np.percentile, q = 25)))
 
-                        Tab2.add_row(("Median", Tablefy(df['SC_FDEE_Core Ecology'], np.median), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.median), Tablefy(df['SC_FDEE_Human Environment'], np.median), Tablefy(df['SC_FDEE_CrossCutting'], np.median)))
+                        Tab2.add_row(("Median", Tablefy(df['SC_FDEE_Core_Ecology'], np.median), Tablefy(df['SC_FDEE_FDEE_Ecology_Practices'], np.median), Tablefy(df['SC_FDEE_Human_Environment'], np.median), Tablefy(df['SC_FDEE_CrossCutting'], np.median)))
 
-                        Tab2.add_row(("3rd Quartile", Tablefy(df['SC_FDEE_Core Ecology'], np.percentile, q = 75), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.percentile, q = 75), Tablefy(df['SC_FDEE_Human Environment'], np.percentile, q = 75), Tablefy(df['SC_FDEE_CrossCutting'], np.percentile, q = 75)))
+                        Tab2.add_row(("3rd Quartile", Tablefy(df['SC_FDEE_Core_Ecology'], np.percentile, q = 75), Tablefy(df['SC_FDEE_FDEE_Ecology_Practices'], np.percentile, q = 75), Tablefy(df['SC_FDEE_Human_Environment'], np.percentile, q = 75), Tablefy(df['SC_FDEE_CrossCutting'], np.percentile, q = 75)))
 
-                        Tab2.add_row(("Maximum", Tablefy(df['SC_FDEE_Core Ecology'], np.max), Tablefy(df['SC_FDEE_FDEE_Ecology Practices'], np.max), Tablefy(df['SC_FDEE_Human Environment'], np.max), Tablefy(df['SC_FDEE_CrossCutting'], np.max)))
+                        Tab2.add_row(("Maximum", Tablefy(df['SC_FDEE_Core_Ecology'], np.max), Tablefy(df['SC_FDEE_FDEE_Ecology_Practices'], np.max), Tablefy(df['SC_FDEE_Human_Environment'], np.max), Tablefy(df['SC_FDEE_CrossCutting'], np.max)))
 
                         Tab2.add_hline()
 
@@ -286,19 +286,19 @@ def Generate_GenBioMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
                         Tab1.add_row(("No. Statements", Statements[0]))
 
-                        Tab1.add_row(("Average", Tablefy(df['SC_Total Score'], np.mean)))
+                        Tab1.add_row(("Average", Tablefy(df['SC_Total_Score'], np.mean)))
 
-                        Tab1.add_row(("Std. Error", Tablefy(df['SC_Total Score'], StdErr)))
+                        Tab1.add_row(("Std. Error", Tablefy(df['SC_Total_Score'], StdErr)))
 
-                        Tab1.add_row(("Minimum", Tablefy(df['SC_Total Score'], np.min)))
+                        Tab1.add_row(("Minimum", Tablefy(df['SC_Total_Score'], np.min)))
 
-                        Tab1.add_row(("1st Quartile", Tablefy(df['SC_Total Score'], np.percentile, q = 25)))
+                        Tab1.add_row(("1st Quartile", Tablefy(df['SC_Total_Score'], np.percentile, q = 25)))
 
-                        Tab1.add_row(("Median", Tablefy(df['SC_Total Score'], np.median)))
+                        Tab1.add_row(("Median", Tablefy(df['SC_Total_Score'], np.median)))
 
-                        Tab1.add_row(("3rd Quartile", Tablefy(df['SC_Total Score'], np.percentile, q = 75)))
+                        Tab1.add_row(("3rd Quartile", Tablefy(df['SC_Total_Score'], np.percentile, q = 75)))
 
-                        Tab1.add_row(("Maximum", Tablefy(df['SC_Total Score'], np.max)))
+                        Tab1.add_row(("Maximum", Tablefy(df['SC_Total_Score'], np.max)))
 
                         Tab1.add_hline()
 
