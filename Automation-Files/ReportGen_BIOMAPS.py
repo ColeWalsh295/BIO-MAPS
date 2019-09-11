@@ -322,21 +322,21 @@ def Generate_GenBioMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
                         Tab2.add_row(("No. Statements", Statements[1], Statements[2], Statements[3], Statements[4], Statements[5]))
 
-                        Tab2.add_row(("Average", Tablefy(df['SC_VC_Evolution'], np.mean), Tablefy(df['SC_VC_Information Flow'], np.mean), Tablefy(df['SC_VC_Structure Function'], np.mean), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.mean), Tablefy(df['SC_VC_Systems'], np.mean)))
+                        Tab2.add_row(("Average", Tablefy(df['SC_VC_Evolution'], np.mean), Tablefy(df['SC_VC_Information_Flow'], np.mean), Tablefy(df['SC_VC_Structure_Function'], np.mean), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.mean), Tablefy(df['SC_VC_Systems'], np.mean)))
 
-                        Tab2.add_row(("Std. Error", Tablefy(df['SC_VC_Evolution'], StdErr), Tablefy(df['SC_VC_Information Flow'], StdErr), Tablefy(df['SC_VC_Structure Function'], StdErr), Tablefy(df['SC_VC_Transformations of Energy and Matter'], StdErr), Tablefy(df['SC_VC_Systems'], StdErr)))
+                        Tab2.add_row(("Std. Error", Tablefy(df['SC_VC_Evolution'], StdErr), Tablefy(df['SC_VC_Information_Flow'], StdErr), Tablefy(df['SC_VC_Structure_Function'], StdErr), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], StdErr), Tablefy(df['SC_VC_Systems'], StdErr)))
 
-                        Tab2.add_row(("Minimum", Tablefy(df['SC_VC_Evolution'], np.min), Tablefy(df['SC_VC_Information Flow'], np.min), Tablefy(df['SC_VC_Structure Function'], np.min), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.min), Tablefy(df['SC_VC_Systems'], np.min)))
+                        Tab2.add_row(("Minimum", Tablefy(df['SC_VC_Evolution'], np.min), Tablefy(df['SC_VC_Information_Flow'], np.min), Tablefy(df['SC_VC_Structure_Function'], np.min), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.min), Tablefy(df['SC_VC_Systems'], np.min)))
 
-                        Tab2.add_row(("1st Quartile", Tablefy(df['SC_VC_Evolution'], np.nanpercentile, q = 25), Tablefy(df['SC_VC_Information Flow'], np.nanpercentile, q = 25), Tablefy(df['SC_VC_Structure Function'], np.nanpercentile, q = 25), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.nanpercentile, q = 25),
+                        Tab2.add_row(("1st Quartile", Tablefy(df['SC_VC_Evolution'], np.nanpercentile, q = 25), Tablefy(df['SC_VC_Information_Flow'], np.nanpercentile, q = 25), Tablefy(df['SC_VC_Structure_Function'], np.nanpercentile, q = 25), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.nanpercentile, q = 25),
                                         Tablefy(df['SC_VC_Systems'], np.nanpercentile, q = 25)))
 
-                        Tab2.add_row(("Median", Tablefy(df['SC_VC_Evolution'], np.nanmedian), Tablefy(df['SC_VC_Information Flow'], np.nanmedian), Tablefy(df['SC_VC_Structure Function'], np.nanmedian), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.nanmedian), Tablefy(df['SC_VC_Systems'], np.nanmedian)))
+                        Tab2.add_row(("Median", Tablefy(df['SC_VC_Evolution'], np.nanmedian), Tablefy(df['SC_VC_Information_Flow'], np.nanmedian), Tablefy(df['SC_VC_Structure_Function'], np.nanmedian), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.nanmedian), Tablefy(df['SC_VC_Systems'], np.nanmedian)))
 
-                        Tab2.add_row(("3rd Quartile", Tablefy(df['SC_VC_Evolution'], np.nanpercentile, q = 75), Tablefy(df['SC_VC_Information Flow'], np.nanpercentile, q = 75), Tablefy(df['SC_VC_Structure Function'], np.nanpercentile, q = 75), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.nanpercentile, q = 75),
+                        Tab2.add_row(("3rd Quartile", Tablefy(df['SC_VC_Evolution'], np.nanpercentile, q = 75), Tablefy(df['SC_VC_Information_Flow'], np.nanpercentile, q = 75), Tablefy(df['SC_VC_Structure_Function'], np.nanpercentile, q = 75), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.nanpercentile, q = 75),
                                         Tablefy(df['SC_VC_Systems'], np.nanpercentile, q = 75)))
 
-                        Tab2.add_row(("Maximum", Tablefy(df['SC_VC_Evolution'], np.max), Tablefy(df['SC_VC_Information Flow'], np.max), Tablefy(df['SC_VC_Structure Function'], np.max), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.max), Tablefy(df['SC_VC_Systems'], np.max)))
+                        Tab2.add_row(("Maximum", Tablefy(df['SC_VC_Evolution'], np.max), Tablefy(df['SC_VC_Information_Flow'], np.max), Tablefy(df['SC_VC_Structure_Function'], np.max), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.max), Tablefy(df['SC_VC_Systems'], np.max)))
 
                         Tab2.add_hline()
 
@@ -358,19 +358,19 @@ def Generate_GenBioMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
                         Tab3.add_row("No. Statements", Statements[6], Statements[7], Statements[8])
 
-                        Tab3.add_row(("Average", Tablefy(df['SC_T_Cellular and Molecular'], np.mean), Tablefy(df['SC_T_Physiology'], np.mean), Tablefy(df['SC_T_Ecology and Evolution'], np.mean)))
+                        Tab3.add_row(("Average", Tablefy(df['SC_T_Cellular_and_Molecular'], np.mean), Tablefy(df['SC_T_Physiology'], np.mean), Tablefy(df['SC_T_Ecology_and_Evolution'], np.mean)))
 
-                        Tab3.add_row(("Std. Error", Tablefy(df['SC_T_Cellular and Molecular'], StdErr), Tablefy(df['SC_T_Physiology'], StdErr), Tablefy(df['SC_T_Ecology and Evolution'], StdErr)))
+                        Tab3.add_row(("Std. Error", Tablefy(df['SC_T_Cellular_and_Molecular'], StdErr), Tablefy(df['SC_T_Physiology'], StdErr), Tablefy(df['SC_T_Ecology_and_Evolution'], StdErr)))
 
-                        Tab3.add_row(("Minimum", Tablefy(df['SC_T_Cellular and Molecular'], np.min), Tablefy(df['SC_T_Physiology'], np.min), Tablefy(df['SC_T_Ecology and Evolution'], np.min)))
+                        Tab3.add_row(("Minimum", Tablefy(df['SC_T_Cellular_and_Molecular'], np.min), Tablefy(df['SC_T_Physiology'], np.min), Tablefy(df['SC_T_Ecology_and_Evolution'], np.min)))
 
-                        Tab3.add_row(("1st Quartile", Tablefy(df['SC_T_Cellular and Molecular'], np.nanpercentile, q = 25), Tablefy(df['SC_T_Physiology'], np.nanpercentile, q = 25), Tablefy(df['SC_T_Ecology and Evolution'], np.nanpercentile, q = 25)))
+                        Tab3.add_row(("1st Quartile", Tablefy(df['SC_T_Cellular_and_Molecular'], np.nanpercentile, q = 25), Tablefy(df['SC_T_Physiology'], np.nanpercentile, q = 25), Tablefy(df['SC_T_Ecology_and_Evolution'], np.nanpercentile, q = 25)))
 
-                        Tab3.add_row(("Median", Tablefy(df['SC_T_Cellular and Molecular'], np.nanmedian), Tablefy(df['SC_T_Physiology'], np.nanmedian), Tablefy(df['SC_T_Ecology and Evolution'], np.nanmedian)))
+                        Tab3.add_row(("Median", Tablefy(df['SC_T_Cellular_and_Molecular'], np.nanmedian), Tablefy(df['SC_T_Physiology'], np.nanmedian), Tablefy(df['SC_T_Ecology_and_Evolution'], np.nanmedian)))
 
-                        Tab3.add_row(("3rd Quartile", Tablefy(df['SC_T_Cellular and Molecular'], np.nanpercentile, q = 75), Tablefy(df['SC_T_Physiology'], np.nanpercentile, q = 75), Tablefy(df['SC_T_Ecology and Evolution'], np.nanpercentile, q = 75)))
+                        Tab3.add_row(("3rd Quartile", Tablefy(df['SC_T_Cellular_and_Molecular'], np.nanpercentile, q = 75), Tablefy(df['SC_T_Physiology'], np.nanpercentile, q = 75), Tablefy(df['SC_T_Ecology_and_Evolution'], np.nanpercentile, q = 75)))
 
-                        Tab3.add_row(("Maximim", Tablefy(df['SC_T_Cellular and Molecular'], np.max), Tablefy(df['SC_T_Physiology'], np.max), Tablefy(df['SC_T_Ecology and Evolution'], np.max)))
+                        Tab3.add_row(("Maximim", Tablefy(df['SC_T_Cellular_and_Molecular'], np.max), Tablefy(df['SC_T_Physiology'], np.max), Tablefy(df['SC_T_Ecology_and_Evolution'], np.max)))
 
                         Tab3.add_hline()
 
