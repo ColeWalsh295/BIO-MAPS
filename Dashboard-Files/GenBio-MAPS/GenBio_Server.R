@@ -8,12 +8,12 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass) {
     }
   })
   
-  data.class <- reactive({
+  data.class <- eventReactive(input$classID, {
     data.class <- subset(data(), Class_ID == input$classID)
     return(data.class)
   })
   
-  observe({
+  observeEvent(input$classID, ({
     if(!data.class()[1, 'Data_Available']){
       shinyalert("Oops!", "There are too few students the dataset.", type = "error")
       disable('downloadData')
@@ -21,7 +21,7 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass) {
       enable('downloadData')
       DisableRadio(data.class)
     }
-  })
+  }))
   
   data.out <- reactive({
     data.out <- data.class() %>%
@@ -39,7 +39,7 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass) {
   
   output$downloadData <- downloadHandler(
     filename = function (){
-      paste("GenBio-MAPS_", input$classID, ".csv", sep = "")
+      paste(ass(), '_', input$classID, ".csv", sep = "")
     },
     content = function(file) {
       write.csv(data.out(), file, row.names = FALSE)
@@ -93,13 +93,13 @@ ScalePlot <- function(input, output, session, data, ass, Class.var = NULL){
   
   output$plotScale = renderPlot({
     data.temp <- data.frame(data())
-    if(ass() == 'GenBio-MAPS') {
+    if((ass() == 'GenBio-MAPS') & (input$scale != 'Vision and Change')) {
       if(input$scale == 'Overall Scores') {
         Scores.cols <- c('SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 
                        'SC_T_Ecology_and_Evolution', 'SC_Total_Score')
         Labels <- c('Cellular and Molecular', 'Physiology', 'Ecology and Evolution', 'Total Score')
       }
-    } else if(ass() == 'EcoEvo-MAPS') {
+    } else if((ass() == 'EcoEvo-MAPS') & (input$scale != 'Vision and Change')) {
       if(input$scale == 'Overall Scores') {
         Scores.cols <- c('SC_T_Ecology', 'SC_T_Evolution', 'SC_Total_Score')
         Labels <- c('Ecology', 'Evolution', 'Total Score')
@@ -111,7 +111,7 @@ ScalePlot <- function(input, output, session, data, ass, Class.var = NULL){
         Labels <- c('Heritable\nVariation', 'Modes of\nChange', 'Phylogeny and\nEvolutionary History', 
                     'Biological\nDiversity', 'Populations', 'Energy\nand Matter', 
                     'Interactions\nwith Ecosystems', 'Human\nImpact')
-      } else if(input$scale == '4DEE Framework (Elements)') {
+      } else if(input$scale == '4DEE Framework') {
         Scores.cols <- c('SC_FDEE_Populations', 'SC_FDEE_Communities', 'SC_FDEE_Ecosystems',
                          'SC_FDEE_Biomes', 'SC_FDEE_Biosphere', 'SC_FDEE_Quantitative_Reasoning',
                          'SC_FDEE_Designing_and_Critiquing', 'SC_FDEE_Human_Change',
@@ -169,17 +169,29 @@ ScalePlot <- function(input, output, session, data, ass, Class.var = NULL){
   }
 }
 
-ResponsesPlot <- function(input, output, session, data, Demographic = NULL, Class.var = NULL){
+ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL, Class.var = NULL){
+  observe({
+    if(ass() == 'GenBio-MAPS'){
+      questions <- list('01', '02', '03', '04', '07', '08', '12', '13', '14', '15', '16', '18',
+                        '19', '20', '21', '22', '23', '24', '27', '28', '30', '31', '32', '33',
+                        '35', '36', '37', '38', '40', '43', '44', '45', '49', '50', '54', '55',
+                        '59', '60', '61')
+    } else if(ass() == 'EcoEvo-MAPS') {
+      questions <- list('Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9')
+    }
+    updateSelectInput(session, "question", label = "Question:", choices = questions)
+  })
+  
   if(!is.null(Demographic)){
     Responses.df <- reactive({
       if(Demographic() == 'None'){
         Responses.df <- data() %>%
-          select(c(grep(paste('^(BM-', input$question, '_[0-9]*$)', sep = ''), names(.)))) %>%
+          select(c(grep(paste('^[^T]*', input$question, '_[0-9]*$', sep = ''), names(.)))) %>%
           summarize_all(funs(mean), na.rm = TRUE) %>%
           melt(.)
       } else {
         Responses.df <- data() %>%
-          select(c(grep(paste('^(BM-', input$question, '_[0-9]*$)', sep = ''), names(.))), Demographic()) %>%
+          select(c(grep(paste('^[^T]*', input$question, '_[0-9]*$', sep = ''), names(.))), Demographic()) %>%
           group_by_(Demographic()) %>%
           summarize_all(funs(mean), na.rm = TRUE) %>%
           melt(.)
@@ -205,7 +217,7 @@ ResponsesPlot <- function(input, output, session, data, Demographic = NULL, Clas
   } else {
     Responses.df <- reactive({
       Responses.df <- data() %>%
-        select(c(grep(paste('^(BM-', input$question, '_[0-9]*$)', sep = ''), names(.))), 
+        select(c(grep(paste('^[^T]*', input$question, '_[0-9]*$', sep = ''), names(.))), 
                Class.var) %>%
         group_by_(Class.var) %>%
         summarize_all(funs(mean), na.rm = TRUE) %>%

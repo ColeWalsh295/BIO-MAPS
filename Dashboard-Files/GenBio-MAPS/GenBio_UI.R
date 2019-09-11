@@ -29,8 +29,7 @@ ScalePlotUI <- function(id, Demos = TRUE){
                                               'Class Standing', 'Major', 'Transfer Status', 
                                               'English Language Learners'),
                              choiceValues = c('None', 'Gen', 'Ethn', 'Educ', 'Class', 'Maj', 'Trans', 
-                                              'Eng'), inline = TRUE)),
-      br(),
+                                              'Eng'))),
       plotOutput(ns("plotScale"))
     )
   } else {

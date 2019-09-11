@@ -28,7 +28,7 @@ Your_tab = tabItem(
   ClassStatisticsOutput('Class.Main.Statistics'),
   br(),
   ScalePlotUI('Class.Main.Scale', Demos = TRUE),
-  br(),br(),br(),br(),br(),
+  br(),br(),br(),br(),br(),br(), br(), br(), br(), br(), br(), br(),
   ResponsesPlotUI('Class.Main.Responses', Demos = TRUE)
 )
 
@@ -102,7 +102,8 @@ server = function(input, output, session) {
   callModule(ClassStatistics, 'Class.Main.Statistics', data = df.Class)
   demographic <- reactiveVal()
   demographic <- callModule(ScalePlot, 'Class.Main.Scale', data = df.Class, ass = Assessment)
-  callModule(ResponsesPlot, 'Class.Main.Responses', data = df.Class, Demographic = demographic)
+  callModule(ResponsesPlot, 'Class.Main.Responses', data = df.Class, ass = Assessment, 
+             Demographic = demographic)
   
   ### Compare Classes ###
   
@@ -118,7 +119,8 @@ server = function(input, output, session) {
   })
   callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, ass = Assessment, 
              Class.var = 'Class_ID')
-  callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare, Class.var = 'Class_ID')
+  callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare, ass = Assessment, 
+             Class.var = 'Class_ID')
   
   ### Compare to overall PLIC dataset ###
   
@@ -132,7 +134,7 @@ server = function(input, output, session) {
     return(df.Class.You)
   })
   df.Class.Other <- reactive({
-    df.Class.Other <- df[df$Class_ID != df.Class.You_temp()$Class_ID[1],] %>%
+    df.Class.Other <- df()[df()$Class_ID != df.Class.You_temp()$Class_ID[1],] %>%
       mutate(Class = 'Other Classes')
     return(df.Class.Other)
   })
@@ -143,11 +145,12 @@ server = function(input, output, session) {
   })
   callModule(ScalePlot, 'Overall.Compare.Scale', data = df.Overall, ass = Assessment,
              Class.var = 'Class')
-  callModule(ResponsesPlot, 'Overall.Compare.Responses', data = df.Overall, Class.var = 'Class')
+  callModule(ResponsesPlot, 'Overall.Compare.Responses', data = df.Overall, ass = Assessment,
+             Class.var = 'Class')
 }
 
 # Set up the Header of the dashboard
-dhead = dashboardHeader(title = h4(HTML("GenBio-MAPS<br>Data Explorer")))
+dhead = dashboardHeader(title = h4(HTML("Bio-MAPS<br>Data Explorer")))
 
 # Set up the sidebar which links to two pages
 dside = dashboardSidebar(sidebarMenu(
