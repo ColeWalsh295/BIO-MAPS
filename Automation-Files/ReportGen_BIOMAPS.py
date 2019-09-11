@@ -208,14 +208,14 @@ def Generate_EcoEvoMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
             with doc.create(Center()) as centered:
                 with centered.create(LongTable('>{\RaggedRight}p{0.06\linewidth} >{\centering}p{0.06\linewidth} p{0.24\linewidth} >{\centering}p{0.06\linewidth} >{\centering}p{0.08\linewidth} >{\centering}p{0.14\linewidth} >{\RaggedRight}p{0.22\linewidth}', pos = 'h!')) as Tab4:
                     doc.append(NoEscape('\small'))
-                    Tab4.add_row(("Statement No.", 'Percent Correct', 'Statement', 'Correct Answer', 'Vision and Change', 'Ecology and Evolution "Big Ideas"', '4DEE Framework'), Tabular = True)
+                    Tab4.add_row(("Statement No.", 'Percent Correct', 'Statement', 'Correct Answer', 'Vision and Change', 'Ecology and Evolution "Big Ideas"', '4DEE Framework'))
                     Tab4.add_hline()
 
                     for Statement, Sup in df_info.iterrows():
 
                         Tab4.add_row((Statement, str(int(df.loc[:, 'Q' + Statement + 'S'].mean(axis = 0))) + '%', df_info.loc[Statement, 'Statement'],
                                         df_info.loc[Statement, 'Correct Answer'], NoEscape(df_info.loc[Statement, 'Vision and Change']),
-                                        NoEscape(df_info.loc[Statement, 'Ecology and Evolution "Big Ideas" (i.e., concepts)']), NoEscape(df_info.loc[Statement, '4DEE Framework Dimensions'])), Tabular = True)
+                                        NoEscape(df_info.loc[Statement, 'Ecology and Evolution "Big Ideas" (i.e., concepts)']), NoEscape(df_info.loc[Statement, '4DEE Framework Dimensions'])))
                         Tab4.add_hline()
 
                     Tab4.add_hline()
@@ -382,7 +382,7 @@ def Generate_GenBioMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
             with doc.create(Center()) as centered:
                 with centered.create(LongTable('>{\RaggedRight}p{0.08\linewidth} >{\centering}p{0.08\linewidth} p{0.35\linewidth} >{\centering}p{0.08\linewidth} >{\centering}p{0.1\linewidth} >{\centering}p{0.18\linewidth}', pos = 'h!')) as Tab4:
-                    Tab4.add_row(("Statement No.", 'Percent Correct', 'Statement', 'Correct Answer', 'Vision and Change', 'Subdiscipline'), Tabular = True)
+                    Tab4.add_row(("Statement No.", 'Percent Correct', 'Statement', 'Correct Answer', 'Vision and Change', 'Subdiscipline'))
                     Tab4.add_hline()
                     #Tab4.append(NoEscape(r"\tabularnewline"))
 
@@ -390,7 +390,7 @@ def Generate_GenBioMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
                         Tab4.add_row(('BM-' + Statement, str(int(df.loc[:, 'BM-' + Statement[:2] + '_' + str(ord(Statement[2]) - 96) + 'S'].mean(axis = 0))) + '%', NoEscape(df_info.loc[Statement, 'Statement']),
                                         df_info.loc[Statement, 'Correct Answer'], NoEscape(df_info.loc[Statement, 'Vision and Change']),
-                                        NoEscape(df_info.loc[Statement, 'Subdiscipline'])), Tabular = True)
+                                        NoEscape(df_info.loc[Statement, 'Subdiscipline'])))
                         Tab4.add_hline()
                         #Tab4.append(NoEscape(r"\tabularnewline"))
 
