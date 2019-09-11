@@ -1,4 +1,12 @@
-DownloadClassData <- function(input, output, session, data, header, cols) {
+DownloadClassData <- function(input, output, session, data, header, cols, ass) {
+  
+  observe({
+    if(ass() == 'GenBio-MAPS'){
+      updateTextInput(session, 'classID', value = 'R_0vU5WDrHWLjYc37')
+    } else {
+      updateTextInput(session, 'classID', value = 'R_6WkTbfUv4dUhh5f')
+    }
+  })
   
   data.class <- reactive({
     data.class <- subset(data(), Class_ID == input$classID)
@@ -122,7 +130,6 @@ ScalePlot <- function(input, output, session, data, ass, Class.var = NULL){
       Labels <- c('Evolution', 'Information Flow', 'Structure/Function',
                   'Transformations of\nEnergy and Matter', 'Systems')
     }
-  })
     
     if(!is.null(Class.var)) {
       Scores.cols <- c(Scores.cols, Class.var)

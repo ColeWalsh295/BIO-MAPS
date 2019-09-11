@@ -15,6 +15,10 @@ GenBio <- Clean.GenBio()
 GenBio.df <- GenBio$dataFrame
 GenBio.header <- GenBio$header
 
+EcoEvo <- Clean.EcoEvo()
+EcoEvo.df <- EcoEvo$dataFrame
+EcoEvo.header <- EcoEvo$header
+
 Your_tab = tabItem(
   tabName = "Your_Class",
   h2("View of your class"),
@@ -93,7 +97,8 @@ server = function(input, output, session) {
   
   ### Your Class ###
   
-  df.Class <- callModule(DownloadClassData, 'Class.Main.Download', data = df, header = header.df, cols = cols)
+  df.Class <- callModule(DownloadClassData, 'Class.Main.Download', data = df, header = header.df, 
+                         cols = cols, ass = Assessment)
   callModule(ClassStatistics, 'Class.Main.Statistics', data = df.Class)
   demographic <- reactiveVal()
   demographic <- callModule(ScalePlot, 'Class.Main.Scale', data = df.Class, ass = Assessment)
@@ -101,9 +106,11 @@ server = function(input, output, session) {
   
   ### Compare Classes ###
   
-  df.Class1 <- callModule(DownloadClassData, 'Class1.Download', data = df, header = header.df, cols = cols)
+  df.Class1 <- callModule(DownloadClassData, 'Class1.Download', data = df, header = header.df, 
+                          cols = cols, ass = Assessment)
   callModule(ClassStatistics, 'Class1.Statistics', data = df.Class1)
-  df.Class2 <- callModule(DownloadClassData, 'Class2.Download', data = df, header = header.df, cols = cols)
+  df.Class2 <- callModule(DownloadClassData, 'Class2.Download', data = df, header = header.df, 
+                          cols = cols, ass = Assessment)
   callModule(ClassStatistics, 'Class2.Statistics', data = df.Class2)
   
   df.Compare <- reactive({
@@ -115,7 +122,8 @@ server = function(input, output, session) {
   
   ### Compare to overall PLIC dataset ###
   
-  df.Class.You_temp <- callModule(DownloadClassData, 'Class.You.Download', data = df, header = header.df, cols = cols)
+  df.Class.You_temp <- callModule(DownloadClassData, 'Class.You.Download', data = df, 
+                                  header = header.df, cols = cols, ass = Assessment)
   callModule(ClassStatistics, 'Class.You.Statistics', data = df.Class.You_temp)
   
   df.Class.You <- reactive({
