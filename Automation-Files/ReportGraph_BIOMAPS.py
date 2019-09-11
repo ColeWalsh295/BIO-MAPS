@@ -135,7 +135,7 @@ def GenerateGraphs_EcoEvoMAPS(df):
 
     plt.figure(figsize = (12, 9))
     sns.boxplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure_Function', 'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems']], color = 'w', showfliers = False)
-    sns.stripplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information _low', 'SC_VC_Structure_Function', 'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems']], jitter = 0.25, alpha = min(1, C * 3/(5 * len(df.index))), size = 10, edgecolor = None)
+    sns.stripplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure_Function', 'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems']], jitter = 0.25, alpha = min(1, C * 3/(5 * len(df.index))), size = 10, edgecolor = None)
     plt.xticks((0, 1, 2, 3, 4), ('Evolution', 'Information Flow', 'Structure Function', u'Transformations of\nEnergy and Matter', 'Systems'), rotation = 40)
     plt.yticks((0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), ('0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'))
     plt.text(2, 1.1, 'Vision and Change Core Concepts', ha = 'center', va = 'center')
@@ -173,7 +173,7 @@ def GenerateGraphs_EcoEvoMAPS(df):
 
     matplotlib.rcParams.update({'font.size': 16})
     plt.figure(figsize = (12, 9))
-    sns.boxplot(data = df_Correct[['SC_EE_Heritable_Variation', 'SC_EE_Modes_of Change', 'SC_EE_Phylogeny_and_Evolutionary_History', 'SC_EE_Biological_Diversity', 'SC_EE_Populations', 'SC_EE_Energy_and_Matter',
+    sns.boxplot(data = df_Correct[['SC_EE_Heritable_Variation', 'SC_EE_Modes_of_Change', 'SC_EE_Phylogeny_and_Evolutionary_History', 'SC_EE_Biological_Diversity', 'SC_EE_Populations', 'SC_EE_Energy_and_Matter',
                                     'SC_EE_Interactions_with_Ecosystems', 'SC_EE_Human_Impact']], color = 'w', showfliers = False)
     sns.stripplot(data = df_Correct[['SC_EE_Heritable_Variation', 'SC_EE_Modes_of_Change', 'SC_EE_Phylogeny_and_Evolutionary_History', 'SC_EE_Biological_Diversity', 'SC_EE_Populations', 'SC_EE_Energy_and_Matter',
                                     'SC_EE_Interactions_with_Ecosystems', 'SC_EE_Human_Impact']], jitter = 0.25, alpha = min(1, C * 3/(8 * len(df.index))), size = 10, edgecolor = None)
