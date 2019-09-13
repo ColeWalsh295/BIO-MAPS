@@ -132,5 +132,12 @@ Rename.cols <- function(df){
   colnames(df)[colnames(df) == "Educ"] <- "First_Generation_Status"
   colnames(df)[colnames(df) == "Class"] <- "URM_Status"
   
+  df <- df %>%
+    mutate(Class_Level = case_when(
+      Class_Level == 1 ~ 'Beginning of intro course series',
+      Class_Level == 2 ~ 'End of intro course series',
+      Class_Level == 3 ~ 'Advanced'
+    ))
+  
   return(df)
 }
