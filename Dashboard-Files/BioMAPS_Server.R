@@ -186,6 +186,8 @@ ScalePlot <- function(input, output, session, data, ass, Class.var = NULL, compa
   })
   if(is.null(Class.var)){
     return(reactive(input$demographic))
+  } else if(compare){
+    return(data.out)
   }
 }
 

@@ -117,9 +117,10 @@ server = function(input, output, session) {
   df.Compare <- reactive({
     rbind(df.Class1(), df.Class2())
   })
-  callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, ass = Assessment, 
-             Class.var = 'Class_ID', compare = TRUE)
-  callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare, ass = Assessment, 
+  
+  df.Compare.match <- callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, 
+                                 ass = Assessment, Class.var = 'Class_ID', compare = TRUE)
+  callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare.match, ass = Assessment, 
              Class.var = 'Class_ID')
   
   ### Compare to overall PLIC dataset ###
