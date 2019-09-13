@@ -44,7 +44,7 @@ Compare_tab = tabItem(
                       value = 'R_30dBvfCyCitJwFR'),
   br(),
   ClassStatisticsOutput('Class2.Statistics'),
-  ScalePlotUI('Class.Compare.Scale', Demos = FALSE),
+  ScalePlotUI('Class.Compare.Scale', Demos = FALSE, MatchBox = TRUE),
   br(), br(), br(), br(), br(),
   ResponsesPlotUI('Class.Compare.Responses', Demos = FALSE)
 )

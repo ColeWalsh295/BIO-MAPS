@@ -17,7 +17,7 @@ ClassStatisticsOutput <- function(id){
   )
 }
 
-ScalePlotUI <- function(id, Demos = TRUE){
+ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
   ns <- NS(id)
   
   if(Demos) {
@@ -30,6 +30,14 @@ ScalePlotUI <- function(id, Demos = TRUE){
                                               'English Language Learners'),
                              choiceValues = c('None', 'Gen', 'Ethn', 'Educ', 'Class', 'Maj', 'Trans', 
                                               'Eng'))),
+      plotOutput(ns("plotScale"))
+    )
+  } else if(MatchBox){
+    fluidRow(
+      column(4, selectInput(ns("scale"), "Scale:", 
+                            choices = c('Overall Scores', 'Vision and Change'))),
+      column(4, checkboxInput(ns("match"), "Match Class Data", value = FALSE)),
+      br(),
       plotOutput(ns("plotScale"))
     )
   } else {

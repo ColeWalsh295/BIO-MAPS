@@ -1,7 +1,7 @@
 library(dplyr)
 library(data.table)
 
-Clean.GenBio <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS_Shiny/GenBio-MAPS/GenBio-MAPS_MasterFile.csv', 
+Clean.GenBio <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/GenBio-MAPS/GenBio-MAPS_MasterFile.csv', 
                          header.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/GenBio-MAPS/GenBioMAPS_Headers.csv'){
   
   header.df <- fread(header.file, header = TRUE) %>%
@@ -20,7 +20,7 @@ Clean.GenBio <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAP
                            SC_T_Ecology_and_Evolution = 'Ecology and Evolution subscore')
   
   header.df <- cbind(header.df, header.supplemental)
-  header.df <- AddIDcols(header.df)
+  header.df <- Add.IDcols(header.df)
   
   # Get Complete dataset
   df <- fread(df.file)
