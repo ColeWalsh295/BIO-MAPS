@@ -59,28 +59,46 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass) {
 }
 
 ClassStatistics <- function(input, output, session, data, Overall = FALSE){
+  data.out <- reactive({
+    if(Overall) {
+      if(input$class.level != 'All'){
+        data.out <- subset(data(), Class_Level == input$class.level)
+      } else{
+        data.out <- data()
+      }
+    } else {
+      data.out <- data()
+    }
+    return(data.out)
+  })
+
+  
   output$infoNStudents <- renderInfoBox({
     if(!Overall){
       infoBox(HTML("Number of<br>Students"),
-              data()$N.Students[1],
+              data.out()$N.Students[1],
               icon = icon("list"), color = "blue", width = 12)
     } else {
       infoBox(HTML("Number of<br>Students"),
-              sum(data()[!duplicated(data()$Class_ID), 'N.Students']),
+              sum(data.out()[!duplicated(data.out()$Class_ID), 'N.Students']),
               icon = icon("list"), color = "blue", width = 12)
     }
   })
   
   output$infoScore = renderInfoBox({
     infoBox(HTML("Average<br>Score"),
-            paste(data() %>%
+            paste(data.out() %>%
                     summarize(Avg = round(mean(SC_Total_Score), 3) * 100) %>%
                     pull(), '%'),
             icon = icon("list"), color = "orange")
   })
+  
+  if(Overall){
+    return(data.out)
+  }
 }
 
-ScalePlot <- function(input, output, session, data, ass, Class.var = NULL, compare = FALSE){
+ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compare.tab = FALSE){
   observe({
     if(ass() == 'GenBio-MAPS'){
       scales <- list('Overall Scores', 'Vision and Change')
@@ -92,16 +110,15 @@ ScalePlot <- function(input, output, session, data, ass, Class.var = NULL, compa
   })
   
   data.out <- reactive({
-    if(compare){
+    if(compare.tab){
       if(input$match){
         Class1 <- subset(data(), Class_ID == levels(factor(data()$Class_ID))[1])
         Class2 <- subset(data(), Class_ID == levels(factor(data()$Class_ID))[2])
         matched.ID <- intersect(Class1$ID, Class2$ID)
         matched.FullName <- intersect(Class1$FullName, Class2$FullName)
         matched.BackName <- intersect(Class1$FullName, Class2$BackName)
-        #data.out <- subset(data(), Class_ID %in% Class1$Class_ID)
-        data.out <- subset(data(), ID %in% matched.ID)# | FullName %in% matched.FullName | 
-         #                    FullName %in% matched.BackName)
+        data.out <- subset(data(), ID %in% matched.ID | FullName %in% matched.FullName | 
+                             FullName %in% matched.BackName)
       } else {
         data.out <- data()
       }
@@ -151,12 +168,12 @@ ScalePlot <- function(input, output, session, data, ass, Class.var = NULL, compa
                   'Transformations of\nEnergy and Matter', 'Systems')
     }
     
-    if(!is.null(Class.var)) {
-      Scores.cols <- c(Scores.cols, Class.var)
+    if(!is.null(class.var)) {
+      Scores.cols <- c(Scores.cols, class.var)
       data.scale <- data.temp[, Scores.cols] %>%
-        group_by_(Class.var) %>%
+        group_by_(class.var) %>%
         melt(.)
-      p <- ggplot(data.scale, aes_string(x = 'variable', y = 'value', color = Class.var))
+      p <- ggplot(data.scale, aes_string(x = 'variable', y = 'value', color = class.var))
     } else {
       Demographic <- reactive({
         Demographic <- input$demographic
@@ -184,14 +201,14 @@ ScalePlot <- function(input, output, session, data, ass, Class.var = NULL, compa
     }
     return(p)
   })
-  if(is.null(Class.var)){
+  if(is.null(class.var)){
     return(reactive(input$demographic))
-  } else if(compare){
+  } else if(compare.tab){
     return(data.out)
   }
 }
 
-ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL, Class.var = NULL){
+ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL, class.var = NULL){
   observe({
     if(ass() == 'GenBio-MAPS'){
       questions <- list('01', '02', '03', '04', '07', '08', '12', '13', '14', '15', '16', '18',
@@ -240,14 +257,14 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
     Responses.df <- reactive({
       Responses.df <- data() %>%
         select(c(grep(paste('^[^T]*', input$question, '_[0-9]*$', sep = ''), names(.))), 
-               Class.var) %>%
-        group_by_(Class.var) %>%
+               class.var) %>%
+        group_by_(class.var) %>%
         summarize_all(funs(mean), na.rm = TRUE) %>%
         melt(.)
       return(Responses.df)
     })
     output$plotResponses = renderPlot({
-      p <- ggplot(Responses.df(), aes_string(x = 'variable', y = 'value', fill = Class.var)) +
+      p <- ggplot(Responses.df(), aes_string(x = 'variable', y = 'value', fill = class.var)) +
         geom_bar(stat = 'identity', position = 'dodge') +
         coord_flip() +
         labs(x = 'Statement', y = 'Fraction of Correct Selections', 

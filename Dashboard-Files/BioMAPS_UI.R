@@ -8,13 +8,25 @@ DownloadClassDataUI <- function(id, label, value){
   )
 }
 
-ClassStatisticsOutput <- function(id){
+ClassStatisticsOutput <- function(id, Overall = FALSE){
   ns <- NS(id)
   
-  fluidRow(
-    valueBoxOutput(ns("infoNStudents")),
-    infoBoxOutput(ns("infoScore"))
-  )
+  if(Overall){
+    fluidRow(
+      radioButtons(ns("class.level"), 'Compare to other classes:',
+                   choiceNames = c('All', 'Beginning of intro course series', 
+                                   'End of intro course series', 
+                                   'Advanced'),
+                   choiceValues = c('All', 'Begin_Intro', 'End_Intro', 'Advanced'), inline = TRUE),
+      valueBoxOutput(ns("infoNStudents")),
+      infoBoxOutput(ns("infoScore"))
+    )
+  } else {
+    fluidRow(
+      valueBoxOutput(ns("infoNStudents")),
+      infoBoxOutput(ns("infoScore"))
+    )
+  }
 }
 
 ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
@@ -44,11 +56,6 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
     fluidRow(
       column(4, selectInput(ns("scale"), "Scale:", 
                             choices = c('Overall Scores', 'Vision and Change'))),
-      column(8, radioButtons(ns("class.level"), 'Compare to other classes:',
-                             choiceNames = c('All', 'Beginning of intro course series', 
-                                             'End of intro course series', 
-                                             'Advanced'),
-                             choiceValues = c('All', 'Begin_Intro', 'End_Intro', 'Advanced'))),
       br(),
       plotOutput(ns("plotScale"))
     )

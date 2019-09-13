@@ -59,7 +59,7 @@ Overall_tab = tabItem(
   ClassStatisticsOutput('Class.You.Statistics'),
   br(),
   h3("Other classes"),
-  ClassStatisticsOutput('Class.Other.Statistics'),
+  ClassStatisticsOutput('Class.Other.Statistics', Overall = TRUE),
   br(),
   ScalePlotUI('Overall.Compare.Scale', Demos = FALSE),
   br(), br(), br(), br(), br(),
@@ -119,9 +119,9 @@ server = function(input, output, session) {
   })
   
   df.Compare.match <- callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, 
-                                 ass = Assessment, Class.var = 'Class_ID', compare = TRUE)
+                                 ass = Assessment, class.var = 'Class_ID', compare.tab = TRUE)
   callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare.match, ass = Assessment, 
-             Class.var = 'Class_ID')
+             class.var = 'Class_ID')
   
   ### Compare to overall PLIC dataset ###
   
@@ -139,15 +139,16 @@ server = function(input, output, session) {
       mutate(Class = 'Other Classes')
     return(df.Class.Other)
   })
-  callModule(ClassStatistics, 'Class.Other.Statistics', data = df.Class.Other, Overall = TRUE)
+  
+  df.Other.filter <- callModule(ClassStatistics, 'Class.Other.Statistics', data = df.Class.Other, Overall = TRUE)
   
   df.Overall <- reactive({
-    rbind(df.Class.You(), df.Class.Other())
+    rbind(df.Class.You(), df.Other.filter())
   })
   callModule(ScalePlot, 'Overall.Compare.Scale', data = df.Overall, ass = Assessment,
-             Class.var = 'Class')
+             class.var = 'Class')
   callModule(ResponsesPlot, 'Overall.Compare.Responses', data = df.Overall, ass = Assessment,
-             Class.var = 'Class')
+             class.var = 'Class')
 }
 
 # Set up the Header of the dashboard
