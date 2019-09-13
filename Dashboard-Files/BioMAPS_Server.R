@@ -80,7 +80,7 @@ ClassStatistics <- function(input, output, session, data, Overall = FALSE){
   })
 }
 
-ScalePlot <- function(input, output, session, data, ass, Class.var = NULL){
+ScalePlot <- function(input, output, session, data, ass, Class.var = NULL, compare = FALSE){
   observe({
     if(ass() == 'GenBio-MAPS'){
       scales <- list('Overall Scores', 'Vision and Change')
@@ -91,8 +91,28 @@ ScalePlot <- function(input, output, session, data, ass, Class.var = NULL){
     updateSelectInput(session, "scale", label = "Scale:", choices = scales)
   })
   
+  data.out <- reactive({
+    if(compare){
+      if(input$match){
+        Class1 <- subset(data(), Class_ID == levels(factor(data()$Class_ID))[1])
+        Class2 <- subset(data(), Class_ID == levels(factor(data()$Class_ID))[2])
+        matched.ID <- intersect(Class1$ID, Class2$ID)
+        matched.FullName <- intersect(Class1$FullName, Class2$FullName)
+        matched.BackName <- intersect(Class1$FullName, Class2$BackName)
+        #data.out <- subset(data(), Class_ID %in% Class1$Class_ID)
+        data.out <- subset(data(), ID %in% matched.ID)# | FullName %in% matched.FullName | 
+         #                    FullName %in% matched.BackName)
+      } else {
+        data.out <- data()
+      }
+    } else {
+      data.out <- data()
+    }
+    return(data.out)
+  })
+  
   output$plotScale = renderPlot({
-    data.temp <- data.frame(data())
+    data.temp <- data.frame(data.out())
     if((ass() == 'GenBio-MAPS') & (input$scale != 'Vision and Change')) {
       if(input$scale == 'Overall Scores') {
         Scores.cols <- c('SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 

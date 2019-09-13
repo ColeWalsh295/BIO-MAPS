@@ -118,7 +118,7 @@ server = function(input, output, session) {
     rbind(df.Class1(), df.Class2())
   })
   callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, ass = Assessment, 
-             Class.var = 'Class_ID')
+             Class.var = 'Class_ID', compare = TRUE)
   callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare, ass = Assessment, 
              Class.var = 'Class_ID')
   

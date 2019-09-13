@@ -28,8 +28,8 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
                              choiceNames = c('None', 'Gender', 'URM Status', 'First Generation Status', 
                                               'Class Standing', 'Major', 'Transfer Status', 
                                               'English Language Learners'),
-                             choiceValues = c('None', 'Gen', 'Ethn', 'Educ', 'Class', 'Maj', 'Trans', 
-                                              'Eng'))),
+                             choiceValues = c('None', 'Self-Declared_Sex/Gender', 'URM_Status', 'First_Generation_Status', 'Class_Standing', 'Intended_Major', 'Transfer_Status', 
+                                              'English_Language_Learner_Status'))),
       plotOutput(ns("plotScale"))
     )
   } else if(MatchBox){
