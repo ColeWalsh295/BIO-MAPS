@@ -8,8 +8,8 @@ library(data.table)
 library(reshape2)
 library(rsconnect)
 source('BioMAPS_Processing.R', local = TRUE)
-source('GenBio_UI.R', local = TRUE)
-source('GenBio_Server.R', local = TRUE)
+source('BioMAPS_UI.R', local = TRUE)
+source('BioMAPS_Server.R', local = TRUE)
 
 GenBio <- Clean.GenBio()
 GenBio.df <- GenBio$dataFrame
