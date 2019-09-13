@@ -101,7 +101,7 @@ Clean.EcoEvo <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAP
   names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
   
   df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
-  df <- Rename.cols(df)
+  #df <- Rename.cols(df)
   
   return(list('dataFrame' = df, 'header' = header.df))
 }
@@ -134,8 +134,8 @@ Rename.cols <- function(df){
   
   df <- df %>%
     mutate(Class_Level = case_when(
-      Class_Level == 1 ~ 'Beginning of intro course series',
-      Class_Level == 2 ~ 'End of intro course series',
+      Class_Level == 1 ~ 'Begin_Intro',
+      Class_Level == 2 ~ 'End_Intro',
       Class_Level == 3 ~ 'Advanced'
     ))
   

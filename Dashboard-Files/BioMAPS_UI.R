@@ -44,6 +44,11 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
     fluidRow(
       column(4, selectInput(ns("scale"), "Scale:", 
                             choices = c('Overall Scores', 'Vision and Change'))),
+      column(8, radioButtons(ns("class.level"), 'Compare to other classes:',
+                             choiceNames = c('All', 'Beginning of intro course series', 
+                                             'End of intro course series', 
+                                             'Advanced'),
+                             choiceValues = c('All', 'Begin_Intro', 'End_Intro', 'Advanced'))),
       br(),
       plotOutput(ns("plotScale"))
     )
