@@ -2,7 +2,7 @@ library(dplyr)
 library(data.table)
 
 Clean.GenBio <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS_Shiny/GenBio-MAPS/GenBio-MAPS_MasterFile.csv', 
-                         header.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS_Shiny/GenBio-MAPS/GenBioMAPS_Headers.csv'){
+                         header.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/GenBio-MAPS/GenBioMAPS_Headers.csv'){
   
   header.df <- fread(header.file, header = TRUE) %>%
     select(-c('Class', 'Trans', 'Maj','Eng', 'Educ'))
@@ -17,28 +17,23 @@ Clean.GenBio <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAP
                            SC_VC_Systems = 'Vision & Change Systems subscore',
                            SC_T_Cellular_and_Molecular = 'Cellular and Molecular biology subscore',
                            SC_T_Physiology = 'Physiology subscore',
-                           SC_T_Ecology_and_Evolution = 'Ecology and Evolution subscore',
-                           Class = 'Class Standing',
-                           Trans = 'Transfer Status',
-                           Maj = 'Intended Major',
-                           Gen = 'Sex/Gender',
-                           Eng = 'English Language Learner Status',
-                           Educ = 'First Generation Status',
-                           Ethn = 'URM Status')
+                           SC_T_Ecology_and_Evolution = 'Ecology and Evolution subscore')
   
   header.df <- cbind(header.df, header.supplemental)
+  header.df <- AddIDcols(header.df)
   
   # Get Complete dataset
   df <- fread(df.file)
   names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
   
   df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
+  df <- Rename.cols(df)
   
   return(list('dataFrame' = df, 'header' = header.df))
 }
 
-Clean.EcoEvo <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS_Shiny/EcoEvo-MAPS/EcoEvo-MAPS_MasterFile.csv', 
-                         header.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS_Shiny/EcoEvo-MAPS/EcoEvoMAPS_Headers.csv'){
+Clean.EcoEvo <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/EcoEvo-MAPS/EcoEvo-MAPS_MasterFile.csv', 
+                         header.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/EcoEvo-MAPS/EcoEvoMAPS_Headers.csv'){
   
   header.df <- fread(header.file, header = TRUE)
   
@@ -96,22 +91,46 @@ Clean.EcoEvo <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAP
                                     SC_FDEE_Human_Environment = '4DEE Dimension 3: Human-Environment 
                                     Interactions subscore',
                                     SC_FDEE_CrossCutting = '4DEE Dimension 4: Cross-Cutting 
-                                    Themes subscore',
-                                    Class = 'Class Standing',
-                                    Trans = 'Transfer Status',
-                                    Maj = 'Intended Major',
-                                    Gen = 'Sex/Gender',
-                                    Eng = 'English Language Learner Status',
-                                    Educ = 'First Generation Status',
-                                    Ethn = 'URM Status')
+                                    Themes subscore')
   
   header.df <- cbind(header.df, header.supplemental)
+  header.df <- Add.IDcols(header.df)
   
   # Get Complete dataset
   df <- fread(df.file)
   names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
   
   df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
+  df <- Rename.cols(df)
   
   return(list('dataFrame' = df, 'header' = header.df))
+}
+
+Add.IDcols <- function(df){
+  ID.dataFrame <- data.frame(ID = 'Encoded student ID',
+                             FullName = 'Encoded student full name',
+                             BackName = 'Encoded student name with first and last name reversed',
+                             Class = 'Class Standing',
+                             Trans = 'Transfer Status',
+                             Maj = 'Intended Major',
+                             Gen = 'Sex/Gender',
+                             Eng = 'English Language Learner Status',
+                             Educ = 'First Generation Status',
+                             Ethn = 'URM Status')
+  
+  new.df <- cbind(df, ID.dataFrame)
+  
+  return(new.df)
+}
+
+Rename.cols <- function(df){
+  colnames(df)[colnames(df) == "Class"] <- "Class_Standing"
+  colnames(df)[colnames(df) == "Trans"] <- "Transfer_Status"
+  colnames(df)[colnames(df) == "Maj"] <- "Intended_Major"
+  colnames(df)[colnames(df) == "Gen"] <- "Self-Declared_Sex/Gender"
+  colnames(df)[colnames(df) == "Eng"] <- "English_Language_Learner_Status"
+  colnames(df)[colnames(df) == "Educ"] <- "First_Generation_Status"
+  colnames(df)[colnames(df) == "Class"] <- "URM_Status"
+  
+  return(df)
 }
