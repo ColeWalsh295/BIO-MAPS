@@ -3,8 +3,10 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass) {
   observe({
     if(ass() == 'GenBio-MAPS'){
       updateTextInput(session, 'classID', value = 'R_0vU5WDrHWLjYc37')
-    } else {
+    } else if(ass() == 'EcoEvo-MAPS'){
       updateTextInput(session, 'classID', value = 'R_6WkTbfUv4dUhh5f')
+    } else if(ass() == 'Phys-MAPS'){
+      updateTextInput(session, 'classID', value = 'R_1pLjdulMOPNo3Ka')
     }
   })
   
@@ -100,7 +102,7 @@ ClassStatistics <- function(input, output, session, data, Overall = FALSE){
 
 ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compare.tab = FALSE){
   observe({
-    if(ass() == 'GenBio-MAPS'){
+    if((ass() == 'GenBio-MAPS') | (ass() == 'Phys-MAPS')){
       scales <- list('Overall Scores', 'Vision and Change')
     } else if(ass() == 'EcoEvo-MAPS') {
       scales <- list('Overall Scores', 'Vision and Change', 'Ecology and Evolution Core Concepts', 
@@ -136,6 +138,13 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
                        'SC_T_Ecology_and_Evolution', 'SC_Total_Score')
         Labels <- c('Cellular and Molecular', 'Physiology', 'Ecology and Evolution', 'Total Score')
       }
+    } else if((ass() == 'Phys-MAPS') & (input$scale != 'Vision and Change')){
+      Scores.cols <- c('SC_Phys_Homeostasis', 'SC_Phys_CellCell_Communication', 
+                       'SC_Phys_Flowdown_Gradients', 'SC_Phys_Cell_Membrane', 
+                       'SC_Phys_Interdependence', 'SC_Phys_Structure_Function', 'SC_Phys_Evolution', 
+                       'SC_Total_Score')
+      Labels <- c('Homeostasis', 'Cell-cell communication', 'Flow-down gradients', 'Cell membrane',
+                  'Interdependence', 'Structure/function', 'Evolution', 'Total Score')
     } else if((ass() == 'EcoEvo-MAPS') & (input$scale != 'Vision and Change')) {
       if(input$scale == 'Overall Scores') {
         Scores.cols <- c('SC_T_Ecology', 'SC_T_Evolution', 'SC_Total_Score')
@@ -215,6 +224,8 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
                         '19', '20', '21', '22', '23', '24', '27', '28', '30', '31', '32', '33',
                         '35', '36', '37', '38', '40', '43', '44', '45', '49', '50', '54', '55',
                         '59', '60', '61')
+    } else if(ass() == 'Phys-MAPS'){
+      questions <- list('B', 'C', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'V', 'W', 'Z')
     } else if(ass() == 'EcoEvo-MAPS') {
       questions <- list('Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9')
     }

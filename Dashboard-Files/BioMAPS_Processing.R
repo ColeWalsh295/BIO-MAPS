@@ -106,6 +106,43 @@ Clean.EcoEvo <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAP
   return(list('dataFrame' = df, 'header' = header.df))
 }
 
+Clean.Phys <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/Phys-MAPS/Phys-MAPS_MasterFile.csv',
+                       header.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/Phys-MAPS/PhysMAPS_Headers.csv'){
+  
+  header.df <- fread(header.file, header = TRUE)
+  
+  header.supplemental <- data.frame(SC_Total_Score = 'Total Phys-MAPS score',
+                                    SC_VC_Information_Flow = 'Vision & Change Information Flow 
+                                    subscore',
+                                    SC_VC_Structure_Function = 'Vision & Change Structure/Function 
+                                    subscore',
+                                    SC_VC_Transformations_of_Energy_and_Matter = 'Vision & Change 
+                                    Transformations of energy and matter subscore',
+                                    SC_VC_Systems = 'Vision & Change Systems subscore',
+                                    SC_Phys_Homeostasis = 'Physiology homeostasis subscore',
+                                    SC_Phys_CellCell_Communication = 'Physiology cell-cell 
+                                    communication subscore',
+                                    SC_Phys_Flowdown_Gradients = 'Physiology flow-down gradients 
+                                    subscore',
+                                    SC_Phys_Cell_Membrane = 'Physiology cell membrane subscore',
+                                    SC_Phys_Interdependence = 'Physiology interdependence subscore',
+                                    SC_Phys_Structure_Function = 'Physiology structure/function 
+                                    subscore',
+                                    SC_Phys_Evolution = 'Physiology evolution subscore')
+  
+  header.df <- cbind(header.df, header.supplemental)
+  header.df <- Add.IDcols(header.df)
+  
+  # Get Complete dataset
+  df <- fread(df.file)
+  names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
+  
+  df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
+  df <- Rename.cols(df)
+  
+  return(list('dataFrame' = df, 'header' = header.df))
+}
+
 Add.IDcols <- function(df){
   ID.dataFrame <- data.frame(ID = 'Encoded student ID',
                              FullName = 'Encoded student full name',
@@ -130,7 +167,7 @@ Rename.cols <- function(df){
   colnames(df)[colnames(df) == "Gen"] <- "Self-Declared_Sex/Gender"
   colnames(df)[colnames(df) == "Eng"] <- "English_Language_Learner_Status"
   colnames(df)[colnames(df) == "Educ"] <- "First_Generation_Status"
-  colnames(df)[colnames(df) == "Class"] <- "URM_Status"
+  colnames(df)[colnames(df) == "Ethn"] <- "URM_Status"
   
   df <- df %>%
     mutate(Class_Level = case_when(

@@ -19,6 +19,10 @@ EcoEvo <- Clean.EcoEvo()
 EcoEvo.df <- EcoEvo$dataFrame
 EcoEvo.header <- EcoEvo$header
 
+Phys <- Clean.Phys()
+Phys.df <- Phys$dataFrame
+Phys.header <- Phys$header
+
 Your_tab = tabItem(
   tabName = "Your_Class",
   h2("View of your class"),
@@ -70,8 +74,10 @@ server = function(input, output, session) {
   df <- reactive({
     if(input$assessment == 'GenBio-MAPS'){
       df <- GenBio.df
-    } else if(input$assessment == 'EcoEvo-MAPS') {
+    } else if(input$assessment == 'EcoEvo-MAPS'){
       df <- EcoEvo.df
+    } else if(input$assessment == 'Phys-MAPS'){
+      df <- Phys.df
     }
     return(df)
   })
@@ -157,7 +163,7 @@ dhead = dashboardHeader(title = h4(HTML("Bio-MAPS<br>Data Explorer")))
 # Set up the sidebar which links to two pages
 dside = dashboardSidebar(sidebarMenu(
   id = 'tabs',
-  selectInput('assessment', "Assessment:", choices = c('GenBio-MAPS', 'EcoEvo-MAPS')),
+  selectInput('assessment', "Assessment:", choices = c('GenBio-MAPS', 'EcoEvo-MAPS', 'Phys-MAPS')),
   menuItem("View of your class", tabName = "Your_Class", icon = icon("dashboard")),
   menuItem(HTML("Compare two of<br>your classes"), tabName = "Compare_Classes", icon = icon("dashboard")),
   menuItem(HTML("Compare your class<br>to other classes"), tabName = "Compare_Overall", 
