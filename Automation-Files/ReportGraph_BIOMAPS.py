@@ -879,8 +879,8 @@ def GenerateGraphs_PhysMAPS(df):
     df_Correct['SC_Phys_Evolution'] = df_Correct[Phys_Evo_Questions].sum(axis = 1) / len(Phys_Evo_Questions)
 
     plt.figure(figsize = (12, 9))
-    sns.boxplot(data = df_Correct[['SC_Phys_Homeostasis', 'SC_Phys_CellCell_Communication', 'SC_Phys_Flowdown_Gradients', 'SC_Phys_Cell Membrane', 'SC_Phys_Interdependence', 'SC_Phys_Structure/Function', 'SC_Phys_Evolution']], color = 'w', showfliers = False)
-    sns.stripplot(data = df_Correct[['SC_Phys_Homeostasis', 'SC_Phys_CellCell_Communication', 'SC_Phys_Flowdown_Gradients', 'SC_Phys_Cell Membrane', 'SC_Phys_Interdependence', 'SC_Phys_Structure/Function', 'SC_Phys_Evolution']], jitter = 0.25, alpha = min(1, C * 4/(7 * len(df.index))), size = 10, edgecolor = None)
+    sns.boxplot(data = df_Correct[['SC_Phys_Homeostasis', 'SC_Phys_CellCell_Communication', 'SC_Phys_Flowdown_Gradients', 'SC_Phys_Cell_Membrane', 'SC_Phys_Interdependence', 'SC_Phys_Structure/Function', 'SC_Phys_Evolution']], color = 'w', showfliers = False)
+    sns.stripplot(data = df_Correct[['SC_Phys_Homeostasis', 'SC_Phys_CellCell_Communication', 'SC_Phys_Flowdown_Gradients', 'SC_Phys_Cell_Membrane', 'SC_Phys_Interdependence', 'SC_Phys_Structure/Function', 'SC_Phys_Evolution']], jitter = 0.25, alpha = min(1, C * 4/(7 * len(df.index))), size = 10, edgecolor = None)
     plt.xticks((0, 1, 2, 3, 4, 5, 6, 7), ('Homeostasis', u'Cell-Cell\nCommunication', u'Flow-down\nGradients', 'Cell Membrane', 'Interdependence', 'Structure/Function', 'Evolution'), rotation = 75)
     plt.yticks((0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), ('0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'))
     plt.text(3.5, 1.1, 'Physiology Conceptual Themes', ha = 'center', va = 'center')
