@@ -722,7 +722,7 @@ def GenerateGraphs_Capstone(df):
 def GenerateGraphs_PhysMAPS(df):
     # df = df.iloc[:40, :]
 
-    df.loc[:, 'Q1_1':'Q40_7'] = df.loc[:, 'Q1_1':'Q40_7'].apply(lambda x: x.map({1:1, 2:2, 3:2}))
+    # df.loc[:, 'Q1_1':'Q40_7'] = df.loc[:, 'Q1_1':'Q40_7'].apply(lambda x: x.map({1:1, 2:2, 3:2}))
 
     df_Correct = pd.DataFrame()
 
@@ -839,13 +839,13 @@ def GenerateGraphs_PhysMAPS(df):
 
     df_Correct['SC_VC_Evolution'] = df_Correct[VC_Evo_Questions].sum(axis = 1) / len(VC_Evo_Questions)
     df_Correct['SC_VC_Information_Flow'] = df_Correct[VC_IF_Questions].sum(axis = 1) / len(VC_IF_Questions)
-    df_Correct['SC_VC_Structure/Function'] = df_Correct[VC_SF_Questions].sum(axis = 1) / len(VC_SF_Questions)
+    df_Correct['SC_VC_Structure_Function'] = df_Correct[VC_SF_Questions].sum(axis = 1) / len(VC_SF_Questions)
     df_Correct['SC_VC_Transformations_of_Energy_and_Matter'] = df_Correct[VC_TEM_Questions].sum(axis = 1) / len(VC_TEM_Questions)
     df_Correct['SC_VC_Systems'] = df_Correct[VC_S_Questions].sum(axis = 1) / len(VC_S_Questions)
 
     plt.figure(figsize = (12, 9))
-    sns.boxplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure/Function', 'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems']], color = 'w', showfliers = False)
-    sns.stripplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure/Function', 'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems']], jitter = 0.25, alpha = min(1, C * 4/(5 * len(df.index))), size = 10, edgecolor = None)
+    sns.boxplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure_Function', 'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems']], color = 'w', showfliers = False)
+    sns.stripplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure_Function', 'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems']], jitter = 0.25, alpha = min(1, C * 4/(5 * len(df.index))), size = 10, edgecolor = None)
     plt.xticks((0, 1, 2, 3, 4), ('Evolution', 'Information Flow', 'Structure/Function', u'Transformations of\nEnergy and Matter', 'Systems'), rotation = 40)
     plt.yticks((0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), ('0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'))
     plt.text(2, 1.05, 'Vision and Change Core Concepts', ha = 'center', va = 'center')
