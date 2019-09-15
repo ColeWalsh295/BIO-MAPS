@@ -101,7 +101,7 @@ Clean.EcoEvo <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAP
   names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
   
   df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
-  #df <- Rename.cols(df)
+  df <- Rename.cols(df)
   
   return(list('dataFrame' = df, 'header' = header.df))
 }
