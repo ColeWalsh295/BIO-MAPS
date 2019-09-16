@@ -4,8 +4,7 @@ library(data.table)
 Clean.GenBio <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/GenBio-MAPS/GenBio-MAPS_MasterFile.csv', 
                          header.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/GenBio-MAPS/GenBioMAPS_Headers.csv'){
   
-  header.df <- fread(header.file, header = TRUE) %>%
-    select(-c('Class', 'Trans', 'Maj','Eng', 'Educ'))
+  header.df <- fread(header.file, header = TRUE)
   names(header.df) = gsub(x = names(header.df), pattern = "#1", replacement = "")
   
   header.supplemental <- data.frame(SC_Total_Score = 'Total GenBio-MAPS score',
@@ -27,7 +26,7 @@ Clean.GenBio <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAP
   names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
   
   df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
-  df <- Rename.cols(df)
+  df <- Convert.ClassLevel(df)
   
   return(list('dataFrame' = df, 'header' = header.df))
 }
@@ -101,7 +100,7 @@ Clean.EcoEvo <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAP
   names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
   
   df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
-  df <- Rename.cols(df)
+  df <- Convert.ClassLevel(df)
   
   return(list('dataFrame' = df, 'header' = header.df))
 }
@@ -133,12 +132,24 @@ Clean.Phys <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/
   header.df <- cbind(header.df, header.supplemental)
   header.df <- Add.IDcols(header.df)
   
+  names(header.df) = gsub(x = names(header.df), pattern = "1_", replacement = "B_")
+  names(header.df) = gsub(x = names(header.df), pattern = "2_", replacement = "C_")
+  names(header.df) = gsub(x = names(header.df), pattern = "3_", replacement = "E_")
+  names(header.df) = gsub(x = names(header.df), pattern = "8_", replacement = "F_")
+  names(header.df) = gsub(x = names(header.df), pattern = "4_", replacement = "G_")
+  names(header.df) = gsub(x = names(header.df), pattern = "5_", replacement = "H_")
+  names(header.df) = gsub(x = names(header.df), pattern = "21_", replacement = "J_")
+  names(header.df) = gsub(x = names(header.df), pattern = "7_", replacement = "K_")
+  names(header.df) = gsub(x = names(header.df), pattern = "38_", replacement = "V_")
+  names(header.df) = gsub(x = names(header.df), pattern = "22_", replacement = "W_")
+  names(header.df) = gsub(x = names(header.df), pattern = "40_", replacement = "Z_")
+  
   # Get Complete dataset
   df <- fread(df.file)
   names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
   
   df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
-  df <- Rename.cols(df)
+  df <- Convert.ClassLevel(df)
   
   return(list('dataFrame' = df, 'header' = header.df))
 }
@@ -147,28 +158,20 @@ Add.IDcols <- function(df){
   ID.dataFrame <- data.frame(ID = 'Encoded student ID',
                              FullName = 'Encoded student full name',
                              BackName = 'Encoded student name with first and last name reversed',
-                             Class = 'Class Standing',
-                             Trans = 'Transfer Status',
-                             Maj = 'Intended Major',
-                             Gen = 'Sex/Gender',
-                             Eng = 'English Language Learner Status',
-                             Educ = 'First Generation Status',
-                             Ethn = 'URM Status')
+                             ClassStanding = 'Class Standing',
+                             TransferStatus = 'Transfer Status',
+                             Major = 'Intended Major',
+                             SexGender = 'Sex/Gender',
+                             ELL = 'English Language Learner Status',
+                             ParentEducation = 'First Generation Status',
+                             URMStatus = 'URM Status')
   
   new.df <- cbind(df, ID.dataFrame)
   
   return(new.df)
 }
 
-Rename.cols <- function(df){
-  colnames(df)[colnames(df) == "Class"] <- "Class_Standing"
-  colnames(df)[colnames(df) == "Trans"] <- "Transfer_Status"
-  colnames(df)[colnames(df) == "Maj"] <- "Intended_Major"
-  colnames(df)[colnames(df) == "Gen"] <- "Self-Declared_Sex/Gender"
-  colnames(df)[colnames(df) == "Eng"] <- "English_Language_Learner_Status"
-  colnames(df)[colnames(df) == "Educ"] <- "First_Generation_Status"
-  colnames(df)[colnames(df) == "Ethn"] <- "URM_Status"
-  
+Convert.ClassLevel <- function(df){
   df <- df %>%
     mutate(Class_Level = case_when(
       Class_Level == 1 ~ 'Begin_Intro',

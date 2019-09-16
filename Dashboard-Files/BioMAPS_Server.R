@@ -27,13 +27,13 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass) {
   
   data.out <- reactive({
     data.out <- data.class() %>%
-      mutate(Class = ifelse(Class_Avail_Down, Class, NA_character_),
-             Trans = ifelse(Trans_Avail_Down, Trans, NA_character_),
-             Maj = ifelse(Maj_Avail_Down, Maj, NA_character_),
-             Gen = ifelse(Gen_Avail_Down, Gen, NA_character_),
-             Eng = ifelse(Eng_Avail_Down, Eng, NA_character_),
-             Educ = ifelse(Educ_Avail_Down, Educ, NA_character_),
-             Ethn = ifelse(Ethn_Avail_Down, Ethn, NA_character_))
+      mutate(ClassStanding = ifelse(ClassStanding_Avail_Down, ClassStanding, NA_character_),
+             TransferStatus = ifelse(TransferStatus_Avail_Down, TransferStatus, NA_character_),
+             Major = ifelse(Major_Avail_Down, Major, NA_character_),
+             SexGender = ifelse(SexGender_Avail_Down, SexGender, NA_character_),
+             ELL = ifelse(ELL_Avail_Down, ELL, NA_character_),
+             ParentEducation = ifelse(ParentEducation_Avail_Down, ParentEducation, NA_character_),
+             URMStatus = ifelse(URMStatus_Avail_Down, URMStatus, NA_character_))
     data.out <- rbind(header()[, cols(), with = FALSE], data.out[, cols()])
     data.out[is.na(data.out)] <- ''
     return(data.out)
@@ -292,7 +292,8 @@ DisableRadio <- function(df){
     dataFrame <- data.frame(df())
     return(dataFrame)
   })
-  for(Option in c('Gen', 'Ethn', 'Educ', 'Class', 'Maj', 'Trans', 'Eng')){
+  for(Option in c('SexGender', 'URMStatus', 'ParentEducation', 'ClassStanding', 'Major', 
+                  'TransferStatus', 'ELL')){
     if(!dataFrame()[1, paste(Option, '_Avail_Radio', sep = '')]){
       shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').parent().parent().css('opacity', 0.4)", sep = ''))
       shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').prop('disabled', true)", sep = ''))

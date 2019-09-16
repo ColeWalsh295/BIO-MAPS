@@ -85,8 +85,10 @@ server = function(input, output, session) {
   header.df <- reactive({
     if(input$assessment == 'GenBio-MAPS'){
       header.df <- GenBio.header
-    } else if(input$assessment == 'EcoEvo-MAPS') {
+    } else if(input$assessment == 'EcoEvo-MAPS'){
       header.df <- EcoEvo.header
+    } else if(input$assessment == 'Phys-MAPS'){
+      header.df <- Phys.header
     }
     return(header.df)
   })
