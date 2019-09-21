@@ -42,6 +42,9 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
                                               'English Language Learners'),
                              choiceValues = c('None', 'SexGender', 'URMStatus', 'ParentEducation', 
                                               'ClassStanding', 'Major', 'TransferStatus', 'ELL'))),
+      radioTooltip(id = "demographic", choice = "SexGender", title = "Button 1 Explanation", placement = "right", trigger = "click"),
+      radioTooltip(id = "demographic", choice = "URMStatus", title = "Button 2 Explanation", placement = "right", trigger = "hover"),
+      radioTooltip(id = "demographic", choice = "ParentEducation", title = "Button 3 Explanation", placement = "right", trigger = "focus"),
       plotOutput(ns("plotScale"))
     )
   } else if(MatchBox){
@@ -73,4 +76,24 @@ ResponsesPlotUI <- function(id, Demos = TRUE){
                                       '44', '45', '49', '50', '54', '55', '59', '60', '61'))),
     column(10, plotOutput(ns("plotResponses")))
   )
+}
+
+radioTooltip <- function(id, choice, title, placement = "bottom", trigger = "hover", options = NULL){
+  
+  options = shinyBS:::buildTooltipOrPopoverOptionsList(title, placement, trigger, options)
+  options = paste0("{'", paste(names(options), options, sep = "': '", collapse = "', '"), "'}")
+  bsTag <- shiny::tags$script(shiny::HTML(paste0("
+                                                 $(document).ready(function() {
+                                                 setTimeout(function() {
+                                                 $('input', $('#", id, "')).each(function(){
+                                                 if(this.getAttribute('value') == '", choice, "') {
+                                                 opts = $.extend(", options, ", {html: true});
+                                                 $(this.parentElement).tooltip('destroy');
+                                                 $(this.parentElement).tooltip(opts);
+                                                 }
+                                                 })
+                                                 }, 500)
+                                                 });
+                                                 ")))
+  htmltools::attachDependencies(bsTag, shinyBS:::shinyBSDep)
 }
