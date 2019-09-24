@@ -101,6 +101,9 @@ ClassStatistics <- function(input, output, session, data, Overall = FALSE){
 }
 
 ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compare.tab = FALSE){
+  
+  #shinyjs::html('', )
+  
   observe({
     if((ass() == 'GenBio-MAPS') | (ass() == 'Phys-MAPS')){
       scales <- list('Overall Scores', 'Vision and Change')
@@ -292,6 +295,14 @@ DisableRadio <- function(df){
     dataFrame <- data.frame(df())
     return(dataFrame)
   })
+
+  Titles = list('SexGender' = 'only male and female students are included, so students are not identifiable',
+                'URMStatus' = 'students who self-identify as white/caucasian or asian are considered to be in the majority group; all other students are considered URM',
+                'ParentEducation' = 'students whose parents did not attend any college are considered first generation students',
+                'ClassStanding' = 'sophomores, juniors, seniors, and more advanced students are grouped together as BFY students to reduce the risk of identifying students',
+                'Major' = 'majors are collapsed into those who intend to major in the life sciences and those who do not',
+                'TransferStatus' = 'transfer students include those who completed some college courses at another institution',
+                'ELL' = 'english language learners are those who indicated that their primary language growing up was a language other than english')
   for(Option in c('SexGender', 'URMStatus', 'ParentEducation', 'ClassStanding', 'Major', 
                   'TransferStatus', 'ELL')){
     if(!dataFrame()[1, paste(Option, '_Avail_Radio', sep = '')]){
@@ -300,6 +311,12 @@ DisableRadio <- function(df){
     } else {
       shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').parent().parent().css('opacity', 1)", sep = ''))
       shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').prop('disabled', false)", sep = ''))
+      shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').closest('label').attr('title', '", Titles[[Option]], "')", sep = ''))
+      #shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').attr('data-toggle', 'popover')", sep = ''))
+      #shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').attr('title', 'test_title')", sep = ''))
+      #shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').attr('data-content', 'test_content')", sep = ''))
+      #shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').attr('data-trigger', 'hover')", sep = ''))
+      #shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').attr('data-container', 'body')", sep = ''))
       }
   }
   return(0)  

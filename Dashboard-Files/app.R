@@ -2,9 +2,10 @@ library(tidyverse)
 library(shiny)
 library(shinyjs)
 library(shinyalert)
-library(shinyBS)
 shiny_theme <- theme_classic(base_size = 18)
 library(shinydashboard)
+library(shinyBS)
+library(shinyhelper)
 library(data.table)
 library(reshape2)
 library(rsconnect)
@@ -167,6 +168,7 @@ dhead = dashboardHeader(title = h4(HTML("Bio-MAPS<br>Data Explorer")))
 dside = dashboardSidebar(sidebarMenu(
   id = 'tabs',
   selectInput('assessment', "Assessment:", choices = c('GenBio-MAPS', 'EcoEvo-MAPS', 'Phys-MAPS')),
+  bsPopover('assessment', title = 'test_title', content = 'test_content', trigger = 'hover'),
   menuItem("View of your class", tabName = "Your_Class", icon = icon("dashboard")),
   menuItem(HTML("Compare two of<br>your classes"), tabName = "Compare_Classes", icon = icon("dashboard")),
   menuItem(HTML("Compare your class<br>to other classes"), tabName = "Compare_Overall", 
@@ -179,12 +181,14 @@ dbody = dashboardBody(
  tags$head(
    tags$link(rel = "stylesheet", type = "text/css",
              href = "Cornell.css")
+
  ),
-  tabItems(Your_tab, Compare_tab, Overall_tab)
+ tabItems(Your_tab, Compare_tab, Overall_tab)
 )
 
 # Combining header, sidebar, and body
-ui = tagList(useShinyjs(), useShinyalert(), dashboardPage(dhead, dside, dbody))
+ui = tagList(useShinyjs(), useShinyalert(), dashboardPage(dhead, dside, dbody))#, 
+             #tags$script(HTML("$(document).ready(function(){$('[data-toggle='popover']').popover();});")))
 
 # Generating a local instance of your dashboard
 shinyApp(ui, server)

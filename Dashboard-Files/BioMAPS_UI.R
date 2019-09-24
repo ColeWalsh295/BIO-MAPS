@@ -1,3 +1,6 @@
+library(shiny)
+library(shinyBS)
+
 DownloadClassDataUI <- function(id, label, value){
   # Create a namespace function using the provided id
   ns <- NS(id)
@@ -33,19 +36,18 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
   ns <- NS(id)
   
   if(Demos) {
-    fluidRow(
-      column(4, selectInput(ns("scale"), "Scale:", 
-                            choices = c('Overall Scores', 'Vision and Change'))),
-      column(8, radioButtons(ns("demographic"), 'Separate by:',
-                             choiceNames = c('None', 'Gender', 'URM Status', 'First Generation Status', 
-                                              'Class Standing', 'Major', 'Transfer Status', 
+    fluidPage(
+      fluidRow(
+        column(4, selectInput(ns("scale"), "Scale:", 
+                              choices = c('Overall Scores', 'Vision and Change'))),
+        column(8, radioButtons(ns("demographic"), 'Separate by:',
+                               choiceNames = c('None', 'Gender', 'URM Status', 'First Generation Status',
+                                              'Class Standing', 'Major', 'Transfer Status',
                                               'English Language Learners'),
-                             choiceValues = c('None', 'SexGender', 'URMStatus', 'ParentEducation', 
-                                              'ClassStanding', 'Major', 'TransferStatus', 'ELL'))),
-      radioTooltip(id = "demographic", choice = "SexGender", title = "Button 1 Explanation", placement = "right", trigger = "click"),
-      radioTooltip(id = "demographic", choice = "URMStatus", title = "Button 2 Explanation", placement = "right", trigger = "hover"),
-      radioTooltip(id = "demographic", choice = "ParentEducation", title = "Button 3 Explanation", placement = "right", trigger = "focus"),
-      plotOutput(ns("plotScale"))
+                               choiceValues = c('None', 'SexGender', 'URMStatus', 'ParentEducation', 
+                                           'ClassStanding', 'Major', 'TransferStatus', 'ELL'))),
+        plotOutput(ns("plotScale"))
+      )
     )
   } else if(MatchBox){
     fluidRow(
@@ -78,7 +80,7 @@ ResponsesPlotUI <- function(id, Demos = TRUE){
   )
 }
 
-radioTooltip <- function(id, choice, title, placement = "bottom", trigger = "hover", options = NULL){
+radioTooltip <- function(id, choice, title, placement = "right", trigger = "hover", options = NULL){
   
   options = shinyBS:::buildTooltipOrPopoverOptionsList(title, placement, trigger, options)
   options = paste0("{'", paste(names(options), options, sep = "': '", collapse = "', '"), "'}")
