@@ -406,7 +406,7 @@ def SurveyControl():
 
             elif((CurrentTime >= (CloseDate - datetime.timedelta(days = 4))) and pd.isnull(MasterDF.loc[Index, 'EcoEvo Reminder'])):
                 # Send Pre-Survey reminder if we haven't already
-                NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'EcoEvo Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'EcoEvo-MAPS', SurveyID, DataType = 'NumberOnly')
+                NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'EcoEvo Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'EcoEvo-MAPS', SurveyID)
                 if(NumStudents == 0):
                     # If nobody has responded yet, give extra time and send a reminder
                     CloseDate = CloseDate + datetime.timedelta(days = 3)
@@ -436,7 +436,7 @@ def SurveyControl():
 
             elif((CurrentTime >= (CloseDate - datetime.timedelta(days = 4))) and pd.isnull(MasterDF.loc[Index, 'Capstone Reminder'])):
                 # Send Pre-Survey reminder if we haven't already
-                NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'Capstone Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'Capstone', SurveyID, DataType = 'NumberOnly')
+                NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'Capstone Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'Capstone', SurveyID)
                 if(NumStudents == 0):
                     # If nobody has responded yet, give extra time and send a reminder
                     CloseDate = CloseDate + datetime.timedelta(days = 3)
@@ -466,7 +466,7 @@ def SurveyControl():
 
             elif((CurrentTime >= (CloseDate - datetime.timedelta(days = 4))) and pd.isnull(MasterDF.loc[Index, 'Phys Reminder'])):
                 # Send Pre-Survey reminder if we haven't already
-                NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'Phys Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'Phys-MAPS', SurveyID, DataType = 'NumberOnly')
+                NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'Phys Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'Phys-MAPS', SurveyID)
                 if(NumStudents == 0):
                     # If nobody has responded yet, give extra time and send a reminder
                     CloseDate = CloseDate + datetime.timedelta(days = 3)
@@ -496,7 +496,7 @@ def SurveyControl():
 
             elif((CurrentTime >= (CloseDate - datetime.timedelta(days = 4))) and pd.isnull(MasterDF.loc[Index, 'GenBio Reminder'])):
                 # Send Pre-Survey reminder if we haven't already
-                NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'GenBio Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'GenBio-MAPS', SurveyID, DataType = 'NumberOnly')
+                NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'GenBio Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'GenBio-MAPS', SurveyID)
                 if(NumStudents == 0):
                     # If nobody has responded yet, give extra time and send a reminder
                     CloseDate = CloseDate + datetime.timedelta(days = 3)
@@ -533,17 +533,12 @@ def ReportControl():
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
             df = ValidateResponses(df, 'EcoEvo-MAPS')
             if(len(df.index) > 4):
+                df, NamesDF = ValidateResponses(df, 'EcoEvo-MAPS')
                 PDFName = 'EcoEvo-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'EcoEvo Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
                 ReportGen_BIOMAPS.Generate_EcoEvoMAPS(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'EcoEvo Class'], MainDirectory = MainDirectory, Where = 'Automation')
 
                 if(MasterDF.loc[Index, 'Credit Offered']): # If the instructor is offering credit include a list of names and IDs of those who completed each of the surveys
-                    NamesDF = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'EcoEvo Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'EcoEvo-MAPS', MasterDF.loc[Index, 'EcoEvo ID'], DataType = 'Names')
-                    NamesDF.columns = ['IDs', 'Last Names', 'First Names']
-                    NamesDF = NamesDF.fillna('')
-                    NamesDF['Name'] = NamesDF['Last Names'] + NamesDF['First Names']
-                    NamesDF = NamesDF.sort_values(by = 'Name')
-                    NamesDF = NamesDF.drop(labels = ['Name'], axis = 1)
                     NamesFileName = 'EcoEvo-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'EcoEvo Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
                     NamesDF.to_csv(NamesFileName, index = False)
                     SendReport(MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'EcoEvo Name'], MasterDF.loc[Index, 'EcoEvo Number'], 'EcoEvo-MAPS', Path + '/' + PDFName + '.pdf', NamesFile = NamesFileName)
@@ -560,17 +555,12 @@ def ReportControl():
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
             df = ValidateResponses(df, 'Capstone')
             if(len(df.index) > 4):
+                df, NamesDF = ValidateResponses(df, 'Capstone')
                 PDFName = 'Capstone' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Capstone Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
                 ReportGen_BIOMAPS.Generate_Capstone(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'Capstone Class'], MainDirectory = MainDirectory, Where = 'Automation')
 
                 if(MasterDF.loc[Index, 'Credit Offered']): # If the instructor is offering credit include a list of names and IDs of those who completed each of the surveys
-                    NamesDF = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'Capstone Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'Capstone', MasterDF.loc[Index, 'Capstone ID'], DataType = 'Names')
-                    NamesDF.columns = ['IDs', 'Last Names', 'First Names']
-                    NamesDF = NamesDF.fillna('')
-                    NamesDF['Name'] = NamesDF['Last Names'] + NamesDF['First Names']
-                    NamesDF = NamesDF.sort_values(by = 'Name')
-                    NamesDF = NamesDF.drop(labels = ['Name'], axis = 1)
                     NamesFileName = 'Capstone' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Capstone Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
                     NamesDF.to_csv(NamesFileName, index = False)
                     SendReport(MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Capstone Name'], MasterDF.loc[Index, 'Capstone Number'], 'Capstone', Path + '/' + PDFName + '.pdf', NamesFile = NamesFileName)
@@ -588,17 +578,12 @@ def ReportControl():
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
             df = ValidateResponses(df, 'Phys-MAPS')
             if(len(df.index) > 4):
+                df, NamesDF = ValidateResponses(df, 'Phys-MAPS')
                 PDFName = 'Phys-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Phys Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
                 ReportGen_BIOMAPS.Generate_PhysMAPS(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'Phys Class'], MainDirectory = MainDirectory, Where = 'Automation')
 
                 if(MasterDF.loc[Index, 'Credit Offered']): # If the instructor is offering credit include a list of names and IDs of those who completed each of the surveys
-                    NamesDF = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'Phys Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'Phys-MAPS', MasterDF.loc[Index, 'Phys ID'], DataType = 'Names')
-                    NamesDF.columns = ['Last Names', 'First Names']
-                    NamesDF = NamesDF.fillna('')
-                    NamesDF['Name'] = NamesDF['Last Names'] + NamesDF['First Names']
-                    NamesDF = NamesDF.sort_values(by = 'Name')
-                    NamesDF = NamesDF.drop(labels = ['Name'], axis = 1)
                     NamesFileName = 'Phys-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Phys Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
                     NamesDF.to_csv(NamesFileName, index = False)
                     SendReport(MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Phys Name'], MasterDF.loc[Index, 'Phys Number'], 'Phys-MAPS', Path + '/' + PDFName + '.pdf', NamesFile = NamesFileName)
@@ -616,17 +601,12 @@ def ReportControl():
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
             df = ValidateResponses(df, 'GenBio-MAPS')
             if(len(df.index) > 4):
+                df, NamesDF = ValidateResponses(df, 'GenBio-MAPS')
                 PDFName = 'GenBio-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'GenBio Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
                 ReportGen_BIOMAPS.Generate_GenBioMAPS(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'GenBio Class'], MainDirectory = MainDirectory, Where = 'Automation')
 
                 if(MasterDF.loc[Index, 'Credit Offered']): # If the instructor is offering credit include a list of names and IDs of those who completed each of the surveys
-                    NamesDF = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'GenBio Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'GenBio-MAPS', MasterDF.loc[Index, 'GenBio ID'], DataType = 'Names')
-                    NamesDF.columns = ['IDs', 'Last Names', 'First Names']
-                    NamesDF = NamesDF.fillna('')
-                    NamesDF['Name'] = NamesDF['Last Names'] + NamesDF['First Names']
-                    NamesDF = NamesDF.sort_values(by = 'Name')
-                    NamesDF = NamesDF.drop(labels = ['Name'], axis = 1)
                     NamesFileName = 'GenBio-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'GenBio Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
                     NamesDF.to_csv(NamesFileName, index = False)
                     SendReport(MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'GenBio Name'], MasterDF.loc[Index, 'GenBio Number'], 'GenBio-MAPS', Path + '/' + PDFName + '.pdf', NamesFile = NamesFileName)
@@ -1121,31 +1101,9 @@ def GetResponseData(SchoolName, CourseNumber, InstructorName, Year, Survey, Surv
     Survey_Name = GetSurveyName(SurveyID)
     StudentDF = pd.read_csv(Survey_Name + '.csv', skiprows = [1, 2])
 
-    if(DataType == 'NumberOnly'):
-        NumStudents = len(StudentDF.index)
-        return NumStudents
+    NumStudents = len(StudentDF.index)
 
-    elif((DataType == 'Names') and (Survey == 'EcoEvo-MAPS')):
-        NamesDF = StudentDF.loc[:, ['PartInfo_3_TEXT', 'PartInfo_2_TEXT', 'PartInfo_1_TEXT']].dropna(how = 'all')
-        NamesDF = NamesDF.reset_index(drop = True)
-        NamesDF = NamesDF.apply(lambda x: x.astype(str).str.lower())
-
-    elif((DataType == 'Names') and (Survey == 'Capstone')):
-        NamesDF = StudentDF.loc[:, ['ID_3_TEXT', 'ID_2_TEXT', 'ID_1_TEXT']].dropna(how = 'all')
-        NamesDF = NamesDF.reset_index(drop = True)
-        NamesDF = NamesDF.apply(lambda x: x.astype(str).str.lower())
-
-    elif((DataType == 'Names') and (Survey == 'Phys-MAPS')):
-        NamesDF = StudentDF.loc[:, ['Q11_2_TEXT', 'Q11_1_TEXT']].dropna(how = 'all')
-        NamesDF = NamesDF.reset_index(drop = True)
-        NamesDF = NamesDF.apply(lambda x: x.astype(str).str.lower())
-
-    elif((DataType == 'Names') and (Survey == 'GenBio-MAPS')):
-        NamesDF = StudentDF.loc[:, ['ID2_1_TEXT', 'ID1_2_TEXT', 'ID1_1_TEXT']].dropna(how = 'all')
-        NamesDF = NamesDF.reset_index(drop = True)
-        NamesDF = NamesDF.apply(lambda x: x.astype(str).str.lower())
-
-    return NamesDF
+    return NumStudents
 
 def ValidateResponses(df, Survey):
     def ProcessNames(df, ID = True):
