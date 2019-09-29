@@ -25,9 +25,9 @@ import ReportGen_BIOMAPS
 
 # Setting user Parameters
 global apiToken, DataCenter, BIOMAPSEmail, UserEmail, ChangeURL
-apiToken = ######################### # Change token for different Qualtrics account
-SharedJenny = ####################
-SharedMindi = ###################
+apiToken = 'NA'# Change token for different Qualtrics account
+SharedJenny = 'NA'
+SharedMindi = 'NA'
 SharedEcoEvoMAPS = [SharedMindi]
 SharedPhysMAPS = [SharedJenny]
 SharedCapstone = [SharedJenny]
@@ -37,7 +37,7 @@ ChangeURL = "https://{0}.qualtrics.com/jfe/form/SV_24b3m5CGBuWe08l".format(DataC
 
 BIOMAPSEmail = 'biomaps@cornell.edu' # Shared BIOMAPS email address
 UserEmail = 'as-phy-edresearchlab@cornell.edu' # User email address
-EmailPassword = ################## # User password
+EmailPassword = 'NA' # User password
 MainDirectory = "C:/BIOMAPS"
 
 # Main Exceution body which repaets every hour
@@ -531,9 +531,8 @@ def ReportControl():
             DownloadResponses(MasterDF.loc[Index, 'EcoEvo ID'])
             SurveyName = GetSurveyName(MasterDF.loc[Index, 'EcoEvo ID'])
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
-            df = ValidateResponses(df, 'EcoEvo-MAPS')
+            df, NamesDF = ValidateResponses(df, 'EcoEvo-MAPS')
             if(len(df.index) > 4):
-                df, NamesDF = ValidateResponses(df, 'EcoEvo-MAPS')
                 PDFName = 'EcoEvo-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'EcoEvo Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
                 ReportGen_BIOMAPS.Generate_EcoEvoMAPS(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'EcoEvo Class'], MainDirectory = MainDirectory, Where = 'Automation')
@@ -553,9 +552,8 @@ def ReportControl():
             DownloadResponses(MasterDF.loc[Index, 'Capstone ID'])
             SurveyName = GetSurveyName(MasterDF.loc[Index, 'Capstone ID'])
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
-            df = ValidateResponses(df, 'Capstone')
+            df, NamesDF = ValidateResponses(df, 'Capstone')
             if(len(df.index) > 4):
-                df, NamesDF = ValidateResponses(df, 'Capstone')
                 PDFName = 'Capstone' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Capstone Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
                 ReportGen_BIOMAPS.Generate_Capstone(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'Capstone Class'], MainDirectory = MainDirectory, Where = 'Automation')
@@ -576,9 +574,8 @@ def ReportControl():
             DownloadResponses(MasterDF.loc[Index, 'Phys ID'])
             SurveyName = GetSurveyName(MasterDF.loc[Index, 'Phys ID'])
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
-            df = ValidateResponses(df, 'Phys-MAPS')
+            df, NamesDF = ValidateResponses(df, 'Phys-MAPS')
             if(len(df.index) > 4):
-                df, NamesDF = ValidateResponses(df, 'Phys-MAPS')
                 PDFName = 'Phys-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Phys Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
                 ReportGen_BIOMAPS.Generate_PhysMAPS(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'Phys Class'], MainDirectory = MainDirectory, Where = 'Automation')
@@ -599,9 +596,8 @@ def ReportControl():
             DownloadResponses(MasterDF.loc[Index, 'GenBio ID'])
             SurveyName = GetSurveyName(MasterDF.loc[Index, 'GenBio ID'])
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
-            df = ValidateResponses(df, 'GenBio-MAPS')
+            df, NamesDF = ValidateResponses(df, 'GenBio-MAPS')
             if(len(df.index) > 4):
-                df, NamesDF = ValidateResponses(df, 'GenBio-MAPS')
                 PDFName = 'GenBio-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'GenBio Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
                 ReportGen_BIOMAPS.Generate_GenBioMAPS(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'GenBio Class'], MainDirectory = MainDirectory, Where = 'Automation')
@@ -1108,16 +1104,16 @@ def GetResponseData(SchoolName, CourseNumber, InstructorName, Year, Survey, Surv
 def ValidateResponses(df, Survey):
     def ProcessNames(df, ID = True):
         df['BackName'] = (df['Last Names'].apply(str).str.lower() + df['First Names'].apply(str).str.lower()).str.replace('\W', '') # Get full name in lower case with no white space
-        df = df[df['FullName'].map(len) > 2] # Keep only full names with more than 2 characters
-        df = df.drop_duplicates(subset = ['FullName'])
+        df = df[df['BackName'].map(len) > 2] # Keep only full names with more than 2 characters
+        df = df.drop_duplicates(subset = ['BackName'])
+        df['BackName'] = df['BackName'].fillna('')
+        df = df.sort_values(by = 'BackName')
         if(ID):
             df['IDs'] = df['IDs'].astype(str).str.split('@').str.get(0).str.lower() # Keep only first part of email addresses and take the lower case of all ids
             df = df.drop_duplicates(subset = ['IDs']) # Drop second entry if there are duplicate full names
             NamesDF = df.loc[:, ['IDs', 'Last Names', 'First Names']]
         else:
             NamesDF = df.loc[:, ['Last Names', 'First Names']]
-        NamesDF = NamesDF.fillna('')
-        NamesDF = NamesDF.sort_values(by = 'BackName')
 
         return df, NamesDF
 
@@ -1133,7 +1129,7 @@ def ValidateResponses(df, Survey):
         df, Names = ProcessNames(df)
 
         df = df.loc[(df['Q68'] == 5) & (df['Q69'] == 5), :]
-    if(Survey == 'Phys-MAPS', ID = False):
+    if(Survey == 'Phys-MAPS'):
         df = df.loc[df['Finished'] == 1, :]
         df = df.rename(columns = {'Q11_2_TEXT':'Last Names', 'Q11_1_TEXT':'First Names'})
         df, Names = ProcessNames(df, ID = False)
