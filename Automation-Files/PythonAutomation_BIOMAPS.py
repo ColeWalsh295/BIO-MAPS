@@ -1087,7 +1087,7 @@ def SendStatusEmail():
     server.sendmail(BIOMAPSEmail, BIOMAPSEmail, msg.as_string())
     server.quit()
 
-def GetResponseData(SchoolName, CourseNumber, InstructorName, Year, Survey, SurveyID, DataType):
+def GetResponseData(SchoolName, CourseNumber, InstructorName, Year, Survey, SurveyID):
 
     # Move to the specific course directory to download responses
     path = MainDirectory + "/" + Survey + '/' + str(Year) + "Files/" + SchoolName + '_' + str(CourseNumber) + '_' + InstructorName
