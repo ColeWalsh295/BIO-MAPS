@@ -7,7 +7,11 @@ DownloadClassDataUI <- function(id, label, value){
   
   fluidRow(
     column(4, textInput(ns('classID'), label, value)),
-    column(4, br(), downloadButton(ns("downloadData"), "Download", class = 'button'))
+    column(4, br(), downloadButton(ns("downloadData"), "Download", class = 'button') %>%
+             helper(icon = "question",
+                    colour = "green",
+                    type = "markdown",
+                    content = "downloads"))
   )
 }
 
@@ -40,12 +44,16 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
       fluidRow(
         column(4, selectInput(ns("scale"), "Scale:", 
                               choices = c('Overall Scores', 'Vision and Change'))),
-        column(8, radioButtons(ns("demographic"), 'Separate by:',
+        column(4, radioButtons(ns("demographic"), 'Separate by:',
                                choiceNames = c('None', 'Gender', 'URM Status', 'First Generation Status',
                                               'Class Standing', 'Major', 'Transfer Status',
                                               'English Language Learners'),
                                choiceValues = c('None', 'SexGender', 'URMStatus', 'ParentEducation', 
-                                           'ClassStanding', 'Major', 'TransferStatus', 'ELL'))),
+                                           'ClassStanding', 'Major', 'TransferStatus', 'ELL')) %>%
+                 helper(icon = "question",
+                        colour = "blue",
+                        type = "markdown",
+                        content = "demographics")),
         plotOutput(ns("plotScale"))
       )
     )

@@ -73,6 +73,9 @@ Overall_tab = tabItem(
 )
 
 server = function(input, output, session) {
+  
+  observe_helpers(withMathJax = TRUE)
+  
   df <- reactive({
     if(input$assessment == 'GenBio-MAPS'){
       df <- GenBio.df

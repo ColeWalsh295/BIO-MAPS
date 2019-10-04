@@ -296,13 +296,13 @@ DisableRadio <- function(df){
     return(dataFrame)
   })
 
-  Titles = list('SexGender' = 'only male and female students are included, so students are not identifiable',
-                'URMStatus' = 'students who self-identify as white/caucasian or asian are considered to be in the majority group; all other students are considered URM',
-                'ParentEducation' = 'students whose parents did not attend any college are considered first generation students',
-                'ClassStanding' = 'sophomores, juniors, seniors, and more advanced students are grouped together as BFY students to reduce the risk of identifying students',
-                'Major' = 'majors are collapsed into those who intend to major in the life sciences and those who do not',
+  Titles = list('SexGender' = 'only male and female students are included',
+                'URMStatus' = 'majority = white/asian; URM = all other students',
+                'ParentEducation' = 'first generation student = neither parent attended any college',
+                'ClassStanding' = 'sophomores, juniors, seniors, and graduate students are grouped together as BFY students',
+                'Major' = 'biology majors correspond to students planning to major in biology or any other life science',
                 'TransferStatus' = 'transfer students include those who completed some college courses at another institution',
-                'ELL' = 'english language learners are those who indicated that their primary language growing up was a language other than english')
+                'ELL' = 'english language learners are those who indicated that their primary language growing up was not english')
   for(Option in c('SexGender', 'URMStatus', 'ParentEducation', 'ClassStanding', 'Major', 
                   'TransferStatus', 'ELL')){
     if(!dataFrame()[1, paste(Option, '_Avail_Radio', sep = '')]){
