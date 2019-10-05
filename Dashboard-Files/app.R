@@ -27,7 +27,11 @@ Phys.header <- Phys$header
 
 Your_tab = tabItem(
   tabName = "Your_Class",
-  h2("View of your class"),
+  fluidRow(column(4, h2("View of your class") %>%
+                    helper(icon = "question",
+                           colour = "red",
+                           type = "markdown",
+                           content = "Your_tab"))),
   
   DownloadClassDataUI('Class.Main.Download', label = 'Your Class ID:', value = 'R_0vU5WDrHWLjYc37'),
   br(),
@@ -40,7 +44,11 @@ Your_tab = tabItem(
 
 Compare_tab = tabItem(
   tabName = "Compare_Classes",
-  h2("Compare two of your classes"),
+  fluidRow(column(6, h2("Compare two of your classes") %>%
+                    helper(icon = "question",
+                           colour = "red",
+                           type = "markdown",
+                           content = "Compare_tab"))),
   
   DownloadClassDataUI('Class1.Download', label = 'Your first Class ID:',
                       value = 'R_0vU5WDrHWLjYc37'),
@@ -57,14 +65,22 @@ Compare_tab = tabItem(
 
 Overall_tab = tabItem(
   tabName = "Compare_Overall",
-  h2("Compare your classes to other classes"),
+  fluidRow(column(7, h2("Compare your class to other classes") %>%
+                    helper(icon = "question",
+                           colour = "red",
+                           type = "markdown",
+                           content = "Aggregate_tab"))),
   
   DownloadClassDataUI('Class.You.Download', label = 'Your Class ID:',
                       value = 'R_0vU5WDrHWLjYc37'),
   br(),
   ClassStatisticsOutput('Class.You.Statistics'),
   br(),
-  h3("Other classes"),
+  fluidRow(column(3, h3("Other classes") %>%
+                    helper(icon = "question",
+                           colour = "purple",
+                           type = "markdown",
+                           content = "OtherClasses"))),
   ClassStatisticsOutput('Class.Other.Statistics', Overall = TRUE),
   br(),
   ScalePlotUI('Overall.Compare.Scale', Demos = FALSE),

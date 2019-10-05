@@ -7,7 +7,7 @@ DownloadClassDataUI <- function(id, label, value){
   
   fluidRow(
     column(4, textInput(ns('classID'), label, value)),
-    column(4, br(), downloadButton(ns("downloadData"), "Download", class = 'button') %>%
+    column(3, br(), downloadButton(ns("downloadData"), "Download", class = 'button') %>%
              helper(icon = "question",
                     colour = "green",
                     type = "markdown",
@@ -23,8 +23,9 @@ ClassStatisticsOutput <- function(id, Overall = FALSE){
       radioButtons(ns("class.level"), 'Compare to other classes:',
                    choiceNames = c('All', 'Beginning of intro course series', 
                                    'End of intro course series', 
-                                   'Advanced'),
-                   choiceValues = c('All', 'Begin_Intro', 'End_Intro', 'Advanced'), inline = TRUE),
+                                   'Advanced',
+                                   'Graduate'),
+                   choiceValues = c('All', 'Begin_Intro', 'End_Intro', 'Advanced', 'Graduate'), inline = TRUE),
       valueBoxOutput(ns("infoNStudents")),
       infoBoxOutput(ns("infoScore"))
     )

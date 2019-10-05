@@ -208,14 +208,17 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
           labs(color = input$demographic)
       }
     }
-    p <- p + geom_boxplot(lwd = 1) +
-      labs(x = input$scale, y = 'Score', title = "Your students' performance") +
+    if(length(Labels) > 8){
+      p <- p + geom_boxplot(lwd = 1, position = position_dodge2(reverse = TRUE)) +
+        coord_flip()
+    } else {
+      p <- p + geom_boxplot(lwd = 1)
+    }
+    p <- p + labs(x = input$scale, y = 'Score', title = "Your students' performance") +
       scale_x_discrete(labels = Labels) +
       scale_color_manual(values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7")) +
-      shiny_theme
-    if(length(Labels) > 8){
-      p <- p + coord_flip()
-    }
+      shiny_theme +
+      theme(legend.title = element_blank())
     return(p)
   })
   if(is.null(class.var)){
@@ -269,8 +272,8 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
         labs(x = 'Statement', y = 'Fraction of Correct Selections', 
              title = "Your students' performance by statement") +
         scale_fill_manual(values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7")) +
-        shiny_theme #+
-        #theme(legend.position = "none")
+        shiny_theme  +
+        theme(legend.title = element_blank())
 
       return(p)
     })
@@ -286,12 +289,13 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
     })
     output$plotResponses = renderPlot({
       p <- ggplot(Responses.df(), aes_string(x = 'variable', y = 'value', fill = class.var)) +
-        geom_bar(stat = 'identity', position = 'dodge') +
+        geom_bar(stat = 'identity', position = position_dodge2(reverse = TRUE)) +
         coord_flip() +
         labs(x = 'Statement', y = 'Fraction of Correct Selections', 
              title = "Your students' performance by statement") +
         scale_fill_manual(values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7")) +
-        shiny_theme
+        shiny_theme  +
+        theme(legend.title = element_blank())
       return(p)
     })
   }
