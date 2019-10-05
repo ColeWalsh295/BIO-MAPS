@@ -1,8 +1,8 @@
 library(dplyr)
 library(data.table)
 
-Clean.GenBio <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/GenBio-MAPS/GenBio-MAPS_MasterFile.csv', 
-                         header.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/GenBio-MAPS/GenBioMAPS_Headers.csv'){
+Clean.GenBio <- function(df.file = 'GenBio-MAPS_MasterFile.csv', 
+                         header.file = 'GenBioMAPS_Headers.csv'){
   
   header.df <- fread(header.file, header = TRUE)
   names(header.df) = gsub(x = names(header.df), pattern = "#1", replacement = "")
@@ -31,8 +31,8 @@ Clean.GenBio <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAP
   return(list('dataFrame' = df, 'header' = header.df))
 }
 
-Clean.EcoEvo <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/EcoEvo-MAPS/EcoEvo-MAPS_MasterFile.csv', 
-                         header.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/EcoEvo-MAPS/EcoEvoMAPS_Headers.csv'){
+Clean.EcoEvo <- function(df.file = 'EcoEvo-MAPS_MasterFile.csv', 
+                         header.file = 'EcoEvoMAPS_Headers.csv'){
   
   header.df <- fread(header.file, header = TRUE)
   
@@ -105,8 +105,8 @@ Clean.EcoEvo <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAP
   return(list('dataFrame' = df, 'header' = header.df))
 }
 
-Clean.Phys <- function(df.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/Phys-MAPS/Phys-MAPS_MasterFile.csv',
-                       header.file = 'C:/Users/Cole/Documents/GRA_Fall2019/BIO-MAPS/Phys-MAPS/PhysMAPS_Headers.csv'){
+Clean.Phys <- function(df.file = 'Phys-MAPS_MasterFile.csv',
+                       header.file = 'PhysMAPS_Headers.csv'){
   
   header.df <- fread(header.file, header = TRUE)
   
