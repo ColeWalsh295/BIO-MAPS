@@ -109,9 +109,9 @@ server = function(input, output, session) {
   })
   
   ### Your Class ###
-  
+  CID <- NULL
   df.Class <- callModule(DownloadClassData, 'Class.Main.Download', data = df, header = header.df, 
-                         cols = cols, ass = Assessment)
+                      cols = cols, ass = Assessment, ClassID = CID)
   callModule(ClassStatistics, 'Class.Main.Statistics', data = df.Class)
   demographic <- reactiveVal()
   demographic <- callModule(ScalePlot, 'Class.Main.Scale', data = df.Class, ass = Assessment)
@@ -119,10 +119,10 @@ server = function(input, output, session) {
              Demographic = demographic)
   
   ### Compare Classes ###
-  
   df.Class1 <- callModule(DownloadClassData, 'Class1.Download', data = df, header = header.df, 
-                          cols = cols, ass = Assessment)
+                          cols = cols, ass = Assessment, ClassID = CID)
   callModule(ClassStatistics, 'Class1.Statistics', data = df.Class1)
+  
   df.Class2 <- callModule(DownloadClassData, 'Class2.Download', data = df, header = header.df, 
                           cols = cols, ass = Assessment)
   callModule(ClassStatistics, 'Class2.Statistics', data = df.Class2)
@@ -138,8 +138,18 @@ server = function(input, output, session) {
   
   ### Compare to overall PLIC dataset ###
   
-  df.Class.You_temp <- callModule(DownloadClassData, 'Class.You.Download', data = df, 
-                                  header = header.df, cols = cols, ass = Assessment)
+  df.Class.You_temp <- callModule(DownloadClassData, 'Class.You.Download', data = df,
+                    header = header.df, cols = cols, ass = Assessment, ClassID = CID)
+  CID <- reactive({
+    if(input$tabs == 'Your_Class'){
+      CID <- df.Class()[1, 'Class_ID']
+    } else if(input$tabs == 'Compare_Classes'){
+      CID <- df.Class1()[1, 'Class_ID']
+    } else {
+      CID <- df.Class.You_temp()[1, 'Class_ID']
+    }
+    return(CID)
+  })
   callModule(ClassStatistics, 'Class.You.Statistics', data = df.Class.You_temp)
   
   df.Class.You <- reactive({
@@ -171,7 +181,6 @@ dhead = dashboardHeader(title = h4(HTML("Bio-MAPS<br>Data Explorer")))
 dside = dashboardSidebar(sidebarMenu(
   id = 'tabs',
   selectInput('assessment', "Assessment:", choices = c('GenBio-MAPS', 'EcoEvo-MAPS', 'Phys-MAPS')),
-  bsPopover('assessment', title = 'test_title', content = 'test_content', trigger = 'hover'),
   menuItem("View of your class", tabName = "Your_Class", icon = icon("dashboard")),
   menuItem(HTML("Compare two of<br>your classes"), tabName = "Compare_Classes", icon = icon("dashboard")),
   menuItem(HTML("Compare your class<br>to other classes"), tabName = "Compare_Overall", 

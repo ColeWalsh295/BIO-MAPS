@@ -1,12 +1,17 @@
-DownloadClassData <- function(input, output, session, data, header, cols, ass) {
+DownloadClassData <- function(input, output, session, data, header, cols, ass, ClassID = NULL) {
   
   observe({
     if(ass() == 'GenBio-MAPS'){
-      updateTextInput(session, 'classID', value = 'R_0vU5WDrHWLjYc37')
+     updateTextInput(session, 'classID', value = 'R_0vU5WDrHWLjYc37')
     } else if(ass() == 'EcoEvo-MAPS'){
-      updateTextInput(session, 'classID', value = 'R_6WkTbfUv4dUhh5f')
+     updateTextInput(session, 'classID', value = 'R_6WkTbfUv4dUhh5f')
     } else if(ass() == 'Phys-MAPS'){
-      updateTextInput(session, 'classID', value = 'R_1pLjdulMOPNo3Ka')
+     updateTextInput(session, 'classID', value = 'R_1pLjdulMOPNo3Ka')
+    }
+  })
+  observe({
+    if(!is.null(ClassID)){
+      updateTextInput(session, 'classID', value = ClassID())
     }
   })
   
