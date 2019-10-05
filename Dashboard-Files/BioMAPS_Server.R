@@ -253,7 +253,8 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
           group_by_(Demographic()) %>%
           summarize_all(funs(mean), na.rm = TRUE) %>%
           melt(.)
-        Responses.df <- Responses.df[Responses.df[, Demographic()] != '',]
+        Responses.df <- Responses.df[(Responses.df[, Demographic()] != '') & 
+                                       !is.na(Responses.df[, Demographic()]),]
       }
       return(Responses.df)
     })
@@ -263,12 +264,13 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
       } else {
         p <- ggplot(Responses.df(), aes(x = variable, y = value))
       }
-      p <- p + geom_bar(stat = 'identity', position = 'dodge') +
+      p <- p + geom_bar(stat = 'identity', position =  position_dodge2(reverse = TRUE)) +
         coord_flip() +
         labs(x = 'Statement', y = 'Fraction of Correct Selections', 
              title = "Your students' performance by statement") +
         scale_fill_manual(values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7")) +
-        shiny_theme
+        shiny_theme #+
+        #theme(legend.position = "none")
 
       return(p)
     })
@@ -303,11 +305,11 @@ DisableRadio <- function(df){
 
   Titles = list('SexGender' = 'only male and female students are included',
                 'URMStatus' = 'majority = white/asian; URM = all other students',
-                'ParentEducation' = 'first generation student = neither parent attended any college',
-                'ClassStanding' = 'sophomores, juniors, seniors, and graduate students are grouped together as BFY students',
+                'ParentEducation' = 'first generation student = neither parent graduated college',
+                'ClassStanding' = 'freshman, sophomore/juniors, seniors, and grad students',
                 'Major' = 'biology majors correspond to students planning to major in biology or any other life science',
                 'TransferStatus' = 'transfer students include those who completed some college courses at another institution',
-                'ELL' = 'english language learners are those who indicated that their primary language growing up was not english')
+                'ELL' = 'students indicate whether their primary language growing up was english or another language')
   for(Option in c('SexGender', 'URMStatus', 'ParentEducation', 'ClassStanding', 'Major', 
                   'TransferStatus', 'ELL')){
     if(!dataFrame()[1, paste(Option, '_Avail_Radio', sep = '')]){
@@ -317,11 +319,6 @@ DisableRadio <- function(df){
       shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').parent().parent().css('opacity', 1)", sep = ''))
       shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').prop('disabled', false)", sep = ''))
       shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').closest('label').attr('title', '", Titles[[Option]], "')", sep = ''))
-      #shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').attr('data-toggle', 'popover')", sep = ''))
-      #shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').attr('title', 'test_title')", sep = ''))
-      #shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').attr('data-content', 'test_content')", sep = ''))
-      #shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').attr('data-trigger', 'hover')", sep = ''))
-      #shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').attr('data-container', 'body')", sep = ''))
       }
   }
   return(0)  

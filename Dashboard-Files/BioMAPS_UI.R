@@ -47,7 +47,7 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
         column(4, radioButtons(ns("demographic"), 'Separate by:',
                                choiceNames = c('None', 'Gender', 'URM Status', 'First Generation Status',
                                               'Class Standing', 'Major', 'Transfer Status',
-                                              'English Language Learners'),
+                                              'Primary Language spoken at Home'),
                                choiceValues = c('None', 'SexGender', 'URMStatus', 'ParentEducation', 
                                            'ClassStanding', 'Major', 'TransferStatus', 'ELL')) %>%
                  helper(icon = "question",

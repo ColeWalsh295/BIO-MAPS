@@ -22,7 +22,7 @@ Student names and IDs are provided, but encrypted. These are unique to an indivi
 
 ***
 
-We provide demographic demographic data as long as the included information is not identifying. If a single student lies in the intersection of any of the available demographic variables, we remove variables in the following order: (English Language Learner, Transfer Status, Intended Major, Class Standing, First Generation Status, URM Status, Gender), until the data is not identifiable.
+We provide demographic demographic data as long as the included information is not identifying. If a single student lies in the intersection of any of the available demographic variables, we remove variables in the following order: (Primary Language spoken at Home, Transfer Status, Intended Major, Class Standing, First Generation Status, URM Status, Gender), until the data is not identifiable.
 
 Note: even if demographic data is not available in the downloadable file, you may still be able to view aggregate data across these variables if no single student identified with a given group.
 

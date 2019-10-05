@@ -177,7 +177,8 @@ Convert.ClassLevel <- function(df){
       Class_Level == 1 ~ 'Begin_Intro',
       Class_Level == 2 ~ 'End_Intro',
       Class_Level == 3 ~ 'Advanced'
-    ))
+    ),
+    ClassStanding = factor(ClassStanding, levels = c('Freshman', 'Sophomore/Junior', 'Senior', 'Grad')))
   
   return(df)
 }

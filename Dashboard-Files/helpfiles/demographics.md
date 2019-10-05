@@ -16,11 +16,11 @@ URM Status: students can select multiple from (American Indian or Alaska Native,
 
 ***
 
-First Generation Status: students are considered first generation students if neither of their parents attended any college.
+First Generation Status: students are considered first generation students if neither of their parents graduated college.
 
 ***
 
-Class Standing: Sophomores, juniors, seniors, and graduate students are considered beyond-first-year students (BFY). Postbaccalaureate and other students are not inlcluded in the group of first-year (FY) or BFY students.
+Class Standing: Postbaccalaureate are not included in the dataset.
 
 ***
 
@@ -32,4 +32,4 @@ Transfer Status: Students indicate whether they are a transfer student.
 
 ***
 
-English Language Learners: Students who indicate that english was not their primary language used at home when growing up are considered english language learners.
+Primary Language spoken at Home: Students indicate whether their primary language spoken at home growing up was english or another language.
