@@ -90,6 +90,13 @@ Overall_tab = tabItem(
 
 server = function(input, output, session) {
   
+  init.modal <- modalDialog(
+    title = "How to use this dashboard",
+    'For more information about how to use this dashboard, click the "?" icons.'
+  )
+  
+  showModal(init.modal)
+  
   observe_helpers(withMathJax = TRUE)
   
   df <- reactive({

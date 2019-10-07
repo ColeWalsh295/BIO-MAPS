@@ -208,7 +208,7 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
           labs(color = input$demographic)
       }
     }
-    if(length(Labels) > 8){
+    if(length(Labels) > 7){
       p <- p + geom_boxplot(lwd = 1, position = position_dodge2(reverse = TRUE)) +
         coord_flip()
     } else {

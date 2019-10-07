@@ -2,4 +2,4 @@
 
 ***
 
-Note that data for 'other classes' include Nationally collected data with your class removed.
+Note that data for 'other classes' include nationally collected data with your class removed.
