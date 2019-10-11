@@ -91,6 +91,7 @@ def GenerateGraphs_EcoEvoMAPS(df):
     StatementsList.append(len(df_Correct.columns))
 
     df_Correct['SC_Total_Score'] = df_Correct.sum(axis = 1) / len(df_Correct.columns)
+    df_Correct = df_Correct.reset_index(drop = True)
 
     EC_Questions = ['Q1_1S', 'Q1_2S', 'Q1_3S', 'Q1_4S', 'Q1_5S', 'Q1_6S', 'Q1_7S', 'Q2_9S', 'Q3_1S', 'Q3_2S', 'Q3_3S', 'Q3_4S', 'Q3_5S', 'Q5_5S', 'Q7_1S', 'Q7_2S', 'Q7_3S', 'Q7_7S', 'Q8_1S',
                     'Q8_2S', 'Q8_3S', 'Q8_5S', 'Q8_6S', 'Q8_7S', 'Q9_1S', 'Q9_2S', 'Q9_4S', 'Q9_5S', 'Q9_6S', 'Q9_7S']
@@ -492,6 +493,7 @@ def GenerateGraphs_GenBioMAPS(df):
     StatementsList.append(len(df_Correct.columns))
 
     df_Correct['SC_Total_Score'] = df_Correct.sum(axis = 1) / df_Correct.count(axis = 1)
+    df_Correct = df_Correct.reset_index(drop = True)
 
     plt.figure(figsize = (12, 9))
     sns.boxplot(data = df_Correct['SC_Total_Score'], color = 'w', showfliers = False)
@@ -674,6 +676,7 @@ def GenerateGraphs_Capstone(df):
     StatementsList.append(len(df_Correct.columns))
 
     df_Correct['SC_Total Score'] = df_Correct.sum(axis = 1) / len(df_Correct.columns)
+    df_Correct = df_Correct.reset_index(drop = True)
 
     plt.figure(figsize = (12, 9))
     sns.boxplot(data = df_Correct['SC_Total Score'], color = 'w', showfliers = False)
@@ -811,6 +814,7 @@ def GenerateGraphs_PhysMAPS(df):
     StatementsList.append(len(df_Correct.columns))
 
     df_Correct['SC_Total_Score'] = df_Correct.sum(axis = 1) / len(df_Correct.columns)
+    df_Correct = df_Correct.reset_index(drop = True)
 
     plt.figure(figsize = (12, 9))
     sns.boxplot(data = df_Correct['SC_Total_Score'], color = 'w', showfliers = False)
