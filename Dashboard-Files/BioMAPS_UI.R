@@ -43,8 +43,8 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
   if(Demos) {
     fluidPage(
       fluidRow(
-        column(4, selectInput(ns("scale"), "Scale:", 
-                              choices = c('Overall Scores', 'Vision and Change'))),
+        column(4, selectInput(ns("scale"), "Question Categorization:", 
+                              choices = c('Subdisciplines', 'Core concepts'))),
         column(4, radioButtons(ns("demographic"), 'Separate by:',
                                choiceNames = c('None', 'Gender', 'URM Status', 'First Generation Status',
                                               'Class Standing', 'Major', 'Transfer Status',
@@ -60,16 +60,16 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
     )
   } else if(MatchBox){
     fluidRow(
-      column(4, selectInput(ns("scale"), "Scale:", 
-                            choices = c('Overall Scores', 'Vision and Change'))),
+      column(4, selectInput(ns("scale"), "Question Categorization:", 
+                            choices = c('Subdisciplines', 'Core concepts'))),
       column(4, checkboxInput(ns("match"), "Match Class Data", value = FALSE)),
       br(),
       plotOutput(ns("plotScale"))
     )
   } else {
     fluidRow(
-      column(4, selectInput(ns("scale"), "Scale:", 
-                            choices = c('Overall Scores', 'Vision and Change'))),
+      column(4, selectInput(ns("scale"), "Question Categorization:", 
+                            choices = c('Subdisciplines', 'Core concepts'))),
       br(),
       plotOutput(ns("plotScale"))
     )

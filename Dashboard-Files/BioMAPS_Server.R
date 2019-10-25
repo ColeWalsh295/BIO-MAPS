@@ -16,6 +16,9 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass, C
   })
   
   data.class <- eventReactive(input$classID, {
+    validate(
+      need(input$classID %in% data()$Class_ID, 'Enter a valid class ID')
+    )
     data.class <- subset(data(), Class_ID == input$classID)
     return(data.class)
   })
@@ -111,12 +114,12 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
   
   observe({
     if((ass() == 'GenBio-MAPS') | (ass() == 'Phys-MAPS')){
-      scales <- list('Overall Scores', 'Vision and Change')
+      scales <- list('Subdisciplines', 'Core concepts')
     } else if(ass() == 'EcoEvo-MAPS') {
-      scales <- list('Overall Scores', 'Vision and Change', 'Ecology and Evolution Core Concepts', 
-                     '4DEE Framework')
+      scales <- list('Subdisciplines', 'Core concepts', 'Ecology and evolution core concepts', 
+                     '4DEE framework')
     }
-    updateSelectInput(session, "scale", label = "Scale:", choices = scales)
+    updateSelectInput(session, "scale", label = "Question Categorization:", choices = scales)
   })
   
   data.out <- reactive({
@@ -140,24 +143,24 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
   
   output$plotScale = renderPlot({
     data.temp <- data.frame(data.out())
-    if((ass() == 'GenBio-MAPS') & (input$scale != 'Vision and Change')) {
-      if(input$scale == 'Overall Scores') {
+    if((ass() == 'GenBio-MAPS') & (input$scale != 'Core concepts')) {
+      if(input$scale == 'Subdisciplines') {
         Scores.cols <- c('SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 
                        'SC_T_Ecology_and_Evolution', 'SC_Total_Score')
         Labels <- c('Cellular and Molecular', 'Physiology', 'Ecology and Evolution', 'Total Score')
       }
-    } else if((ass() == 'Phys-MAPS') & (input$scale != 'Vision and Change')){
+    } else if((ass() == 'Phys-MAPS') & (input$scale != 'Core concepts')){
       Scores.cols <- c('SC_Phys_Homeostasis', 'SC_Phys_CellCell_Communication', 
                        'SC_Phys_Flowdown_Gradients', 'SC_Phys_Cell_Membrane', 
                        'SC_Phys_Interdependence', 'SC_Phys_Structure_Function', 'SC_Phys_Evolution', 
                        'SC_Total_Score')
       Labels <- c('Homeostasis', 'Cell-cell communication', 'Flow-down gradients', 'Cell membrane',
                   'Interdependence', 'Structure/function', 'Evolution', 'Total Score')
-    } else if((ass() == 'EcoEvo-MAPS') & (input$scale != 'Vision and Change')) {
-      if(input$scale == 'Overall Scores') {
+    } else if((ass() == 'EcoEvo-MAPS') & (input$scale != 'Core concepts')) {
+      if(input$scale == 'Subdisciplines') {
         Scores.cols <- c('SC_T_Ecology', 'SC_T_Evolution', 'SC_Total_Score')
         Labels <- c('Ecology', 'Evolution', 'Total Score')
-      } else if(input$scale == 'Ecology and Evolution Core Concepts') {
+      } else if(input$scale == 'Ecology and evolution core concepts') {
         Scores.cols <- c('SC_EE_Heritable_Variation', 'SC_EE_Modes_of_Change',
                          'SC_EE_Phylogeny_and_Evolutionary_History', 'SC_EE_Biological_Diversity',
                          'SC_EE_Populations', 'SC_EE_Energy_and_Matter',
@@ -165,7 +168,7 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
         Labels <- c('Heritable\nVariation', 'Modes of\nChange', 'Phylogeny and\nEvolutionary History', 
                     'Biological\nDiversity', 'Populations', 'Energy\nand Matter', 
                     'Interactions\nwith Ecosystems', 'Human\nImpact')
-      } else if(input$scale == '4DEE Framework') {
+      } else if(input$scale == '4DEE framework') {
         Scores.cols <- c('SC_FDEE_Populations', 'SC_FDEE_Communities', 'SC_FDEE_Ecosystems',
                          'SC_FDEE_Biomes', 'SC_FDEE_Biosphere', 'SC_FDEE_Quantitative_Reasoning',
                          'SC_FDEE_Designing_and_Critiquing', 'SC_FDEE_Human_Change',
