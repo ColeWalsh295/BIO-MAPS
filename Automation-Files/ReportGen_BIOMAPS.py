@@ -606,19 +606,19 @@ def Generate_PhysMAPS(fname, width, DataFrame, NumReported, MainDirectory = cwd,
 
                         Tab1.add_row(("No. Statements", Statements[0]))
 
-                        Tab1.add_row(("Average", Tablefy(df['SC_Total Score'], np.mean)))
+                        Tab1.add_row(("Average", Tablefy(df['SC_Total_Score'], np.mean)))
 
-                        Tab1.add_row(("Std. Error", Tablefy(df['SC_Total Score'], StdErr)))
+                        Tab1.add_row(("Std. Error", Tablefy(df['SC_Total_Score'], StdErr)))
 
-                        Tab1.add_row(("Minimum", Tablefy(df['SC_Total Score'], np.min)))
+                        Tab1.add_row(("Minimum", Tablefy(df['SC_Total_Score'], np.min)))
 
-                        Tab1.add_row(("1st Quartile", Tablefy(df['SC_Total Score'], np.percentile, q = 25)))
+                        Tab1.add_row(("1st Quartile", Tablefy(df['SC_Total_Score'], np.percentile, q = 25)))
 
-                        Tab1.add_row(("Median", Tablefy(df['SC_Total Score'], np.median)))
+                        Tab1.add_row(("Median", Tablefy(df['SC_Total_Score'], np.median)))
 
-                        Tab1.add_row(("3rd Quartile", Tablefy(df['SC_Total Score'], np.percentile, q = 75)))
+                        Tab1.add_row(("3rd Quartile", Tablefy(df['SC_Total_Score'], np.percentile, q = 75)))
 
-                        Tab1.add_row(("Maximum", Tablefy(df['SC_Total Score'], np.max)))
+                        Tab1.add_row(("Maximum", Tablefy(df['SC_Total_Score'], np.max)))
 
                         Tab1.add_hline()
 
@@ -642,21 +642,21 @@ def Generate_PhysMAPS(fname, width, DataFrame, NumReported, MainDirectory = cwd,
 
                         Tab2.add_row(("No. Statements", Statements[1], Statements[2], Statements[3], Statements[4], Statements[5]))
 
-                        Tab2.add_row(("Average", Tablefy(df['SC_VC_Evolution'], np.mean), Tablefy(df['SC_VC_Information Flow'], np.mean), Tablefy(df['SC_VC_Structure/Function'], np.mean), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.mean), Tablefy(df['SC_VC_Systems'], np.mean)))
+                        Tab2.add_row(("Average", Tablefy(df['SC_VC_Evolution'], np.mean), Tablefy(df['SC_VC_Information_Flow'], np.mean), Tablefy(df['SC_VC_Structure_Function'], np.mean), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.mean), Tablefy(df['SC_VC_Systems'], np.mean)))
 
-                        Tab2.add_row(("Std. Error", Tablefy(df['SC_VC_Evolution'], StdErr), Tablefy(df['SC_VC_Information Flow'], StdErr), Tablefy(df['SC_VC_Structure/Function'], StdErr), Tablefy(df['SC_VC_Transformations of Energy and Matter'], StdErr), Tablefy(df['SC_VC_Systems'], StdErr)))
+                        Tab2.add_row(("Std. Error", Tablefy(df['SC_VC_Evolution'], StdErr), Tablefy(df['SC_VC_Information_Flow'], StdErr), Tablefy(df['SC_VC_Structure_Function'], StdErr), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], StdErr), Tablefy(df['SC_VC_Systems'], StdErr)))
 
-                        Tab2.add_row(("Minimum", Tablefy(df['SC_VC_Evolution'], np.min), Tablefy(df['SC_VC_Information Flow'], np.min), Tablefy(df['SC_VC_Structure/Function'], np.min), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.min), Tablefy(df['SC_VC_Systems'], np.min)))
+                        Tab2.add_row(("Minimum", Tablefy(df['SC_VC_Evolution'], np.min), Tablefy(df['SC_VC_Information_Flow'], np.min), Tablefy(df['SC_VC_Structure_Function'], np.min), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.min), Tablefy(df['SC_VC_Systems'], np.min)))
 
-                        Tab2.add_row(("1st Quartile", Tablefy(df['SC_VC_Evolution'], np.percentile, q = 25), Tablefy(df['SC_VC_Information Flow'], np.percentile, q = 25), Tablefy(df['SC_VC_Structure/Function'], np.percentile, q = 25), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.percentile, q = 25),
+                        Tab2.add_row(("1st Quartile", Tablefy(df['SC_VC_Evolution'], np.percentile, q = 25), Tablefy(df['SC_VC_Information_Flow'], np.percentile, q = 25), Tablefy(df['SC_VC_Structure_Function'], np.percentile, q = 25), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.percentile, q = 25),
                                         Tablefy(df['SC_VC_Systems'], np.percentile, q = 25)))
 
-                        Tab2.add_row(("Median", Tablefy(df['SC_VC_Evolution'], np.median), Tablefy(df['SC_VC_Information Flow'], np.median), Tablefy(df['SC_VC_Structure/Function'], np.median), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.median), Tablefy(df['SC_VC_Systems'], np.median)))
+                        Tab2.add_row(("Median", Tablefy(df['SC_VC_Evolution'], np.median), Tablefy(df['SC_VC_Information_Flow'], np.median), Tablefy(df['SC_VC_Structure_Function'], np.median), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.median), Tablefy(df['SC_VC_Systems'], np.median)))
 
-                        Tab2.add_row(("3rd Quartile", Tablefy(df['SC_VC_Evolution'], np.percentile, q = 75), Tablefy(df['SC_VC_Information Flow'], np.percentile, q = 75), Tablefy(df['SC_VC_Structure/Function'], np.percentile, q = 75), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.percentile, q = 75),
+                        Tab2.add_row(("3rd Quartile", Tablefy(df['SC_VC_Evolution'], np.percentile, q = 75), Tablefy(df['SC_VC_Information_Flow'], np.percentile, q = 75), Tablefy(df['SC_VC_Structure_Function'], np.percentile, q = 75), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.percentile, q = 75),
                                         Tablefy(df['SC_VC_Systems'], np.percentile, q = 75)))
 
-                        Tab2.add_row(("Maximum", Tablefy(df['SC_VC_Evolution'], np.max), Tablefy(df['SC_VC_Information Flow'], np.max), Tablefy(df['SC_VC_Structure/Function'], np.max), Tablefy(df['SC_VC_Transformations of Energy and Matter'], np.max), Tablefy(df['SC_VC_Systems'], np.max)))
+                        Tab2.add_row(("Maximum", Tablefy(df['SC_VC_Evolution'], np.max), Tablefy(df['SC_VC_Information_Flow'], np.max), Tablefy(df['SC_VC_Structure_Function'], np.max), Tablefy(df['SC_VC_Transformations_of_Energy_and_Matter'], np.max), Tablefy(df['SC_VC_Systems'], np.max)))
 
                         Tab2.add_hline()
 
@@ -678,26 +678,26 @@ def Generate_PhysMAPS(fname, width, DataFrame, NumReported, MainDirectory = cwd,
 
                         Tab3.add_row(("No. Statements", Statements[6], Statements[7], Statements[8], Statements[9], Statements[10], Statements[11], Statements[12]))
 
-                        Tab3.add_row(("Average", Tablefy(df['SC_Phys_Homeostasis'], np.mean), Tablefy(df['SC_Phys_Cell-Cell Communication'], np.mean), Tablefy(df['SC_Phys_Flow-down Gradients'], np.mean), Tablefy(df['SC_Phys_Cell Membrane'], np.mean),
-                                        Tablefy(df['SC_Phys_Interdependence'], np.mean), Tablefy(df['SC_Phys_Structure/Function'], np.mean), Tablefy(df['SC_Phys_Evolution'], np.mean)))
+                        Tab3.add_row(("Average", Tablefy(df['SC_Phys_Homeostasis'], np.mean), Tablefy(df['SC_Phys_CellCell_Communication'], np.mean), Tablefy(df['SC_Phys_Flowdown_Gradients'], np.mean), Tablefy(df['SC_Phys_Cell_Membrane'], np.mean),
+                                        Tablefy(df['SC_Phys_Interdependence'], np.mean), Tablefy(df['SC_Phys_Structure_Function'], np.mean), Tablefy(df['SC_Phys_Evolution'], np.mean)))
 
-                        Tab3.add_row(("Std. Error", Tablefy(df['SC_Phys_Homeostasis'], StdErr), Tablefy(df['SC_Phys_Cell-Cell Communication'], StdErr), Tablefy(df['SC_Phys_Flow-down Gradients'], StdErr), Tablefy(df['SC_Phys_Cell Membrane'], StdErr),
-                                        Tablefy(df['SC_Phys_Interdependence'], StdErr), Tablefy(df['SC_Phys_Structure/Function'], StdErr), Tablefy(df['SC_Phys_Evolution'], StdErr)))
+                        Tab3.add_row(("Std. Error", Tablefy(df['SC_Phys_Homeostasis'], StdErr), Tablefy(df['SC_Phys_CellCell_Communication'], StdErr), Tablefy(df['SC_Phys_Flowdown_Gradients'], StdErr), Tablefy(df['SC_Phys_Cell_Membrane'], StdErr),
+                                        Tablefy(df['SC_Phys_Interdependence'], StdErr), Tablefy(df['SC_Phys_Structure_Function'], StdErr), Tablefy(df['SC_Phys_Evolution'], StdErr)))
 
-                        Tab3.add_row(("Minimum", Tablefy(df['SC_Phys_Homeostasis'], np.min), Tablefy(df['SC_Phys_Cell-Cell Communication'], np.min), Tablefy(df['SC_Phys_Flow-down Gradients'], np.min), Tablefy(df['SC_Phys_Cell Membrane'], np.min),
-                                        Tablefy(df['SC_Phys_Interdependence'], np.min), Tablefy(df['SC_Phys_Structure/Function'], np.min), Tablefy(df['SC_Phys_Evolution'], np.min)))
+                        Tab3.add_row(("Minimum", Tablefy(df['SC_Phys_Homeostasis'], np.min), Tablefy(df['SC_Phys_CellCell_Communication'], np.min), Tablefy(df['SC_Phys_Flowdown_Gradients'], np.min), Tablefy(df['SC_Phys_Cell_Membrane'], np.min),
+                                        Tablefy(df['SC_Phys_Interdependence'], np.min), Tablefy(df['SC_Phys_Structure_Function'], np.min), Tablefy(df['SC_Phys_Evolution'], np.min)))
 
-                        Tab3.add_row(("1st Quartile", Tablefy(df['SC_Phys_Homeostasis'], np.percentile, q = 25), Tablefy(df['SC_Phys_Cell-Cell Communication'], np.percentile, q = 25), Tablefy(df['SC_Phys_Flow-down Gradients'], np.percentile, q = 25), Tablefy(df['SC_Phys_Cell Membrane'], np.percentile, q = 25),
-                                        Tablefy(df['SC_Phys_Interdependence'], np.percentile, q = 25), Tablefy(df['SC_Phys_Structure/Function'], np.percentile, q = 25), Tablefy(df['SC_Phys_Evolution'], np.percentile, q = 25)))
+                        Tab3.add_row(("1st Quartile", Tablefy(df['SC_Phys_Homeostasis'], np.percentile, q = 25), Tablefy(df['SC_Phys_CellCell_Communication'], np.percentile, q = 25), Tablefy(df['SC_Phys_Flowdown_Gradients'], np.percentile, q = 25), Tablefy(df['SC_Phys_Cell_Membrane'], np.percentile, q = 25),
+                                        Tablefy(df['SC_Phys_Interdependence'], np.percentile, q = 25), Tablefy(df['SC_Phys_Structure_Function'], np.percentile, q = 25), Tablefy(df['SC_Phys_Evolution'], np.percentile, q = 25)))
 
-                        Tab3.add_row(("Median", Tablefy(df['SC_Phys_Homeostasis'], np.median), Tablefy(df['SC_Phys_Cell-Cell Communication'], np.median), Tablefy(df['SC_Phys_Flow-down Gradients'], np.median), Tablefy(df['SC_Phys_Cell Membrane'], np.median),
-                                        Tablefy(df['SC_Phys_Interdependence'], np.median), Tablefy(df['SC_Phys_Structure/Function'], np.median), Tablefy(df['SC_Phys_Evolution'], np.median)))
+                        Tab3.add_row(("Median", Tablefy(df['SC_Phys_Homeostasis'], np.median), Tablefy(df['SC_Phys_CellCell_Communication'], np.median), Tablefy(df['SC_Phys_Flowdown_Gradients'], np.median), Tablefy(df['SC_Phys_Cell_Membrane'], np.median),
+                                        Tablefy(df['SC_Phys_Interdependence'], np.median), Tablefy(df['SC_Phys_Structure_Function'], np.median), Tablefy(df['SC_Phys_Evolution'], np.median)))
 
-                        Tab3.add_row(("3rd Quartile", Tablefy(df['SC_Phys_Homeostasis'], np.percentile, q = 75), Tablefy(df['SC_Phys_Cell-Cell Communication'], np.percentile, q = 75), Tablefy(df['SC_Phys_Flow-down Gradients'], np.percentile, q = 75), Tablefy(df['SC_Phys_Cell Membrane'], np.percentile, q = 75),
-                                        Tablefy(df['SC_Phys_Interdependence'], np.percentile, q = 75), Tablefy(df['SC_Phys_Structure/Function'], np.percentile, q = 75), Tablefy(df['SC_Phys_Evolution'], np.percentile, q = 75)))
+                        Tab3.add_row(("3rd Quartile", Tablefy(df['SC_Phys_Homeostasis'], np.percentile, q = 75), Tablefy(df['SC_Phys_CellCell_Communication'], np.percentile, q = 75), Tablefy(df['SC_Phys_Flowdown_Gradients'], np.percentile, q = 75), Tablefy(df['SC_Phys_Cell_Membrane'], np.percentile, q = 75),
+                                        Tablefy(df['SC_Phys_Interdependence'], np.percentile, q = 75), Tablefy(df['SC_Phys_Structure_Function'], np.percentile, q = 75), Tablefy(df['SC_Phys_Evolution'], np.percentile, q = 75)))
 
-                        Tab3.add_row(("Maximum", Tablefy(df['SC_Phys_Homeostasis'], np.max), Tablefy(df['SC_Phys_Cell-Cell Communication'], np.max), Tablefy(df['SC_Phys_Flow-down Gradients'], np.max), Tablefy(df['SC_Phys_Cell Membrane'], np.max),
-                                        Tablefy(df['SC_Phys_Interdependence'], np.max), Tablefy(df['SC_Phys_Structure/Function'], np.max), Tablefy(df['SC_Phys_Evolution'], np.max)))
+                        Tab3.add_row(("Maximum", Tablefy(df['SC_Phys_Homeostasis'], np.max), Tablefy(df['SC_Phys_CellCell_Communication'], np.max), Tablefy(df['SC_Phys_Flowdown_Gradients'], np.max), Tablefy(df['SC_Phys_Cell_Membrane'], np.max),
+                                        Tablefy(df['SC_Phys_Interdependence'], np.max), Tablefy(df['SC_Phys_Structure_Function'], np.max), Tablefy(df['SC_Phys_Evolution'], np.max)))
 
                         Tab3.add_hline()
 
