@@ -113,10 +113,12 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
   #shinyjs::html('', )
   
   observe({
-    if((ass() == 'GenBio-MAPS') | (ass() == 'Phys-MAPS')){
-      scales <- list('Subdisciplines', 'Core concepts')
+    if(ass() == 'GenBio-MAPS'){
+      scales <- list('Total scores & subdisciplines', 'Core concepts')
+    } else if(ass() == 'Phys-MAPS'){
+      scales <- list('Total scores & core principles', 'Core concepts')
     } else if(ass() == 'EcoEvo-MAPS') {
-      scales <- list('Subdisciplines', 'Core concepts', 'Ecology and evolution core concepts', 
+      scales <- list('Total scores & subdisciplines', 'Core concepts', 'Ecology and evolution core concepts', 
                      '4DEE framework')
     }
     updateSelectInput(session, "scale", label = "Question Categorization:", choices = scales)
