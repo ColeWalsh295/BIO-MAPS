@@ -146,7 +146,7 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
   output$plotScale = renderPlot({
     data.temp <- data.frame(data.out())
     if((ass() == 'GenBio-MAPS') & (input$scale != 'Core concepts')) {
-      if(input$scale == 'Subdisciplines') {
+      if(input$scale == 'Total scores & subdisciplines') {
         Scores.cols <- c('SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 
                        'SC_T_Ecology_and_Evolution', 'SC_Total_Score')
         Labels <- c('Cellular and Molecular', 'Physiology', 'Ecology and Evolution', 'Total Score')
@@ -159,7 +159,7 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
       Labels <- c('Homeostasis', 'Cell-cell communication', 'Flow-down gradients', 'Cell membrane',
                   'Interdependence', 'Structure/function', 'Evolution', 'Total Score')
     } else if((ass() == 'EcoEvo-MAPS') & (input$scale != 'Core concepts')) {
-      if(input$scale == 'Subdisciplines') {
+      if(input$scale == 'Total scores & subdisciplines') {
         Scores.cols <- c('SC_T_Ecology', 'SC_T_Evolution', 'SC_Total_Score')
         Labels <- c('Ecology', 'Evolution', 'Total Score')
       } else if(input$scale == 'Ecology and evolution core concepts') {

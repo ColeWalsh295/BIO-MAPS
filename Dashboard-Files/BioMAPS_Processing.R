@@ -28,6 +28,10 @@ Clean.GenBio <- function(df.file = 'GenBio-MAPS_MasterFile.csv',
   df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
   df <- Convert.ClassLevel(df)
   
+  if(df.file != 'GenBio-MAPS_MasterFile.csv'){
+    return(rbind(header.df, df))
+  }
+  
   return(list('dataFrame' = df, 'header' = header.df))
 }
 

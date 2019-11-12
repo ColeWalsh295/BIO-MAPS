@@ -25,19 +25,20 @@ import ReportGen_BIOMAPS
 
 # Setting user Parameters
 global apiToken, DataCenter, BIOMAPSEmail, UserEmail, ChangeURL
-apiToken = 'NA'# Change token for different Qualtrics account
-SharedJenny = 'NA'
-SharedMindi = 'NA'
-SharedEcoEvoMAPS = [SharedMindi]
-SharedPhysMAPS = [SharedJenny]
-SharedCapstone = [SharedJenny]
+apiToken = "yGPiPssjj7xFISxJ0mdw3z1621Kg7zkAmxPtLSkE" # Change token for different Qualtrics account
+SharedJenny = None
+SharedMindi = None
+SharedEcoEvoMAPS = None
+SharedPhysMAPS = None
+SharedCapstone = None
 DataCenter = 'cornell'
 baseURL = "https://{0}.qualtrics.com/API/v3/responseexports/".format(DataCenter)
 ChangeURL = "https://{0}.qualtrics.com/jfe/form/SV_24b3m5CGBuWe08l".format(DataCenter)
 
 BIOMAPSEmail = 'biomaps@cornell.edu' # Shared BIOMAPS email address
 UserEmail = 'as-phy-edresearchlab@cornell.edu' # User email address
-EmailPassword = 'NA' # User password
+EmailPassword = None # User password
+# MainDirectory = "C:/Users/Cole/Documents/GitHub/Smith_Reports"
 MainDirectory = "C:/BIOMAPS"
 
 # Main Exceution body which repaets every hour
@@ -51,8 +52,8 @@ def main():
     def runprogram(sc):
         try:
             print("Automation executed at: " + time.strftime("%Y-%m-%d %H:%M:%S",time.localtime()))
-            if(int(time.strftime("%H",time.localtime())) == 16):
-                SendStatusEmail()
+            #if(int(time.strftime("%H",time.localtime())) == 16):
+                #SendStatusEmail()
             InstructorSurveyControl()
             CourseChangesControl()
             SurveyControl()
@@ -125,7 +126,7 @@ def InstructorSurveyControl():
                 if(pd.notnull(InstructorsDF.loc[Index, 'EcoEvoD_v2'])):
                     EcoEvoType = int(InstructorsDF.loc[Index, 'EcoEvoA'])
                     EcoEvoCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'EcoEvoB'])
-                    EcoEvoCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'EcoEvoC']))
+                    EcoEvoCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'EcoEvoC']))[:20]
                     EcoEvoClass = InstructorsDF.loc[Index, 'EcoEvo_Class']
                     EcoEvoCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'EcoEvoD_v2'], "%m-%d-%Y")
                     if(EcoEvoCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
@@ -165,7 +166,7 @@ def InstructorSurveyControl():
                 if(pd.notnull(InstructorsDF.loc[Index, 'CapD_v2'])):
                     CapType = int(InstructorsDF.loc[Index, 'CapA'])
                     CapCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'CapB'])
-                    CapCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'CapC']))
+                    CapCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'CapC']))[:20]
                     CapClass = InstructorsDF.loc[Index, 'Cap_Class']
                     CapCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'CapD_v2'], "%m-%d-%Y")
                     if(CapCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
@@ -205,7 +206,7 @@ def InstructorSurveyControl():
                 if(pd.notnull(InstructorsDF.loc[Index, 'PhysD_v2'])):
                     PhysType = int(InstructorsDF.loc[Index, 'PhysA'])
                     PhysCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'PhysB'])
-                    PhysCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'PhysC']))
+                    PhysCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'PhysC']))[:20]
                     PhysClass = InstructorsDF.loc[Index, 'Phys_Class']
                     PhysCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'PhysD_v2'], "%m-%d-%Y")
                     if(PhysCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
@@ -245,7 +246,7 @@ def InstructorSurveyControl():
                 if(pd.notnull(InstructorsDF.loc[Index, 'GenBioD_v2'])):
                     GenBioType = int(InstructorsDF.loc[Index, 'GenBioA'])
                     GenBioCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'GenBioB'])
-                    GenBioCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'GenBioC']))
+                    GenBioCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'GenBioC']))[:20]
                     GenBioClass = InstructorsDF.loc[Index, 'GenBio_Class']
                     GenBioCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'GenBioD_v2'], "%m-%d-%Y")
                     if(GenBioCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
@@ -971,6 +972,7 @@ def SendReport(InstructorEmail, InstructorFirst, InstructorLast, Course, Code, S
     server.starttls()
     server.login(UserEmail, EmailPassword)
     server.sendmail(BIOMAPSEmail, [InstructorEmail, BIOMAPSEmail], msg.as_string())
+    # server.sendmail(BIOMAPSEmail, BIOMAPSEmail, msg.as_string())
     server.quit()
 
 def ChangesEmailSend(ID, InstructorEmail, InstructorFirst, InstructorLast, CourseName, Code, Survey, CloseDate):
