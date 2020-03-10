@@ -1,10 +1,6 @@
 ### Demographic Data
 
-***
-
-Demographic data is available to view in aggregate as long as there is not a single student that identifies with a particular group (i.e., data cannot be broken down by transfer status if only one student in the dataset identifies as a transfer student).
-
-Below, we detail how all demographic variables are determined. Students self-identify and have the option not to disclose any information, therefore the number of students in these plots may be less than the total number of students in the dataset.
+We detail below how all demographic variables used in this dashboard are determined. Students self-identify and have the option not to disclose any information, therefore the number of students in these plots may be less than the total number of students in the dataset. Note that the Capstone assessment does not record information about first generation status, major, transfer status, or the primary language spoken at home.
 
 ***
 

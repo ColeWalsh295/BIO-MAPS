@@ -115,6 +115,7 @@ Clean.Phys <- function(df.file = 'Phys-MAPS_MasterFile.csv',
   header.df <- fread(header.file, header = TRUE)
   
   header.supplemental <- data.frame(SC_Total_Score = 'Total Phys-MAPS score',
+                                    SC_VC_Evolution = 'Vision & Change Evolution subscore',
                                     SC_VC_Information_Flow = 'Vision & Change Information Flow 
                                     subscore',
                                     SC_VC_Structure_Function = 'Vision & Change Structure/Function 
@@ -158,17 +159,50 @@ Clean.Phys <- function(df.file = 'Phys-MAPS_MasterFile.csv',
   return(list('dataFrame' = df, 'header' = header.df))
 }
 
+Clean.Cap <- function(df.file = 'Capstone_MasterFile.csv',
+                       header.file = 'Capstone_Headers.csv'){
+  
+  header.df <- fread(header.file, header = TRUE)
+  names(header.df) = gsub(x = names(header.df), pattern = "#1", replacement = "")
+  
+  header.supplemental <- data.frame(SC_Total_Score = 'Total Capstone score',
+                                    SC_VC_Evolution = 'Vision & Change Evolution subscore',
+                                    SC_VC_Information_Flow = 'Vision & Change Information Flow 
+                                    subscore',
+                                    SC_VC_Structure_Function = 'Vision & Change Structure/Function 
+                                    subscore',
+                                    SC_VC_Transformations_of_Energy_and_Matter = 'Vision & Change 
+                                    Transformations of energy and matter subscore')
+  
+  header.df <- subset(cbind(header.df, header.supplemental), select = -ID)
+  header.df <- Add.IDcols(header.df)
+  
+  # Get Complete dataset
+  df <- fread(df.file)
+  names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
+  
+  df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
+  df <- Convert.ClassLevel(df)
+  
+  return(list('dataFrame' = df, 'header' = header.df))
+}
+
 Add.IDcols <- function(df){
-  ID.dataFrame <- data.frame(ID = 'Encoded student ID',
-                             FullName = 'Encoded student full name',
-                             BackName = 'Encoded student name with first and last name reversed',
-                             ClassStanding = 'Class Standing',
-                             TransferStatus = 'Transfer Status',
-                             Major = 'Intended Major',
-                             SexGender = 'Sex/Gender',
-                             ELL = 'English Language Learner Status',
-                             ParentEducation = 'First Generation Status',
-                             URMStatus = 'URM Status')
+  # ID.dataFrame <- data.frame(ID = 'Encoded student ID',
+  #                            FullName = 'Encoded student full name',
+  #                            BackName = 'Encoded student name with first and last name reversed',
+  #                            ClassStanding = 'Class Standing',
+  #                            TransferStatus = 'Transfer Status',
+  #                            Major = 'Intended Major',
+  #                            SexGender = 'Sex/Gender',
+  #                            ELL = 'English Language Learner Status',
+  #                            ParentEducation = 'First Generation Status',
+  #                            URMStatus = 'URM Status')
+  
+  ID.dataFrame <- data.frame(ID = 'Student ID',
+                             First_Name = 'Student first name',
+                             Last_Name = 'Student last name')
+  
   
   new.df <- cbind(df, ID.dataFrame)
   

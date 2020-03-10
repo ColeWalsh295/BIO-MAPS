@@ -2,11 +2,17 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass, C
   
   observe({
     if(ass() == 'GenBio-MAPS'){
-     updateTextInput(session, 'classID', value = 'R_0vU5WDrHWLjYc37')
+      # updateTextInput(session, 'classID', value = 'R_0vU5WDrHWLjYc37')
+      RadioPopover(ass())
     } else if(ass() == 'EcoEvo-MAPS'){
-     updateTextInput(session, 'classID', value = 'R_6WkTbfUv4dUhh5f')
+      # updateTextInput(session, 'classID', value = 'R_6WkTbfUv4dUhh5f')
+      RadioPopover(ass())
     } else if(ass() == 'Phys-MAPS'){
-     updateTextInput(session, 'classID', value = 'R_1pLjdulMOPNo3Ka')
+      # updateTextInput(session, 'classID', value = 'R_1pLjdulMOPNo3Ka')
+      RadioPopover(ass())
+    } else if(ass() == 'Capstone'){
+      # updateTextInput(session, 'classID', value = 'R_3MM4eIoWBanT8AH')
+      RadioPopover(ass())
     }
   })
   observe({
@@ -15,7 +21,11 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass, C
     }
   })
   
-  data.class <- eventReactive(input$classID, {
+  toListen <- reactive({
+    list(input$classID, ass())
+  })
+  
+  data.class <- eventReactive(toListen(), {
     validate(
       need(input$classID %in% data()$Class_ID, 'Enter a valid class ID')
     )
@@ -23,25 +33,28 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass, C
     return(data.class)
   })
   
-  observeEvent(input$classID, ({
-    if(!data.class()[1, 'Data_Available']){
-      shinyalert("Oops!", "There are too few students the dataset.", type = "error")
-      disable('downloadData')
-    } else {
-      enable('downloadData')
-      DisableRadio(data.class)
-    }
-  }))
+  # observeEvent(input$classID, ({
+  #   if(!data.class()[1, 'Data_Available']){
+  #     shinyalert("Oops!", "There are too few students the dataset.", type = "error")
+  #     disable('downloadData')
+  #   } else {
+  #     enable('downloadData')
+  #     DisableRadio(data.class)
+  #   }
+  # }))
   
   data.out <- reactive({
-    data.out <- data.class() %>%
-      mutate(ClassStanding = ifelse(ClassStanding_Avail_Down, ClassStanding, NA_character_),
-             TransferStatus = ifelse(TransferStatus_Avail_Down, TransferStatus, NA_character_),
-             Major = ifelse(Major_Avail_Down, Major, NA_character_),
-             SexGender = ifelse(SexGender_Avail_Down, SexGender, NA_character_),
-             ELL = ifelse(ELL_Avail_Down, ELL, NA_character_),
-             ParentEducation = ifelse(ParentEducation_Avail_Down, ParentEducation, NA_character_),
-             URMStatus = ifelse(URMStatus_Avail_Down, URMStatus, NA_character_))
+  #   data.out <- data.class() %>%
+  #     mutate(ClassStanding = ifelse(ClassStanding_Avail_Down, ClassStanding, NA_character_),
+  #            TransferStatus = ifelse(TransferStatus_Avail_Down, TransferStatus, NA_character_),
+  #            Major = ifelse(Major_Avail_Down, Major, NA_character_),
+  #            SexGender = ifelse(SexGender_Avail_Down, SexGender, NA_character_),
+  #            ELL = ifelse(ELL_Avail_Down, ELL, NA_character_),
+  #            ParentEducation = ifelse(ParentEducation_Avail_Down, ParentEducation, NA_character_),
+  #            URMStatus = ifelse(URMStatus_Avail_Down, URMStatus, NA_character_))
+    drop.cols <- c('Class_ID', 'Class_Level', 'FullName', 'BackName', 'ClassStanding',
+                   'TransferStatus', 'Major', 'SexGender', 'URMStatus', 'ELL', 'ParentEducation')
+    data.out <- data.class()[, !(names(data.class()) %in% drop.cols)]
     data.out <- rbind(header()[, cols(), with = FALSE], data.out[, cols()])
     data.out[is.na(data.out)] <- ''
     return(data.out)
@@ -56,16 +69,17 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass, C
     }
   )
   
-  df.return <- reactive({
-    if(as.logical(data.class()[1, 'Data_Available'])){
-      df.return <- data.class()
-    } else {
-      df.return <- data.class()[0, ]
-      df.return[1, ] <- NA
-    }
-    return(df.return)
-  })
-  return(df.return)
+  # df.return <- reactive({
+  #   if(as.logical(data.class()[1, 'Data_Available'])){
+  #     df.return <- data.class()
+  #   } else {
+  #     df.return <- data.class()[0, ]
+  #     df.return[1, ] <- NA
+  #   }
+  #   return(df.return)
+  # })
+  # return(df.return)
+  return(data.class)
 }
 
 ClassStatistics <- function(input, output, session, data, Overall = FALSE){
@@ -117,9 +131,11 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
       scales <- list('Total scores & subdisciplines', 'Core concepts')
     } else if(ass() == 'Phys-MAPS'){
       scales <- list('Total scores & core principles', 'Core concepts')
-    } else if(ass() == 'EcoEvo-MAPS') {
-      scales <- list('Total scores & subdisciplines', 'Core concepts', 'Ecology and evolution core concepts', 
-                     '4DEE framework')
+    } else if(ass() == 'EcoEvo-MAPS'){
+      scales <- list('Total scores & subdisciplines', 'Core concepts', 
+                     'Ecology and evolution core concepts', '4DEE framework')
+    } else if(ass() == 'Capstone'){
+      scales <- list('Total scores & core concepts')
     }
     updateSelectInput(session, "scale", label = "Question Categorization:", choices = scales)
   })
@@ -146,11 +162,9 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
   output$plotScale = renderPlot({
     data.temp <- data.frame(data.out())
     if((ass() == 'GenBio-MAPS') & (input$scale != 'Core concepts')) {
-      if(input$scale == 'Total scores & subdisciplines') {
-        Scores.cols <- c('SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 
+      Scores.cols <- c('SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 
                        'SC_T_Ecology_and_Evolution', 'SC_Total_Score')
-        Labels <- c('Cellular and Molecular', 'Physiology', 'Ecology and Evolution', 'Total Score')
-      }
+      Labels <- c('Cellular and Molecular', 'Physiology', 'Ecology and Evolution', 'Total Score')
     } else if((ass() == 'Phys-MAPS') & (input$scale != 'Core concepts')){
       Scores.cols <- c('SC_Phys_Homeostasis', 'SC_Phys_CellCell_Communication', 
                        'SC_Phys_Flowdown_Gradients', 'SC_Phys_Cell_Membrane', 
@@ -183,7 +197,14 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
                     'Humans shape resources\n/ecosystems/environment', 
                     'Transformations of\nenergy and matter', 'Systems', 'Space\nand Time')
       }
-    } else {
+    } else if(ass() == 'Capstone'){
+      Scores.cols <- c('SC_Total_Score', 'SC_VC_Evolution', 'SC_VC_Information_Flow', 
+                       'SC_VC_Structure_Function', 'SC_VC_Transformations_of_Energy_and_Matter', 
+                       'SC_VC_Systems')
+      Labels <- c('Total Score', 'Evolution', 'Information Flow', 'Structure/Function',
+                  'Transformations of\nEnergy and Matter', 'Systems')
+    }
+    else {
       Scores.cols <- c('SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure_Function',
                       'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems')
       Labels <- c('Evolution', 'Information Flow', 'Structure/Function',
@@ -195,7 +216,8 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
       data.scale <- data.temp[, Scores.cols] %>%
         group_by_(class.var) %>%
         melt(.)
-      p <- ggplot(data.scale, aes_string(x = 'variable', y = 'value', color = class.var))
+      p <- ggplot(data.scale, aes_string(x = 'variable', y = 'value', color = class.var)) +
+        scale_color_manual(values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7"))
     } else {
       Demographic <- reactive({
         Demographic <- input$demographic
@@ -209,8 +231,14 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
         data.scale <- data.temp[data.temp[, Demographic()] != '', Scores.cols] %>%
           group_by_(Demographic()) %>%
           melt(.)
+        data.count <- data.temp[data.temp[, Demographic()] != '', Scores.cols] %>%
+          group_by_(Demographic()) %>%
+          summarize(N = n())
         p <- ggplot(data.scale, aes_string(x = 'variable', y = 'value', color = Demographic())) +
-          labs(color = input$demographic)
+          labs(color = input$demographic) +
+          scale_color_manual(labels = paste(as.data.frame(data.count[, Demographic()])[, Demographic()], 
+                                            ' (N = ', data.count$N, ')'),
+                               values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7"))
       }
     }
     if(length(Labels) > 7){
@@ -221,7 +249,6 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL, compa
     }
     p <- p + labs(x = input$scale, y = 'Score', title = "Your students' performance") +
       scale_x_discrete(labels = Labels) +
-      scale_color_manual(values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7")) +
       shiny_theme +
       theme(legend.title = element_blank())
     return(p)
@@ -244,6 +271,9 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
       questions <- list('B', 'C', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'V', 'W', 'Z')
     } else if(ass() == 'EcoEvo-MAPS') {
       questions <- list('Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9')
+    } else if(ass() == 'Capstone'){
+      questions <- list('Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10', 'Q11', 'Q12',
+                        'Q13', 'Q14', 'Q15', 'Q16', 'Q17', 'Q18')
     }
     updateSelectInput(session, "question", label = "Question:", choices = questions)
   })
@@ -268,7 +298,13 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
     })
     output$plotResponses = renderPlot({
       if(Demographic() != 'None'){
-        p <- ggplot(Responses.df(), aes_string(x = 'variable', y = 'value', fill = Demographic()))
+        data.count <- data()[data()[, Demographic()] != '', ] %>%
+          group_by_(Demographic()) %>%
+          summarize(N = n())
+        p <- ggplot(Responses.df(), aes_string(x = 'variable', y = 'value', fill = Demographic())) +
+          scale_fill_manual(labels = paste(as.data.frame(data.count[, Demographic()])[, Demographic()], 
+                                            ' (N = ', data.count$N, ')'),
+                             values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7"))
       } else {
         p <- ggplot(Responses.df(), aes(x = variable, y = value))
       }
@@ -276,7 +312,7 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
         coord_flip() +
         labs(x = 'Statement', y = 'Fraction of Correct Selections', 
              title = "Your students' performance by statement") +
-        scale_fill_manual(values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7")) +
+        # scale_fill_manual(values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7")) +
         shiny_theme  +
         theme(legend.title = element_blank())
 
@@ -329,6 +365,33 @@ DisableRadio <- function(df){
       shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').prop('disabled', false)", sep = ''))
       shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').closest('label').attr('title', '", Titles[[Option]], "')", sep = ''))
       }
+  }
+  return(0)  
+}
+
+RadioPopover <- function(assessment){
+  Titles = list('SexGender' = 'only male and female students are included',
+                'URMStatus' = 'majority = white/asian; URM = all other students',
+                'ParentEducation' = 'first generation student = neither parent graduated college',
+                'ClassStanding' = 'freshman, sophomore/juniors, seniors, and grad students',
+                'Major' = 'biology majors correspond to students planning to major in biology or any other life science',
+                'TransferStatus' = 'transfer students include those who completed some college courses at another institution',
+                'ELL' = 'students indicate whether their primary language growing up was english or another language')
+  for(Option in c('SexGender', 'URMStatus', 'ClassStanding')){
+    shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').closest('label').attr('title', '", Titles[[Option]], "')", sep = ''))
+  }
+  if(assessment != 'Capstone'){
+    for(Option in c('ParentEducation', 'Major', 'TransferStatus', 'ELL')){
+    shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').parent().parent().css('opacity', 1)", sep = ''))
+    shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').prop('disabled', false)", sep = ''))
+    shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').closest('label').attr('title', '", Titles[[Option]], "')", sep = ''))
+    
+    }
+  } else {
+    for(Option in c('ParentEducation', 'Major', 'TransferStatus', 'ELL')){
+      shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').parent().parent().css('opacity', 0.4)", sep = ''))
+      shinyjs::runjs(paste("$('[type = radio][value = ", Option, "]').prop('disabled', true)", sep = ''))
+    }
   }
   return(0)  
 }

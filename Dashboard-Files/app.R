@@ -25,6 +25,10 @@ Phys <- Clean.Phys()
 Phys.df <- Phys$dataFrame
 Phys.header <- Phys$header
 
+Cap <- Clean.Cap()
+Cap.df <- Cap$dataFrame
+Cap.header <- Cap$header
+
 Your_tab = tabItem(
   tabName = "Your_Class",
   fluidRow(column(4, h2("View of your class") %>%
@@ -33,7 +37,7 @@ Your_tab = tabItem(
                            type = "markdown",
                            content = "Your_tab"))),
   
-  DownloadClassDataUI('Class.Main.Download', label = 'Your Class ID:', value = 'R_0vU5WDrHWLjYc37'),
+  DownloadClassDataUI('Class.Main.Download', label = 'Your Class ID:', value = 'R_'),
   br(),
   ClassStatisticsOutput('Class.Main.Statistics'),
   br(),
@@ -51,11 +55,11 @@ Compare_tab = tabItem(
                            content = "Compare_tab"))),
   
   DownloadClassDataUI('Class1.Download', label = 'Your first Class ID:',
-                      value = 'R_0vU5WDrHWLjYc37'),
+                      value = 'R_'),
   br(),
   ClassStatisticsOutput('Class1.Statistics'),
   DownloadClassDataUI('Class2.Download', label = 'Your second Class ID:',
-                      value = 'R_30dBvfCyCitJwFR'),
+                      value = 'R_'),
   br(),
   ClassStatisticsOutput('Class2.Statistics'),
   ScalePlotUI('Class.Compare.Scale', Demos = FALSE, MatchBox = TRUE),
@@ -72,7 +76,7 @@ Overall_tab = tabItem(
                            content = "Aggregate_tab"))),
   
   DownloadClassDataUI('Class.You.Download', label = 'Your Class ID:',
-                      value = 'R_0vU5WDrHWLjYc37'),
+                      value = 'R_'),
   br(),
   ClassStatisticsOutput('Class.You.Statistics'),
   br(),
@@ -106,6 +110,8 @@ server = function(input, output, session) {
       df <- EcoEvo.df
     } else if(input$assessment == 'Phys-MAPS'){
       df <- Phys.df
+    } else if(input$assessment == 'Capstone'){
+      df <- Cap.df
     }
     return(df)
   })
@@ -117,6 +123,8 @@ server = function(input, output, session) {
       header.df <- EcoEvo.header
     } else if(input$assessment == 'Phys-MAPS'){
       header.df <- Phys.header
+    } else if(input$assessment == 'Capstone'){
+      header.df <- Cap.header
     }
     return(header.df)
   })
@@ -203,7 +211,8 @@ dhead = dashboardHeader(title = h4(HTML("Bio-MAPS<br>Data Explorer")))
 # Set up the sidebar which links to two pages
 dside = dashboardSidebar(sidebarMenu(
   id = 'tabs',
-  selectInput('assessment', "Assessment:", choices = c('GenBio-MAPS', 'EcoEvo-MAPS', 'Phys-MAPS')),
+  selectInput('assessment', "Assessment:", choices = c('GenBio-MAPS', 'EcoEvo-MAPS', 
+                                                       'Phys-MAPS', 'Capstone')),
   menuItem("View of your class", tabName = "Your_Class", icon = icon("dashboard")),
   menuItem(HTML("Compare two of<br>your classes"), tabName = "Compare_Classes", icon = icon("dashboard")),
   menuItem(HTML("Compare your class<br>to other classes"), tabName = "Compare_Overall", 
