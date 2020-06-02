@@ -388,7 +388,7 @@ def Generate_GenBioMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
                     for Statement, Sup in df_info.iterrows():
 
-                        Tab4.add_row(('BM-' + Statement, str(int(df.loc[:, 'BM-' + Statement[:2] + '_' + str(ord(Statement[2]) - 96) + 'S'].mean(axis = 0))) + '%', NoEscape(df_info.loc[Statement, 'Statement']),
+                        Tab4.add_row(('BM-' + Statement, str(int(np.nan_to_num(df.loc[:, 'BM-' + Statement[:2] + '_' + str(ord(Statement[2]) - 96) + 'S'].mean(axis = 0), nan = 100))) + '%', NoEscape(df_info.loc[Statement, 'Statement']),
                                         df_info.loc[Statement, 'Correct Answer'], NoEscape(df_info.loc[Statement, 'Vision and Change']),
                                         NoEscape(df_info.loc[Statement, 'Subdiscipline'])))
                         Tab4.add_hline()

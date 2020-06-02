@@ -25,21 +25,21 @@ import ReportGen_BIOMAPS
 
 # Setting user Parameters
 global apiToken, DataCenter, BIOMAPSEmail, UserEmail, ChangeURL
-apiToken = "yGPiPssjj7xFISxJ0mdw3z1621Kg7zkAmxPtLSkE" # Change token for different Qualtrics account
-SharedJenny = "UR_3jS58HMaKvXNGvP"
-SharedMindi = "UR_bjyjYtzBr6Mlq5L"
+apiToken = ##### # Change token for different Qualtrics account
+SharedJenny = #####
+SharedMindi = #####
 SharedEcoEvoMAPS = [SharedMindi]
 SharedPhysMAPS = [SharedJenny]
 SharedCapstone = [SharedJenny]
 DataCenter = 'cornell'
 baseURL = "https://{0}.qualtrics.com/API/v3/responseexports/".format(DataCenter)
-ChangeURL = "https://{0}.qualtrics.com/jfe/form/SV_24b3m5CGBuWe08l".format(DataCenter)
+ChangeURL = #####
 
 BIOMAPSEmail = 'biomaps@cornell.edu' # Shared BIOMAPS email address
 UserEmail = 'as-phy-edresearchlab@cornell.edu' # User email address
-EmailPassword = 'ILoveClarkHall!' # User password
+EmailPassword = ##### # User password
 # MainDirectory = "C:/Users/Cole/Documents/GitHub/Smith_Reports"
-MainDirectory = "C:/BIOMAPS"
+MainDirectory = #####
 
 # Main Exceution body which repaets every hour
 def main():
@@ -87,7 +87,7 @@ def InstructorSurveyControl():
         FileWriter = csv.writer(f)
         FileWriter.writerows(MasterData)
 
-    SurveyID = 'SV_79w7jYQmmFtzA0d' # Instructor survey ID
+    SurveyID = ##### # Instructor survey ID
     DownloadResponses(SurveyID) # Course Information Survey downloaded as Course_Information_Survey.csv (or whatever name is used in qualtrics)
 
     InstructorsDF = pd.read_csv("CIS_BIOMAPS.csv", skiprows = [1, 2])
