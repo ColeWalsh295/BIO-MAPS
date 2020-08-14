@@ -9,20 +9,35 @@ import ReportGraph_BIOMAPS
 cwd = os.getcwd()
 
 def StdErr(Series):
+    # Compute standard error of a series
     return Series.std()/np.sqrt(len(Series))
 
 def Tablefy(Series, func, **kwargs):
+    # Compute some function of a series to be included in summary statistics tables
     try:
         Input = str(int(func(Series, **kwargs))) + '%'
     except ValueError:
         Input = 0
     return Input
 
-def Generate_EcoEvoMAPS(fname, width, DataFrame, NumReported, MainDirectory = cwd, Where = 'Local'):
+"""
+Each of the functions below take the following keyword arguments:
+fname -- filename to write report to as a pdf
+DataFrame -- pandas dataframe of student responses and scores
+NumReported -- the number of students reported to bein the class
+MainDirectory -- path to main direcory with supplemental files for the report
+
+Each function creates a pdf report using LaTeX for the corresponding assessment
+in the local course directory and returns the dataframe of responses and scores.
+"""
+# future version: combine separate functions into one function using conditions
+
+def Generate_EcoEvoMAPS(fname, DataFrame, NumReported, MainDirectory = cwd):
 
     df, Statements = ReportGraph_BIOMAPS.GenerateGraphs_EcoEvoMAPS(DataFrame)
     df_info = pd.read_excel(MainDirectory + '/EcoEvo_Supplemental.xlsx', index_col = 0)
 
+    # set up the LaTeX geometry and append packages
     cf.active = cf.Version1(indent = False)
     geometry_options = {"right": "1.5cm", "left": "1.5cm", "top": "2.5cm", "bottom": "2.5cm"}
     doc = Document(fname, geometry_options = geometry_options)
@@ -54,7 +69,6 @@ def Generate_EcoEvoMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
         with doc.create(Center()) as centered:
             doc.append(NoEscape(r"\includegraphics[width = 0.5\linewidth]{C:/BIOMAPS/Example_Box.png}"))
-            # doc.append(NoEscape(r"\captionof{figure}{Data presented below is summarized using box and whisker plots.}"))
 
         with doc.create(Subsection('Total score and total score subdivided by questions focused on Ecology and Evolutionary Biology', numbering = False)):
 
@@ -220,7 +234,7 @@ def Generate_EcoEvoMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
                     Tab4.add_hline()
 
-    Compiled = False
+    Compiled = False # LaTeX notoriously never compiles the first time...usually takes like three tries, so we'll attempt to compile five times before we give up
     Tries = 0
     while not Compiled:
         try:
@@ -234,7 +248,7 @@ def Generate_EcoEvoMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
     return df
 
-def Generate_GenBioMAPS(fname, width, DataFrame, NumReported, MainDirectory = cwd, Where = 'Local'):
+def Generate_GenBioMAPS(fname, DataFrame, NumReported, MainDirectory = cwd):
 
     df, Statements = ReportGraph_BIOMAPS.GenerateGraphs_GenBioMAPS(DataFrame)
     df_info = pd.read_excel(MainDirectory + '/GenBio_Supplemental.xlsx', index_col = 0)
@@ -270,7 +284,6 @@ def Generate_GenBioMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
         with doc.create(Center()) as centered:
             doc.append(NoEscape(r"\includegraphics[width = 0.5\linewidth]{" + MainDirectory + "/Example_Box.png}"))
-            # doc.append(NoEscape(r"\captionof{figure}{Data presented below is summarized using box and whisker plots.}"))
 
         with doc.create(Subsection('Total score', numbering = False)):
 
@@ -384,7 +397,6 @@ def Generate_GenBioMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
                 with centered.create(LongTable('>{\RaggedRight}p{0.08\linewidth} >{\centering}p{0.08\linewidth} p{0.35\linewidth} >{\centering}p{0.08\linewidth} >{\centering}p{0.1\linewidth} >{\centering}p{0.18\linewidth}', pos = 'h!')) as Tab4:
                     Tab4.add_row(("Statement No.", 'Percent Correct', 'Statement', 'Correct Answer', 'Vision and Change', 'Subdiscipline'))
                     Tab4.add_hline()
-                    #Tab4.append(NoEscape(r"\tabularnewline"))
 
                     for Statement, Sup in df_info.iterrows():
 
@@ -392,7 +404,6 @@ def Generate_GenBioMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
                                         df_info.loc[Statement, 'Correct Answer'], NoEscape(df_info.loc[Statement, 'Vision and Change']),
                                         NoEscape(df_info.loc[Statement, 'Subdiscipline'])))
                         Tab4.add_hline()
-                        #Tab4.append(NoEscape(r"\tabularnewline"))
 
                     Tab4.add_hline()
 
@@ -410,7 +421,7 @@ def Generate_GenBioMAPS(fname, width, DataFrame, NumReported, MainDirectory = cw
 
     return df
 
-def Generate_Capstone(fname, width, DataFrame, NumReported, MainDirectory = cwd, Where = 'Local'):
+def Generate_Capstone(fname, DataFrame, NumReported, MainDirectory = cwd):
 
     df, Statements = ReportGraph_BIOMAPS.GenerateGraphs_Capstone(DataFrame)
     df_info = pd.read_excel(MainDirectory + '/Capstone_Supplemental.xlsx', index_col = 0)
@@ -446,7 +457,6 @@ def Generate_Capstone(fname, width, DataFrame, NumReported, MainDirectory = cwd,
 
         with doc.create(Center()) as centered:
             doc.append(NoEscape(r"\includegraphics[width = 0.5\linewidth]{" + MainDirectory + "/Example_Box.png}"))
-            # doc.append(NoEscape(r"\captionof{figure}{Data presented below is summarized using box and whisker plots.}"))
 
         with doc.create(Subsection('Total score', numbering = False)):
 
@@ -554,7 +564,7 @@ def Generate_Capstone(fname, width, DataFrame, NumReported, MainDirectory = cwd,
 
     return df
 
-def Generate_PhysMAPS(fname, width, DataFrame, NumReported, MainDirectory = cwd, Where = 'Local'):
+def Generate_PhysMAPS(fname, DataFrame, NumReported, MainDirectory = cwd):
 
     df, Statements = ReportGraph_BIOMAPS.GenerateGraphs_PhysMAPS(DataFrame)
     df_info = pd.read_excel(MainDirectory + '/Phys_Supplemental.xlsx', index_col = 0).fillna('')
@@ -590,7 +600,6 @@ def Generate_PhysMAPS(fname, width, DataFrame, NumReported, MainDirectory = cwd,
 
         with doc.create(Center()) as centered:
             doc.append(NoEscape(r"\includegraphics[width = 0.5\linewidth]{C:/BIOMAPS/Example_Box.png}"))
-            # doc.append(NoEscape(r"\captionof{figure}{Data presented below is summarized using box and whisker plots.}"))
 
         with doc.create(Subsection('Total score', numbering = False)):
 

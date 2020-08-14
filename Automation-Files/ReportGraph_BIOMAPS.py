@@ -8,12 +8,23 @@ matplotlib.rcParams.update({'font.size': 20})
 import matplotlib.pyplot as plt
 plt.style.use('seaborn-white')
 GradientYour = matplotlib.cm.get_cmap('PiYG')
-GradientOther = matplotlib.cm.get_cmap('PiYG')
-C = 50
+GradientOther = matplotlib.cm.get_cmap('PiYG') # can use different gradient if desired
+C = 50 # a constant used to scale opacity of points in plots
+
+"""
+Each of the functions below take a pandas dataframe of student response to a
+particular assessment. The functions create plots of students' scores in the
+local course directory. Each function then returns a dataframe containing the
+original dataframe and students' scores on each item.
+"""
+# each function also returns a list of columns corresponding to scores...these
+# are static and don't need to be calculated every time, but I got lazy and
+# didn't want to type them out...someone should really make that better...
 
 def GenerateGraphs_EcoEvoMAPS(df):
     df_Correct = pd.DataFrame()
 
+    # score the items
     df_Correct['Q1_1S'] = df['Q1_1'] == 2
     df_Correct['Q1_2S'] = df['Q1_2'] == 1
     df_Correct['Q1_3S'] = df['Q1_3'] == 2
@@ -90,9 +101,10 @@ def GenerateGraphs_EcoEvoMAPS(df):
     StatementsList = []
     StatementsList.append(len(df_Correct.columns))
 
-    df_Correct['SC_Total_Score'] = df_Correct.sum(axis = 1) / len(df_Correct.columns)
+    df_Correct['SC_Total_Score'] = df_Correct.sum(axis = 1) / len(df_Correct.columns) # average total score(out of 1)
     df_Correct = df_Correct.reset_index(drop = True)
 
+    # there are different important dimensions that include subsets of items...we calculate average scores along each of these dimensions
     EC_Questions = ['Q1_1S', 'Q1_2S', 'Q1_3S', 'Q1_4S', 'Q1_5S', 'Q1_6S', 'Q1_7S', 'Q2_9S', 'Q3_1S', 'Q3_2S', 'Q3_3S', 'Q3_4S', 'Q3_5S', 'Q5_5S', 'Q7_1S', 'Q7_2S', 'Q7_3S', 'Q7_7S', 'Q8_1S',
                     'Q8_2S', 'Q8_3S', 'Q8_5S', 'Q8_6S', 'Q8_7S', 'Q9_1S', 'Q9_2S', 'Q9_4S', 'Q9_5S', 'Q9_6S', 'Q9_7S']
     EV_Questions = ['Q2_1S', 'Q2_2S', 'Q2_3S', 'Q2_4S', 'Q2_5S', 'Q2_6S', 'Q2_7S', 'Q2_8S', 'Q4_1S', 'Q4_2S', 'Q4_3S', 'Q4_4S', 'Q4_5S', 'Q4_6S', 'Q4_7S', 'Q5_1S', 'Q5_2S', 'Q5_3S', 'Q5_4S',
@@ -172,7 +184,7 @@ def GenerateGraphs_EcoEvoMAPS(df):
     df_Correct['SC_EE_Interactions_with_Ecosystems'] = df_Correct[EE_IE_Questions].sum(axis = 1) / len(EE_IE_Questions)
     df_Correct['SC_EE_Human_Impact'] = df_Correct[EE_HI_Questions].sum(axis = 1) / len(EE_HI_Questions)
 
-    matplotlib.rcParams.update({'font.size': 16})
+    matplotlib.rcParams.update({'font.size': 16}) # this is a bigger plot
     plt.figure(figsize = (12, 9))
     sns.boxplot(data = df_Correct[['SC_EE_Heritable_Variation', 'SC_EE_Modes_of_Change', 'SC_EE_Phylogeny_and_Evolutionary_History', 'SC_EE_Biological_Diversity', 'SC_EE_Populations', 'SC_EE_Energy_and_Matter',
                                     'SC_EE_Interactions_with_Ecosystems', 'SC_EE_Human_Impact']], color = 'w', showfliers = False)
@@ -275,6 +287,8 @@ def GenerateGraphs_EcoEvoMAPS(df):
 def GenerateGraphs_GenBioMAPS(df):
     df_Correct = pd.DataFrame()
 
+    # GenBio-MAPS is weird...students don't see every question, so we have to be careful not to score questions wrong if students didn't see the question
+    # the 'T-' columns contain timing information. If the column is null it means the student didn't see the question
     df_Correct['BM-01_1S'] = (df['BM-01#1_1'] == 2) * (pd.notnull(df['T-BM-01_1']).replace(False, np.nan))
     df_Correct['BM-01_2S'] = (df['BM-01#1_2'] == 1) * (pd.notnull(df['T-BM-01_1']).replace(False, np.nan))
     df_Correct['BM-01_3S'] = (df['BM-01#1_3'] == 2) * (pd.notnull(df['T-BM-01_1']).replace(False, np.nan))
@@ -534,10 +548,8 @@ def GenerateGraphs_GenBioMAPS(df):
     sns.boxplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure_Function', 'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems']], color = 'w', showfliers = False)
     sns.stripplot(data = df_Correct[['SC_VC_Evolution', 'SC_VC_Information_Flow', 'SC_VC_Structure_Function', 'SC_VC_Transformations_of_Energy_and_Matter', 'SC_VC_Systems']], jitter = 0.25, alpha = min(1, C * 10/(5 * len(df.index))), size = 10, edgecolor = None)
     plt.xticks((0, 1, 2, 3, 4), ('Evolution', 'Information Flow', 'Structure Function', u'Transformations of\nEnergy and Matter', 'Systems'), rotation = 40)
-    #plt.yticks((0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), ('0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'))
     plt.yticks((0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1), ('0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'))
     plt.ylabel('Percent Correct')
-    #plt.text(2, 1.1, 'Vision and Change Core Concepts', ha = 'center', va = 'center')
     plt.subplots_adjust(left = 0.1, bottom = 0.22)
     plt.savefig('GenBioMAPS_VisionChange_Scores.png')
     plt.close()
@@ -723,10 +735,6 @@ def GenerateGraphs_Capstone(df):
     return df, StatementsList
 
 def GenerateGraphs_PhysMAPS(df):
-    # df = df.iloc[:40, :]
-
-    # df.loc[:, 'Q1_1':'Q40_7'] = df.loc[:, 'Q1_1':'Q40_7'].apply(lambda x: x.map({1:1, 2:2, 3:2}))
-
     df_Correct = pd.DataFrame()
 
     df_Correct['QB_1S'] = df['Q1_1'] == 1

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #!c:/Python/python3_6.exe -u
-
+# an updated version of this administration script exits for the PLIC, but has not been implemented
+# future versions: pull Qualtrics API calls from this and PLIC script into one consolidated file
 import os
 import sys
 import traceback
@@ -23,11 +24,12 @@ from email.mime.application import MIMEApplication
 import numpy as np
 import ReportGen_BIOMAPS
 
-# Setting user Parameters
+# set user parameters
 global apiToken, DataCenter, BIOMAPSEmail, UserEmail, ChangeURL
-apiToken = "yGPiPssjj7xFISxJ0mdw3z1621Kg7zkAmxPtLSkE" # Change token for different Qualtrics account
-SharedJenny = "UR_3jS58HMaKvXNGvP"
-SharedMindi = "UR_bjyjYtzBr6Mlq5L"
+admin_info = pd.read_csv, index_col = False, header = 0).T[0] # get sensitive admininstration info
+apiToken = admin_info['API'] # change token for different Qualtrics account
+SharedJenny = admin_info['SharedJenny']
+SharedMindi = admin_info['SharedMindi']
 SharedEcoEvoMAPS = [SharedMindi]
 SharedPhysMAPS = [SharedJenny]
 SharedCapstone = [SharedJenny]
@@ -35,13 +37,12 @@ DataCenter = 'cornell'
 baseURL = "https://{0}.qualtrics.com/API/v3/responseexports/".format(DataCenter)
 ChangeURL = "https://{0}.qualtrics.com/jfe/form/SV_24b3m5CGBuWe08l".format(DataCenter)
 
-BIOMAPSEmail = 'biomaps@cornell.edu' # Shared BIOMAPS email address
-UserEmail = 'as-phy-edresearchlab@cornell.edu' # User email address
-EmailPassword = 'ILoveClarkHall!' # User password
-# MainDirectory = "C:/Users/Cole/Documents/GitHub/Smith_Reports"
+BIOMAPSEmail = 'biomaps@cornell.edu'
+UserEmail = 'as-phy-edresearchlab@cornell.edu' # dummy email used to access mail client
+EmailPassword = admin_info['EmailPassword']
 MainDirectory = "C:/BIOMAPS"
 
-# Main Exceution body which repaets every hour
+# main Exceution body which repaets every hour
 def main():
     InstructorSurveyControl()
     CourseChangesControl()
@@ -52,15 +53,14 @@ def main():
     def runprogram(sc):
         try:
             print("Automation executed at: " + time.strftime("%Y-%m-%d %H:%M:%S",time.localtime()))
-            #if(int(time.strftime("%H",time.localtime())) == 16):
-                #SendStatusEmail()
             InstructorSurveyControl()
             CourseChangesControl()
             SurveyControl()
             ReportControl()
             sc.enter(3600, 1, runprogram, (sc,))
             print("Waiting...")
-        # If an error occurs somewhere in here, print to screen, but run again in one hour
+        # if an error occurs somewhere in here, print to screen, but run again in one hour
+        # could set up automatic email to alert admin
         except Exception as e:
             print("Error at: " + time.strftime("%Y-%m-%d %H:%M:%S",time.localtime()))
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -72,31 +72,33 @@ def main():
     s.run()
     return 0
 
-# Check information provided online by instructors
 def InstructorSurveyControl():
+    # check course information survey, downloaded from qualtrics...if new entries exist, add them to the master data file, create surveys, and send pre
+    # survey
     print("Checking CIS...")
-    os.chdir(MainDirectory) # Main Survey Directory
-    with open("MasterCourseData_BIOMAPS.csv", 'r', newline = '\n') as f: # Main Course Information Data
+    os.chdir(MainDirectory)
+    with open("MasterCourseData_BIOMAPS.csv", 'r', newline = '\n') as f:
         MasterData = list(csv.reader(f))
         NumRows = len(MasterData)
         global LastAccess
-        LastAccess = time.strftime("%d-%b-%Y %H:%M:%S %Z",time.localtime()) # Update last access time to current time
+        LastAccess = time.strftime("%d-%b-%Y %H:%M:%S %Z",time.localtime())
         MasterData[0][1] = LastAccess
 
-    with open("MasterCourseData_BIOMAPS.csv",'w') as f: # Main Course Information Data
+    with open("MasterCourseData_BIOMAPS.csv",'w') as f:
         FileWriter = csv.writer(f)
         FileWriter.writerows(MasterData)
 
-    SurveyID = 'SV_79w7jYQmmFtzA0d' # Instructor survey ID
-    DownloadResponses(SurveyID) # Course Information Survey downloaded as Course_Information_Survey.csv (or whatever name is used in qualtrics)
+    SurveyID = 'SV_79w7jYQmmFtzA0d' # Course Information Survey ID
+    DownloadResponses(SurveyID) # pull data from Qualtrics
 
+    # store InfoDummyDF in course folder for easy lookup later
     InstructorsDF = pd.read_csv("CIS_BIOMAPS.csv", skiprows = [1, 2])
-    InfoDummyDF = pd.read_csv('CIS_BIOMAPS.csv', skiprows = [2]) # Keep Header...we're only going to take one row from this to keep in the course's folder for specific info
+    InfoDummyDF = pd.read_csv('CIS_BIOMAPS.csv', skiprows = [2])
 
     with open("MasterCourseData_BIOMAPS.csv",'a') as f0:
-        MasterDataWriter = csv.writer(f0) # Write new entries in online Qualtrics survey to local Master Data file
+        MasterDataWriter = csv.writer(f0)
         for Index, Instructor in InstructorsDF.iterrows():
-            if(InstructorsDF.loc[Index, 'Finished'] == 0): # Check if they actually finished the online survey
+            if(InstructorsDF.loc[Index, 'Finished'] == 0):
                 continue
             MasterDataRow = 2
             PreviouslyRecorded = False
@@ -108,9 +110,7 @@ def InstructorSurveyControl():
                     MasterDataRow += 1
 
             if(not PreviouslyRecorded):
-
-                # Parse data from Course Information Survey to fill Master Data File
-                # Use Regex to replace any non-alphanumeric characters with underscores...cause instructors fill forms with weird stuff
+                # use regex to replace any non-alphanumeric characters with underscores...cause instructors fill forms with weird stuff
                 ID = InstructorsDF.loc[Index, 'ResponseID']
                 FirstName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'Q2'])
                 LastName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'Q3'])
@@ -129,6 +129,7 @@ def InstructorSurveyControl():
                     EcoEvoCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'EcoEvoC']))[:20]
                     EcoEvoClass = InstructorsDF.loc[Index, 'EcoEvo_Class']
                     EcoEvoCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'EcoEvoD_v2'], "%m-%d-%Y")
+                    # set close date of survey to a point in the future
                     if(EcoEvoCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
                         EcoEvoCloseDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time()) + datetime.timedelta(days = 14)
                     EcoEvoSurveyID = MakeSurvey(School, EcoEvoCourseNumber, CourseYear, LastName, 'EcoEvo-MAPS')
@@ -138,21 +139,21 @@ def InstructorSurveyControl():
                     EcoEvoSent = time.strftime("%d-%b-%Y %H:%M:%S",time.localtime())
                     EcoEvoCloseDate = EcoEvoCloseDate.strftime("%d-%b-%Y")
 
-                    for User in SharedEcoEvoMAPS: # Share surveys with other interested users
+                    for User in SharedEcoEvoMAPS: # share surveys with other interested users, defined in preamble
                         ShareSurvey(User, EcoEvoSurveyID)
 
-                    # Create a directory for that term's files if it doesn't exist
+                    # create a directory for that term's files if it doesn't exist
                     TermDir = MainDirectory + "/EcoEvo-MAPS/" + str(CourseYear) + "Files"
                     if not os.path.exists(TermDir):
                         os.mkdir(TermDir, 755)
 
-                    # Create a file for that course if it does not already exist
+                    # create a directory for that course if it does not already exist
                     CourseDir = School + '_' + str(EcoEvoCourseNumber) + '_' + LastName
                     CourseDir = TermDir + "//" + CourseDir
                     if not os.path.exists(CourseDir):
                         os.mkdir(CourseDir, 755)
 
-                    # Individual course info provided by instructor
+                    # now we store that specific course info
                     InfoDummyDF.loc[[0, Index + 1], :].to_csv(CourseDir + '/EcoEvo-MAPS_' + str(CourseYear) + '_' + School + '_' + str(EcoEvoCourseNumber) + '_' + LastName + '_CourseInfo.csv', index = False)
                 else:
                     EcoEvoSurveyID = np.nan
@@ -178,21 +179,18 @@ def InstructorSurveyControl():
                     CapSent = time.strftime("%d-%b-%Y %H:%M:%S",time.localtime())
                     CapCloseDate = CapCloseDate.strftime("%d-%b-%Y")
 
-                    for User in SharedCapstone: # Share surveys with other interested users
+                    for User in SharedCapstone:
                         ShareSurvey(User, CapSurveyID)
 
-                    # Create a directory for that term's files if it doesn't exist
                     TermDir = MainDirectory + "/Capstone/" + str(CourseYear) + "Files"
                     if not os.path.exists(TermDir):
                         os.mkdir(TermDir, 755)
 
-                    # Create a file for that course if it does not already exist
                     CourseDir = School + '_' + str(CapCourseNumber) + '_' + LastName
                     CourseDir = TermDir + "//" + CourseDir
                     if not os.path.exists(CourseDir):
                         os.mkdir(CourseDir, 755)
 
-                    # Individual course info provided by instructor
                     InfoDummyDF.loc[[0, Index + 1], :].to_csv(CourseDir + '/Capstone_' + str(CourseYear) + '_' + School + '_' + str(CapCourseNumber) + '_' + LastName + '_CourseInfo.csv', index = False)
                 else:
                     CapSurveyID = np.nan
@@ -218,21 +216,18 @@ def InstructorSurveyControl():
                     PhysSent = time.strftime("%d-%b-%Y %H:%M:%S",time.localtime())
                     PhysCloseDate = PhysCloseDate.strftime("%d-%b-%Y")
 
-                    for User in SharedPhysMAPS: # Share surveys with other interested users
+                    for User in SharedPhysMAPS:
                         ShareSurvey(User, SharedPhysMAPS)
 
-                    # Create a directory for that term's files if it doesn't exist
                     TermDir = MainDirectory + "/Phys-MAPS/" + str(CourseYear) + "Files"
                     if not os.path.exists(TermDir):
                         os.mkdir(TermDir, 755)
 
-                    # Create a file for that course if it does not already exist
                     CourseDir = School + '_' + str(PhysCourseNumber) + '_' + LastName
                     CourseDir = TermDir + "//" + CourseDir
                     if not os.path.exists(CourseDir):
                         os.mkdir(CourseDir, 755)
 
-                    # Individual course info provided by instructor
                     InfoDummyDF.loc[[0, Index + 1], :].to_csv(CourseDir + '/Phys-MAPS_' + str(CourseYear) + '_' + School + '_' + str(PhysCourseNumber) + '_' + LastName + '_CourseInfo.csv', index = False)
                 else:
                     PhysSurveyID = np.nan
@@ -258,18 +253,15 @@ def InstructorSurveyControl():
                     GenBioSent = time.strftime("%d-%b-%Y %H:%M:%S",time.localtime())
                     GenBioCloseDate = GenBioCloseDate.strftime("%d-%b-%Y")
 
-                    # Create a directory for that term's files if it doesn't exist
                     TermDir = MainDirectory + "/GenBio-MAPS/" + str(CourseYear) + "Files"
                     if not os.path.exists(TermDir):
                         os.mkdir(TermDir, 755)
 
-                    # Create a file for that course if it does not already exist
                     CourseDir = School + '_' + str(GenBioCourseNumber) + '_' + LastName
                     CourseDir = TermDir + "//" + CourseDir
                     if not os.path.exists(CourseDir):
                         os.mkdir(CourseDir, 755)
 
-                    # Individual course info provided by instructor
                     InfoDummyDF.loc[[0, Index + 1], :].to_csv(CourseDir + '/GenBio-MAPS_' + str(CourseYear) + '_' + School + '_' + str(GenBioCourseNumber) + '_' + LastName + '_CourseInfo.csv', index = False)
                 else:
                     GenBioSurveyID = np.nan
@@ -280,15 +272,15 @@ def InstructorSurveyControl():
                     GenBioCloseDate = np.nan
                     GenBioSent = np.nan
 
-                # Write all data for new course to Master File for later reference
+                # write all data for new course to Master File for later reference
                 csvUpdate = [ID, CourseYear, FirstName, LastName, Email, School, SchoolType, CreditOffered, EcoEvoSurveyID, EcoEvoType, EcoEvoCourseName, EcoEvoCourseNumber, EcoEvoClass, EcoEvoCloseDate, EcoEvoSent,'','','', CapSurveyID, CapType, CapCourseName,
                     CapCourseNumber, CapClass, CapCloseDate, CapSent,'','','', PhysSurveyID, PhysType, PhysCourseName, PhysCourseNumber, PhysClass, PhysCloseDate, PhysSent,'','','', GenBioSurveyID, GenBioType, GenBioCourseName, GenBioCourseNumber, GenBioClass, GenBioCloseDate, GenBioSent,'','','']
                 MasterDataWriter.writerow(csvUpdate)
 
     os.remove('CIS_BIOMAPS.csv')
 
-# Check the online form for changing dates and update the necessary dates in the Master file
 def CourseChangesControl():
+    # check the online form for changing dates and update the necessary dates in the Master file
     print("Checking Changes...")
     MasterDF = pd.read_csv('MasterCourseData_BIOMAPS.csv', skiprows = [0], index_col = 'ID')
 
@@ -306,10 +298,10 @@ def CourseChangesControl():
 
         for Index, Change in ChangesDF.iterrows():
             InstructorID = ChangesDF.loc[Index, 'Q1']
-            # Log the online survey entries in the local copy of changes
+            # log the online survey entries in the local copy of changes
             ChangeLogWriter.writerow([ChangesDF.loc[Index, 'ResponseID'], time.strftime("%d-%b-%Y %H:%M:%S", time.localtime()), ChangesDF.loc[Index, 'Q1'], ChangesDF.loc[Index, 'EcoEvo_Date'], ChangesDF.loc[Index, 'EcoEvo_R'], ChangesDF.loc[Index, 'Cap_Date'],
                                         ChangesDF.loc[Index, 'Cap_R'], ChangesDF.loc[Index, 'Phys_Date'], ChangesDF.loc[Index, 'Phys_R'], ChangesDF.loc[Index, 'GenBio_Date'], ChangesDF.loc[Index, 'GenBio_R']])
-            # If any incorrect IDs or dates are entered...move on...otherwise update the Master dataframe
+            # if any incorrect IDs or dates are entered...move on...otherwise update the Master dataframe
             if(InstructorID not in MasterDF.index):
                 continue
 
@@ -319,13 +311,13 @@ def CourseChangesControl():
                 except ValueError:
                     continue
 
-                # Reset reminder email statuses if requested
+                # reset reminder email statuses if requested
                 if(ChangesDF.loc[Index, 'EcoEvo_R'] == 1):
                     MasterDF.loc[InstructorID, 'EcoEvo Reminder'] = np.nan
                 elif((ChangesDF.loc[Index, 'EcoEvo_R'] == 2) and pd.isnull(MasterDF.loc[InstructorID, 'EcoEvo Reminder'])):
                     MasterDF.loc[InstructorID, 'EcoEvo Reminder'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
-                # Send email to instructor letting them know that the dates have been changed
+                # send email to instructor letting them know that the dates have been changed
                 ChangesEmailSend(InstructorID, MasterDF.loc[InstructorID, 'Email'], MasterDF.loc[InstructorID, 'First Name'], MasterDF.loc[InstructorID, 'Last Name'], MasterDF.loc[InstructorID, 'EcoEvo Name'],
                                     MasterDF.loc[InstructorID, 'EcoEvo Number'], 'EcoEvo-MAPS', MasterDF.loc[InstructorID, 'EcoEvo End'])
 
@@ -335,13 +327,11 @@ def CourseChangesControl():
                 except ValueError:
                     continue
 
-                # Reset reminder email statuses if requested
                 if(ChangesDF.loc[Index, 'Cap_R'] == 1):
                     MasterDF.loc[InstructorID, 'Capstone Reminder'] = np.nan
                 elif((ChangesDF.loc[Index, 'Cap_R'] == 2) and pd.isnull(MasterDF.loc[InstructorID, 'Capstone Reminder'])):
                     MasterDF.loc[InstructorID, 'Capstone Reminder'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
-                # Send email to instructor letting them know that the dates have been changed
                 ChangesEmailSend(InstructorID, MasterDF.loc[InstructorID, 'Email'], MasterDF.loc[InstructorID, 'First Name'], MasterDF.loc[InstructorID, 'Last Name'], MasterDF.loc[InstructorID, 'Capstone Name'],
                                     MasterDF.loc[InstructorID, 'Capstone Number'], 'Capstone', MasterDF.loc[InstructorID, 'Capstone End'])
 
@@ -351,13 +341,11 @@ def CourseChangesControl():
                 except ValueError:
                     continue
 
-                # Reset reminder email statuses if requested
                 if(ChangesDF.loc[Index, 'Phys_R'] == 1):
                     MasterDF.loc[InstructorID, 'Phys Reminder'] = np.nan
                 elif((ChangesDF.loc[Index, 'Phys_R'] == 2) and pd.isnull(MasterDF.loc[InstructorID, 'Phys Reminder'])):
                     MasterDF.loc[InstructorID, 'Phys Reminder'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
-                # Send email to instructor letting them know that the dates have been changed
                 ChangesEmailSend(InstructorID, MasterDF.loc[InstructorID, 'Email'], MasterDF.loc[InstructorID, 'First Name'], MasterDF.loc[InstructorID, 'Last Name'], MasterDF.loc[InstructorID, 'Phys Name'],
                                     MasterDF.loc[InstructorID, 'Phys Number'], 'Phys-MAPS', MasterDF.loc[InstructorID, 'Phys End'])
 
@@ -367,17 +355,15 @@ def CourseChangesControl():
                 except ValueError:
                     continue
 
-                # Reset reminder email statuses if requested
                 if(ChangesDF.loc[Index, 'GenBio_R'] == 1):
                     MasterDF.loc[InstructorID, 'GenBio Reminder'] = np.nan
                 elif((ChangesDF.loc[Index, 'GenBio_R'] == 2) and pd.isnull(MasterDF.loc[InstructorID, 'GenBio Reminder'])):
                     MasterDF.loc[InstructorID, 'GenBio Reminder'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
-                # Send email to instructor letting them know that the dates have been changed
                 ChangesEmailSend(InstructorID, MasterDF.loc[InstructorID, 'Email'], MasterDF.loc[InstructorID, 'First Name'], MasterDF.loc[InstructorID, 'Last Name'], MasterDF.loc[InstructorID, 'GenBio Name'],
                                     MasterDF.loc[InstructorID, 'GenBio Number'], 'GenBio-MAPS', MasterDF.loc[InstructorID, 'GenBio End'])
 
-    # Write Master dataframe to file
+    # write Master dataframe to file with updated info
     with open(MainDirectory + "/MasterCourseData_BIOMAPS.csv", 'w') as f:
         MasterDataWriter = csv.writer(f)
         MasterDataWriter.writerows([['Last Accessed:', LastAccess]])
@@ -387,7 +373,8 @@ def CourseChangesControl():
     os.remove('BIOMAPS_Date_Changes.csv')
 
 def SurveyControl():
-    # Send Pre survey, reminders, or close the pre-survey
+    # check current time relative to specified close dates by instructors and send reminders or close the survey as necessary
+    # send Pre survey, reminders, or close the pre-survey
     print("Checking survey reminders, end dates, etc...")
     CurrentTime = datetime.datetime.now()
     MasterDF = pd.read_csv(MainDirectory + "/MasterCourseData_BIOMAPS.csv", skiprows = [0])
@@ -395,21 +382,19 @@ def SurveyControl():
 
         # EcoEvo-MAPS
         if(pd.notnull(MasterDF.loc[Index, 'EcoEvo ID']) & (pd.isnull(MasterDF.loc[Index, 'EcoEvo Closed']))):
-            # If Survey not closed, check what time it is and what to do
             SurveyID = MasterDF.loc[Index, 'EcoEvo ID']
             SurveyURL = "https://{0}.qualtrics.com/jfe/form/".format(DataCenter) + SurveyID
             CloseDate = datetime.datetime.strptime(MasterDF.loc[Index, 'EcoEvo End'], "%d-%b-%Y")
 
             if(pd.isnull(MasterDF.loc[Index, 'EcoEvo Sent'])):
-                # Send Pre-Survey if it hasn't been done so already
+                # send Pre-Survey if it hasn't been done so already
                 SendSurvey(SurveyID, MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'EcoEvo Name'], MasterDF.loc[Index, 'EcoEvo Number'], CloseDate, 'EcoEvo-MAPS', SurveyURL)
                 MasterDF.loc[Index, 'Pre-Survey Sent'] = time.strftime("%d-%b-%Y %H:%M:%S",time.localtime())
 
             elif((CurrentTime >= (CloseDate - datetime.timedelta(days = 4))) and pd.isnull(MasterDF.loc[Index, 'EcoEvo Reminder'])):
-                # Send Pre-Survey reminder if we haven't already
                 NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'EcoEvo Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'EcoEvo-MAPS', SurveyID)
                 if(NumStudents == 0):
-                    # If nobody has responded yet, give extra time and send a reminder
+                    # if nobody has responded yet, give extra time and send a reminder
                     CloseDate = CloseDate + datetime.timedelta(days = 3)
                     MasterDF.loc[Index, 'EcoEvo End'] = CloseDate.strftime("%d-%b-%Y")
                     ZeroResponseEmail(MasterDF.loc[Index, 'ID'], MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'EcoEvo Name'], MasterDF.loc[Index, 'EcoEvo Number'], CloseDate, 'EcoEvo-MAPS', SurveyURL)
@@ -419,27 +404,22 @@ def SurveyControl():
                     MasterDF.loc[Index, 'EcoEvo Reminder'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
             elif(CurrentTime >= (CloseDate + datetime.timedelta(hours = 23, minutes = 59, seconds = 59))):
-                # Close the Pre-Survey
                 CloseSurvey(SurveyID)
                 MasterDF.loc[Index, 'EcoEvo Closed'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
         # Capstone
         if(pd.notnull(MasterDF.loc[Index, 'Capstone ID']) & (pd.isnull(MasterDF.loc[Index, 'Capstone Closed']))):
-            # If Survey not closed, check what time it is and what to do
             SurveyID = MasterDF.loc[Index, 'Capstone ID']
             SurveyURL = "https://{0}.qualtrics.com/jfe/form/".format(DataCenter) + SurveyID
             CloseDate = datetime.datetime.strptime(MasterDF.loc[Index, 'Capstone End'], "%d-%b-%Y")
 
             if(pd.isnull(MasterDF.loc[Index, 'Capstone Sent'])):
-                # Send Pre-Survey if it hasn't been done so already
                 SendSurvey(SurveyID, MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Capstone Name'], MasterDF.loc[Index, 'Capstone Number'], CloseDate, 'Capstone', SurveyURL)
                 MasterDF.loc[Index, 'Pre-Survey Sent'] = time.strftime("%d-%b-%Y %H:%M:%S",time.localtime())
 
             elif((CurrentTime >= (CloseDate - datetime.timedelta(days = 4))) and pd.isnull(MasterDF.loc[Index, 'Capstone Reminder'])):
-                # Send Pre-Survey reminder if we haven't already
                 NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'Capstone Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'Capstone', SurveyID)
                 if(NumStudents == 0):
-                    # If nobody has responded yet, give extra time and send a reminder
                     CloseDate = CloseDate + datetime.timedelta(days = 3)
                     MasterDF.loc[Index, 'Capstone End'] = CloseDate.strftime("%d-%b-%Y")
                     ZeroResponseEmail(MasterDF.loc[Index, 'ID'], MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Capstone Name'], MasterDF.loc[Index, 'Capstone Number'], CloseDate, 'Capstone', SurveyURL)
@@ -449,27 +429,22 @@ def SurveyControl():
                     MasterDF.loc[Index, 'Capstone Reminder'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
             elif(CurrentTime >= (CloseDate + datetime.timedelta(hours = 23, minutes = 59, seconds = 59))):
-                # Close the Pre-Survey
                 CloseSurvey(SurveyID)
                 MasterDF.loc[Index, 'Capstone Closed'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
         # Phys-MAPS
         if(pd.notnull(MasterDF.loc[Index, 'Phys ID']) & (pd.isnull(MasterDF.loc[Index, 'Phys Closed']))):
-            # If Survey not closed, check what time it is and what to do
             SurveyID = MasterDF.loc[Index, 'Phys ID']
             SurveyURL = "https://{0}.qualtrics.com/jfe/form/".format(DataCenter) + SurveyID
             CloseDate = datetime.datetime.strptime(MasterDF.loc[Index, 'Phys End'], "%d-%b-%Y")
 
             if(pd.isnull(MasterDF.loc[Index, 'Phys Sent'])):
-                # Send Pre-Survey if it hasn't been done so already
                 SendSurvey(SurveyID, MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Phys Name'], MasterDF.loc[Index, 'Phys Number'], CloseDate, 'Phys-MAPS', SurveyURL)
                 MasterDF.loc[Index, 'Pre-Survey Sent'] = time.strftime("%d-%b-%Y %H:%M:%S",time.localtime())
 
             elif((CurrentTime >= (CloseDate - datetime.timedelta(days = 4))) and pd.isnull(MasterDF.loc[Index, 'Phys Reminder'])):
-                # Send Pre-Survey reminder if we haven't already
                 NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'Phys Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'Phys-MAPS', SurveyID)
                 if(NumStudents == 0):
-                    # If nobody has responded yet, give extra time and send a reminder
                     CloseDate = CloseDate + datetime.timedelta(days = 3)
                     MasterDF.loc[Index, 'Phys End'] = CloseDate.strftime("%d-%b-%Y")
                     ZeroResponseEmail(MasterDF.loc[Index, 'ID'], MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Phys Name'], MasterDF.loc[Index, 'Phys Number'], CloseDate, 'Phys-MAPS', SurveyURL)
@@ -479,27 +454,22 @@ def SurveyControl():
                     MasterDF.loc[Index, 'Phys Reminder'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
             elif(CurrentTime >= (CloseDate + datetime.timedelta(hours = 23, minutes = 59, seconds = 59))):
-                # Close the Pre-Survey
                 CloseSurvey(SurveyID)
                 MasterDF.loc[Index, 'Phys Closed'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
         # GenBio-MAPS
         if(pd.notnull(MasterDF.loc[Index, 'GenBio ID']) & (pd.isnull(MasterDF.loc[Index, 'GenBio Closed']))):
-            # If Survey not closed, check what time it is and what to do
             SurveyID = MasterDF.loc[Index, 'GenBio ID']
             SurveyURL = "https://{0}.qualtrics.com/jfe/form/".format(DataCenter) + SurveyID
             CloseDate = datetime.datetime.strptime(MasterDF.loc[Index, 'GenBio End'], "%d-%b-%Y")
 
             if(pd.isnull(MasterDF.loc[Index, 'GenBio Sent'])):
-                # Send Pre-Survey if it hasn't been done so already
                 SendSurvey(SurveyID, MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'GenBio Name'], MasterDF.loc[Index, 'GenBio Number'], CloseDate, 'GenBio-MAPS', SurveyURL)
                 MasterDF.loc[Index, 'Pre-Survey Sent'] = time.strftime("%d-%b-%Y %H:%M:%S",time.localtime())
 
             elif((CurrentTime >= (CloseDate - datetime.timedelta(days = 4))) and pd.isnull(MasterDF.loc[Index, 'GenBio Reminder'])):
-                # Send Pre-Survey reminder if we haven't already
                 NumStudents = GetResponseData(MasterDF.loc[Index, 'School Name'], MasterDF.loc[Index, 'GenBio Number'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Course Year'], 'GenBio-MAPS', SurveyID)
                 if(NumStudents == 0):
-                    # If nobody has responded yet, give extra time and send a reminder
                     CloseDate = CloseDate + datetime.timedelta(days = 3)
                     MasterDF.loc[Index, 'GenBio End'] = CloseDate.strftime("%d-%b-%Y")
                     ZeroResponseEmail(MasterDF.loc[Index, 'ID'], MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'GenBio Name'], MasterDF.loc[Index, 'GenBio Number'], CloseDate, 'GenBio-MAPS', SurveyURL)
@@ -509,7 +479,6 @@ def SurveyControl():
                     MasterDF.loc[Index, 'GenBio Reminder'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
             elif(CurrentTime >= (CloseDate + datetime.timedelta(hours = 23, minutes = 59, seconds = 59))):
-                # Close the Pre-Survey
                 CloseSurvey(SurveyID)
                 MasterDF.loc[Index, 'GenBio Closed'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
 
@@ -519,8 +488,8 @@ def SurveyControl():
     with open(MainDirectory + "/MasterCourseData_BIOMAPS.csv", 'a') as f:
         MasterDF.to_csv(f, index = False)
 
-# Score the surveys, construct the reports, and send them out
 def ReportControl():
+    # score any surveys that have closed, construct summary reports, and send reports and class lists to instructors as requested
     print("Checking Report Data...")
     MasterDF = pd.read_csv(MainDirectory + "/MasterCourseData_BIOMAPS.csv", skiprows = [0])
     for Index, Course in MasterDF.iterrows():
@@ -532,13 +501,13 @@ def ReportControl():
             DownloadResponses(MasterDF.loc[Index, 'EcoEvo ID'])
             SurveyName = GetSurveyName(MasterDF.loc[Index, 'EcoEvo ID'])
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
-            df, NamesDF = ValidateResponses(df, 'EcoEvo-MAPS')
+            df, NamesDF = ValidateResponses(df, 'EcoEvo-MAPS') # not every response should be included in the dataset...filter out the invalid ones
             if(len(df.index) > 0):
                 PDFName = 'EcoEvo-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'EcoEvo Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
-                ReportGen_BIOMAPS.Generate_EcoEvoMAPS(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'EcoEvo Class'], MainDirectory = MainDirectory, Where = 'Automation')
+                ReportGen_BIOMAPS.Generate_EcoEvoMAPS(Path + '/' + PDFName, DataFrame = df, NumReported = MasterDF.loc[Index, 'EcoEvo Class'], MainDirectory = MainDirectory, Where = 'Automation')
 
-                if(MasterDF.loc[Index, 'Credit Offered']): # If the instructor is offering credit include a list of names and IDs of those who completed each of the surveys
+                if(MasterDF.loc[Index, 'Credit Offered']): # if the instructor is offering credit include a list of names and IDs of those who completed each of the surveys
                     NamesFileName = 'EcoEvo-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'EcoEvo Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
                     NamesDF.to_csv(NamesFileName, index = False)
                     SendReport(MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'EcoEvo Name'], MasterDF.loc[Index, 'EcoEvo Number'], 'EcoEvo-MAPS', Path + '/' + PDFName + '.pdf', NamesFile = NamesFileName)
@@ -557,16 +526,15 @@ def ReportControl():
             if(len(df.index) > 0):
                 PDFName = 'Capstone' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Capstone Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
-                ReportGen_BIOMAPS.Generate_Capstone(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'Capstone Class'], MainDirectory = MainDirectory, Where = 'Automation')
+                ReportGen_BIOMAPS.Generate_Capstone(Path + '/' + PDFName, DataFrame = df, NumReported = MasterDF.loc[Index, 'Capstone Class'], MainDirectory = MainDirectory, Where = 'Automation')
 
-                if(MasterDF.loc[Index, 'Credit Offered']): # If the instructor is offering credit include a list of names and IDs of those who completed each of the surveys
+                if(MasterDF.loc[Index, 'Credit Offered']):
                     NamesFileName = 'Capstone' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Capstone Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
                     NamesDF.to_csv(NamesFileName, index = False)
                     SendReport(MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Capstone Name'], MasterDF.loc[Index, 'Capstone Number'], 'Capstone', Path + '/' + PDFName + '.pdf', NamesFile = NamesFileName)
                 else:
                     SendReport(MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Capstone Name'], MasterDF.loc[Index, 'Capstone Number'], 'Capstone', Path + '/' + PDFName + '.pdf')
             MasterDF.loc[Index, 'Capstone Report'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
-            ########## Remove plots here ############
 
         # Phys-MAPS
         if(pd.isnull(MasterDF.loc[Index, 'Phys Report']) and pd.notnull(MasterDF.loc[Index, 'Phys Closed'])):
@@ -579,16 +547,15 @@ def ReportControl():
             if(len(df.index) > 0):
                 PDFName = 'Phys-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Phys Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
-                ReportGen_BIOMAPS.Generate_PhysMAPS(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'Phys Class'], MainDirectory = MainDirectory, Where = 'Automation')
+                ReportGen_BIOMAPS.Generate_PhysMAPS(Path + '/' + PDFName, DataFrame = df, NumReported = MasterDF.loc[Index, 'Phys Class'], MainDirectory = MainDirectory, Where = 'Automation')
 
-                if(MasterDF.loc[Index, 'Credit Offered']): # If the instructor is offering credit include a list of names and IDs of those who completed each of the surveys
+                if(MasterDF.loc[Index, 'Credit Offered']):
                     NamesFileName = 'Phys-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Phys Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
                     NamesDF.to_csv(NamesFileName, index = False)
                     SendReport(MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Phys Name'], MasterDF.loc[Index, 'Phys Number'], 'Phys-MAPS', Path + '/' + PDFName + '.pdf', NamesFile = NamesFileName)
                 else:
                     SendReport(MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'Phys Name'], MasterDF.loc[Index, 'Phys Number'], 'Phys-MAPS', Path + '/' + PDFName + '.pdf')
             MasterDF.loc[Index, 'Phys Report'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
-            ########## Remove plots here ############
 
         # GenBio-MAPS
         if(pd.isnull(MasterDF.loc[Index, 'GenBio Report']) and pd.notnull(MasterDF.loc[Index, 'GenBio Closed'])):
@@ -603,14 +570,13 @@ def ReportControl():
                 print(PDFName)
                 ReportGen_BIOMAPS.Generate_GenBioMAPS(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'GenBio Class'], MainDirectory = MainDirectory, Where = 'Automation')
 
-                if(MasterDF.loc[Index, 'Credit Offered']): # If the instructor is offering credit include a list of names and IDs of those who completed each of the surveys
+                if(MasterDF.loc[Index, 'Credit Offered']):
                     NamesFileName = 'GenBio-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'GenBio Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
                     NamesDF.to_csv(NamesFileName, index = False)
                     SendReport(MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'GenBio Name'], MasterDF.loc[Index, 'GenBio Number'], 'GenBio-MAPS', Path + '/' + PDFName + '.pdf', NamesFile = NamesFileName)
                 else:
                     SendReport(MasterDF.loc[Index, 'Email'], MasterDF.loc[Index, 'First Name'], MasterDF.loc[Index, 'Last Name'], MasterDF.loc[Index, 'GenBio Name'], MasterDF.loc[Index, 'GenBio Number'], 'GenBio-MAPS', Path + '/' + PDFName + '.pdf')
             MasterDF.loc[Index, 'GenBio Report'] = time.strftime("%d-%b-%Y %H:%M:%S", time.localtime())
-            ########## Remove plots here ############
 
     with open(MainDirectory + "/MasterCourseData_BIOMAPS.csv", 'w') as f:
         MasterDataWriter = csv.writer(f)
@@ -619,25 +585,43 @@ def ReportControl():
         MasterDF.to_csv(f, index = False)
 
 def MakeSurvey(Institution, Number, Year, InstructorLast, SurveyType):
+    """Make a Qualtrics surveys.
+
+    Keyword arguments:
+    Institution -- name of institution administering the survey
+    Number -- course number of the course where the survey is administered
+    Year -- year that the survey is administered
+    InstructorLast -- instructor's last name
+    SurveyType -- which Bio-MAPS assessment to create a survey for
+    """
+
     baseURL = "https://{0}.qualtrics.com/API/v3/surveys".format(DataCenter)
     headers = {
         "x-api-token": apiToken,
         }
 
     files = {
+    # .qsf files are stored locally to be used when creating Qualtrics survey
         'file': (SurveyType + '.qsf', open(SurveyType + '.qsf', 'rb'), 'application/vnd.qualtrics.survey.qsf')
         }
 
     data = {
         "name": SurveyType + str(Year) + '_' + Institution + '_' + str(Number) +'_' + InstructorLast,
         }
-    response = requests.post(baseURL, files=files, data=data, headers=headers)
+    response = requests.post(baseURL, files = files, data = data, headers = headers)
     StringResponse = json.dumps(response.json())
     jsonResponse = json.loads(StringResponse)
     SurveyID = jsonResponse['result']['id']
     return SurveyID
 
 def ActivateSurvey(SurveyID):
+
+    """Activate a Qualtrics survey.
+
+    Keyword arguments:
+    SurveyID -- ID of the survey to activate
+    """
+
     baseUrl = "https://{0}.qualtrics.com/API/v3/surveys/{1}".format(DataCenter, SurveyID)
     headers = {
         "content-type": "application/json",
@@ -651,6 +635,13 @@ def ActivateSurvey(SurveyID):
     response = requests.put(baseUrl, json=data, headers=headers)
 
 def CloseSurvey(SurveyID):
+    # combine with ActivateSurvey in future versions
+    """Close a Qualtrics survey.
+
+    Keyword arguments:
+    SurveyID -- ID of the survey to close
+    """
+
     baseUrl = "https://{0}.qualtrics.com/API/v3/surveys/{1}".format(DataCenter, SurveyID)
     headers = {
         "content-type": "application/json",
@@ -664,6 +655,7 @@ def CloseSurvey(SurveyID):
     response = requests.put(baseUrl, json=data, headers=headers)
 
 def SendSurvey(ID, InstructorEmail, InstructorFirst, InstructorLast, Course, Code, SurveyCloseDate, Survey, URL):
+    # send survey to instructor
     msg = MIMEMultipart('alternative')
     msg['From'] = BIOMAPSEmail
     # msg['To'] = BIOMAPSEmail
@@ -740,6 +732,7 @@ def SendSurvey(ID, InstructorEmail, InstructorFirst, InstructorLast, Course, Cod
     server.quit()
 
 def ZeroResponseEmail(ID, InstructorEmail, InstructorFirst, InstructorLast, Course, Code, SurveyCloseDate, Survey, URL):
+    # send a reminder to instructors letting them know that no one has responded to the survey yet
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "There have been zero responses to the " + Survey
     msg['From'] = BIOMAPSEmail
@@ -748,7 +741,6 @@ def ZeroResponseEmail(ID, InstructorEmail, InstructorFirst, InstructorLast, Cour
 
     SurveyCloseDate = (SurveyCloseDate + datetime.timedelta(hours = 23, minutes = 59, seconds = 59)).strftime("%d-%b-%Y %H:%M:%S")
 
-    # Create the body of the message (a plain-text and an HTML version).
     text = """
            Dear Dr. {First} {Last},\n \n
 
@@ -803,20 +795,12 @@ def ZeroResponseEmail(ID, InstructorEmail, InstructorFirst, InstructorLast, Cour
     </html>
     """.format(First = InstructorFirst, Last = InstructorLast, Survey = Survey, Course = Course.replace("_", " "), Code = Code, Close = SurveyCloseDate, Link = URL, Identifier = ID, ChangeURL = ChangeURL)
 
-    # Record the MIME types of both parts - text/plain and text/html.
     part1 = MIMEText(text, 'plain')
     part2 = MIMEText(html, 'html')
 
-    # Attach parts into message container.
-    # According to RFC 2046, the last part of a multipart message, in this case
-    # the HTML message, is best and preferred.
     msg.attach(part1)
     msg.attach(part2)
 
-    #Email Credentials
-
-
-    # The actual mail send
     server = smtplib.SMTP(host = 'smtp.office365.com', port = 587)
     server.starttls()
     server.login(UserEmail, EmailPassword)
@@ -825,6 +809,7 @@ def ZeroResponseEmail(ID, InstructorEmail, InstructorFirst, InstructorLast, Cour
     server.quit()
 
 def ReminderEmailSend(ID, InstructorEmail, InstructorFirst, InstructorLast, Course, Code, SurveyCloseDate, Survey, URL, NumResponses):
+    # send an email to instructors reminding them about the survey and letting them know how many students have responded so far
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Reminder for the {} survey".format(Survey)
     msg['From'] = BIOMAPSEmail
@@ -833,7 +818,6 @@ def ReminderEmailSend(ID, InstructorEmail, InstructorFirst, InstructorLast, Cour
 
     SurveyCloseDate = (SurveyCloseDate + datetime.timedelta(hours = 23, minutes = 59, seconds = 59)).strftime("%d-%b-%Y %H:%M:%S")
 
-    # Create the body of the message (a plain-text and an HTML version).
     text = """
 		   Dear Dr. {First} {Last},\n \n
 
@@ -887,17 +871,12 @@ def ReminderEmailSend(ID, InstructorEmail, InstructorFirst, InstructorLast, Cour
     </html>
     """.format(First = InstructorFirst, Last = InstructorLast, Survey = Survey, Close = SurveyCloseDate, Link = URL, Responses = NumResponses, Course = Course.replace("_", " "), Code = Code, Identifier = ID, ChangeURL = ChangeURL)
 
-    # Record the MIME types of both parts - text/plain and text/html.
     part1 = MIMEText(text, 'plain')
     part2 = MIMEText(html, 'html')
 
-    # Attach parts into message container.
-    # According to RFC 2046, the last part of a multipart message, in this case
-    # the HTML message, is best and preferred.
     msg.attach(part1)
     msg.attach(part2)
 
-    # The actual mail send
     server = smtplib.SMTP(host = 'smtp.office365.com', port = 587)
     server.starttls()
     server.login(UserEmail,EmailPassword)
@@ -906,6 +885,7 @@ def ReminderEmailSend(ID, InstructorEmail, InstructorFirst, InstructorLast, Cour
     server.quit()
 
 def SendReport(InstructorEmail, InstructorFirst, InstructorLast, Course, Code, Survey, ReportFile, NamesFile = None):
+    # send a report of summary statistics with a list of students who completed the survey
     msg = MIMEMultipart('alternative')
     msg['Subject'] = Survey + " Report"
     msg['From'] = BIOMAPSEmail
@@ -913,7 +893,6 @@ def SendReport(InstructorEmail, InstructorFirst, InstructorLast, Course, Code, S
     msg['To'] = InstructorEmail
     msg['Cc'] = BIOMAPSEmail
 
-	# Create the body of the message (a plain-text and an HTML version).
     text = """
 		   Dear Dr. {First} {Last},\n \n
 
@@ -947,14 +926,9 @@ def SendReport(InstructorEmail, InstructorFirst, InstructorLast, Course, Code, S
 	</html>
 	""".format(First = InstructorFirst, Last = InstructorLast, Survey = Survey, Course = Course.replace("_", " "), Code = Code)
 
-
-    # Record the MIME types of both parts - text/plain and text/html.
     part1 = MIMEText(text, 'plain')
     part2 = MIMEText(html, 'html')
 
-    # Attach parts into message container.
-    # According to RFC 2046, the last part of a multipart message, in this case
-    # the HTML message, is best and preferred.
     msg.attach(part1)
     msg.attach(part2)
 
@@ -979,13 +953,13 @@ def SendReport(InstructorEmail, InstructorFirst, InstructorLast, Course, Code, S
     server.quit()
 
 def ChangesEmailSend(ID, InstructorEmail, InstructorFirst, InstructorLast, CourseName, Code, Survey, CloseDate):
+    # when instructors request to change the close date of their survey, send an email confirmation
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Changes to Survey Dates"
     msg['From'] = BIOMAPSEmail
     msg['To'] = InstructorEmail
     # msg['To'] = BIOMAPSEmail
 
-	# Create the body of the message (a plain-text and an HTML version).
     text = """
 		   Dear Dr. {First} {Last},\n \n
 
@@ -1026,14 +1000,9 @@ def ChangesEmailSend(ID, InstructorEmail, InstructorFirst, InstructorLast, Cours
 	</html>
    """.format(First = InstructorFirst, Last = InstructorLast, Survey = Survey, Course = CourseName.replace("_", " "), Code = Code, Close = CloseDate, Identifier = ID, ChangeURL = ChangeURL)
 
-
-    # Record the MIME types of both parts - text/plain and text/html.
     part1 = MIMEText(text, 'plain')
     part2 = MIMEText(html, 'html')
 
-    # Attach parts into message container.
-    # According to RFC 2046, the last part of a multipart message, in this case
-    # the HTML message, is best and preferred.
     msg.attach(part1)
     msg.attach(part2)
 
@@ -1045,6 +1014,7 @@ def ChangesEmailSend(ID, InstructorEmail, InstructorFirst, InstructorLast, Cours
     server.quit()
 
 def SendStatusEmail():
+    # send email to admin account confirming that things are running okay; legacy
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "BIOMAPS Automation Status"
     msg['From'] = BIOMAPSEmail
@@ -1052,7 +1022,6 @@ def SendStatusEmail():
 
     StatusTime = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime())
 
-    # Create the body of the message (a plain-text and an HTML version).
     text = """
 		   Hey there,\n\n
 
@@ -1075,17 +1044,12 @@ def SendStatusEmail():
     </html>
     """.format(CurrentTime = StatusTime)
 
-    # Record the MIME types of both parts - text/plain and text/html.
     part1 = MIMEText(text, 'plain')
     part2 = MIMEText(html, 'html')
 
-    # Attach parts into message container.
-    # According to RFC 2046, the last part of a multipart message, in this case
-    # the HTML message, is best and preferred.
     msg.attach(part1)
     msg.attach(part2)
 
-    # The actual mail send
     server = smtplib.SMTP(host = 'smtp.office365.com', port = 587)
     server.starttls()
     server.login(UserEmail, EmailPassword)
@@ -1093,8 +1057,17 @@ def SendStatusEmail():
     server.quit()
 
 def GetResponseData(SchoolName, CourseNumber, InstructorName, Year, Survey, SurveyID):
+    """Download responses to survey from Qualtrics.
 
-    # Move to the specific course directory to download responses
+    Keyword arguments:
+    SchoolName -- name of institution administering the survey
+    CourseNumber -- course number where survey is administered
+    InstructorName -- instructor's last name
+    Year -- year that the survey was administered
+    Survey -- which assessment
+    SurveyID -- ID of survey for which data is requested
+    """
+
     path = MainDirectory + "/" + Survey + '/' + str(Year) + "Files/" + SchoolName + '_' + str(CourseNumber) + '_' + InstructorName
 
     os.chdir(path)
@@ -1107,15 +1080,22 @@ def GetResponseData(SchoolName, CourseNumber, InstructorName, Year, Survey, Surv
     return NumStudents
 
 def ValidateResponses(df, Survey):
+    """Remove invalid surveys from the dataset
+
+    Keyword arguments:
+    df -- pandas dataframe of survey responses
+    Survey -- which assessment
+    """
     def ProcessNames(df, ID = True):
-        df['BackName'] = (df['Last Names'].apply(str).str.lower() + df['First Names'].apply(str).str.lower()).str.replace('\W', '') # Get full name in lower case with no white space
+        # Get full name in lower case with no white space
+        df['BackName'] = (df['Last Names'].apply(str).str.lower() + df['First Names'].apply(str).str.lower()).str.replace('\W', '')
         df = df[df['BackName'].map(len) > 2] # Keep only full names with more than 2 characters
         df = df.drop_duplicates(subset = ['BackName'])
         df['BackName'] = df['BackName'].fillna('')
         df = df.sort_values(by = 'BackName')
-        if(ID):
+        if(ID): # Phys-MAPS doesn't ask for an ID
             df['IDs'] = df['IDs'].astype(str).str.split('@').str.get(0).str.lower() # Keep only first part of email addresses and take the lower case of all ids
-            df = df.drop_duplicates(subset = ['IDs']) # Drop second entry if there are duplicate full names
+            df = df.drop_duplicates(subset = ['IDs'])
             NamesDF = df.loc[:, ['IDs', 'Last Names', 'First Names']]
         else:
             NamesDF = df.loc[:, ['Last Names', 'First Names']]
@@ -1127,9 +1107,9 @@ def ValidateResponses(df, Survey):
         df = df.rename(columns = {'PartInfo_3_TEXT':'IDs', 'PartInfo_2_TEXT':'Last Names', 'PartInfo_1_TEXT':'First Names'})
         df, Names = ProcessNames(df)
 
-        try:
+        try: # remove students who are under 18 or didn't consent to participate in research
             df2 = df.loc[(df['Q55'] == 5) & (df['Q56'] == 5), :]
-        except:
+        except: # we changed the survey administered mid-semester, so we need two different conditions depending on version...remove later
             df2 = df.loc[(df['Q55'] == 5) & (df['D.1'] == 1), :]
     if(Survey == 'Capstone'):
         df = df.loc[df['Finished'] == 1, :]
@@ -1161,6 +1141,12 @@ def ValidateResponses(df, Survey):
     return df2, Names
 
 def GetSurveyName(SurveyID):
+    """Get the name of a survey.
+
+    Keyword arguments:
+    SurveyID -- ID of survey
+    """
+
     baseUrl = "https://{0}.qualtrics.com/API/v3/surveys/{1}".format(DataCenter, SurveyID)
     headers = {
         "x-api-token": apiToken,
@@ -1172,6 +1158,11 @@ def GetSurveyName(SurveyID):
     return SurveyName
 
 def DownloadResponses(SurveyID):
+    """Download responses to a Qualtrics survey.
+
+    Keyword arguments:
+    SurveyID -- ID of survey
+    """
     # Setting static parameters
     FileFormat = "csv"
 
@@ -1201,7 +1192,7 @@ def DownloadResponses(SurveyID):
     with open("RequestFile.zip", "wb") as f:
         for chunk in requestDownload.iter_content(chunk_size=1024):
           f.write(chunk)
-    try:
+    try: # if the unzipping messes up, try again
         zipfile.ZipFile("RequestFile.zip").extractall()
         os.remove("RequestFile.zip")
     except zipfile.BadZipfile:
@@ -1210,6 +1201,12 @@ def DownloadResponses(SurveyID):
         DownloadResponses(SurveyID)
 
 def ShareSurvey(UserID, SurveyID):
+    """Share a survey with another Qualtrics user.
+
+    Keyword arguments:
+    UserID -- ID of user to share the survey with
+    SurveyID -- ID of survey to share
+    """
     headers = {
         'x-api-token': apiToken,
         'content-type': 'application/json',
@@ -1254,7 +1251,7 @@ def ShareSurvey(UserID, SurveyID):
             }
         }
 
-    requests.post('https://{0}.qualtrics.com/API/v3/surveys/{1}/permissions/collaborations'.format(DataCenter, SurveyID), headers=headers, data=json.dumps(data))
+    requests.post('https://{0}.qualtrics.com/API/v3/surveys/{1}/permissions/collaborations'.format(DataCenter, SurveyID), headers = headers, data = json.dumps(data))
 
 if __name__ == '__main__':
 	main()
