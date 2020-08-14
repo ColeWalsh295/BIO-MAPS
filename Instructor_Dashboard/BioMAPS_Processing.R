@@ -1,6 +1,11 @@
 library(dplyr)
 library(data.table)
 
+# the four primary functions included here read headers and full datasets for each of the
+# Bio-MAPS assessments. Information in the header is binded with class data when data is
+# downloaded, allowing instructors to better understand the data they download. We
+# process column names to align with the dashboard labels.
+
 Clean.GenBio <- function(df.file = 'GenBio-MAPS_MasterFile.csv', 
                          header.file = 'GenBioMAPS_Headers.csv'){
   
@@ -24,7 +29,7 @@ Clean.GenBio <- function(df.file = 'GenBio-MAPS_MasterFile.csv',
   # Get Complete dataset
   df <- fread(df.file)
   names(df) = gsub(x = names(df), pattern = "S$", replacement = "")
-  
+  # need number of students in each class for summary statistics
   df <- data.table(df)[, N.Students := .N, by = .(Class_ID)]
   df <- Convert.ClassLevel(df)
   
@@ -188,17 +193,7 @@ Clean.Cap <- function(df.file = 'Capstone_MasterFile.csv',
 }
 
 Add.IDcols <- function(df){
-  # ID.dataFrame <- data.frame(ID = 'Encoded student ID',
-  #                            FullName = 'Encoded student full name',
-  #                            BackName = 'Encoded student name with first and last name reversed',
-  #                            ClassStanding = 'Class Standing',
-  #                            TransferStatus = 'Transfer Status',
-  #                            Major = 'Intended Major',
-  #                            SexGender = 'Sex/Gender',
-  #                            ELL = 'English Language Learner Status',
-  #                            ParentEducation = 'First Generation Status',
-  #                            URMStatus = 'URM Status')
-  
+  # change names for student ID coloumns to be more descriptive
   ID.dataFrame <- data.frame(ID = 'Student ID',
                              First_Name = 'Student first name',
                              Last_Name = 'Student last name')
@@ -210,6 +205,7 @@ Add.IDcols <- function(df){
 }
 
 Convert.ClassLevel <- function(df){
+  # collapse class level and class standing variables
   df <- df %>%
     mutate(Class_Level = case_when(
       Class_Level == 1 ~ 'Begin_Intro',

@@ -1,3 +1,6 @@
+# Module UI functions
+# corresponding server functions use the same function name with 'UI' removed from the end
+
 library(shiny)
 library(shinyBS)
 
@@ -46,11 +49,13 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
         column(4, selectInput(ns("scale"), "Question Categorization:", 
                               choices = c('Subdisciplines', 'Core concepts'))),
         column(4, radioButtons(ns("demographic"), 'Separate by:',
-                               choiceNames = c('None', 'Gender', 'URM Status', 'First Generation Status',
-                                              'Class Standing', 'Major', 'Transfer Status',
-                                              'Primary Language spoken at Home'),
-                               choiceValues = c('None', 'SexGender', 'URMStatus', 'ParentEducation', 
-                                           'ClassStanding', 'Major', 'TransferStatus', 'ELL')) %>%
+                               choiceNames = c('None', 'Gender', 'URM Status', 
+                                               'First Generation Status', 'Class Standing', 
+                                               'Major', 'Transfer Status', 
+                                               'Primary Language spoken at Home'),
+                               choiceValues = c('None', 'SexGender', 'URMStatus', 
+                                                'ParentEducation', 'ClassStanding', 
+                                                'Major', 'TransferStatus', 'ELL')) %>%
                  helper(icon = "question",
                         colour = "blue",
                         type = "markdown",
@@ -81,18 +86,21 @@ ResponsesPlotUI <- function(id, Demos = TRUE){
   
   fluidRow(
     column(2, selectInput(ns("question"), "Question:", 
-                          choices = c('01', '02', '03', '04', '07', '08', '12', '13', '14', '15', 
-                                      '16', '18', '19', '20', '21', '22', '23', '24', '27', '28',
-                                      '30', '31', '32', '33', '35', '36', '37', '38', '40', '43',
-                                      '44', '45', '49', '50', '54', '55', '59', '60', '61'))),
+                          choices = c('01', '02', '03', '04', '07', '08', '12', '13', '14',
+                                      '15', '16', '18', '19', '20', '21', '22', '23', '24', 
+                                      '27', '28', '30', '31', '32', '33', '35', '36', '37', 
+                                      '38', '40', '43', '44', '45', '49', '50', '54', '55', 
+                                      '59', '60', '61'))),
     column(10, plotOutput(ns("plotResponses")))
   )
 }
 
-radioTooltip <- function(id, choice, title, placement = "right", trigger = "hover", options = NULL){
-  
+radioTooltip <- function(id, choice, title, placement = "right", trigger = "hover", 
+                         options = NULL){
+  # adds the little text that appears when you hover over the radio button
   options = shinyBS:::buildTooltipOrPopoverOptionsList(title, placement, trigger, options)
-  options = paste0("{'", paste(names(options), options, sep = "': '", collapse = "', '"), "'}")
+  options = paste0("{'", paste(names(options), options, sep = "': '", collapse = "', '"), 
+                   "'}")
   bsTag <- shiny::tags$script(shiny::HTML(paste0("
                                                  $(document).ready(function() {
                                                  setTimeout(function() {

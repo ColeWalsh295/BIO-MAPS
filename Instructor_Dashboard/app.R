@@ -29,6 +29,10 @@ Cap <- Clean.Cap()
 Cap.df <- Cap$dataFrame
 Cap.header <- Cap$header
 
+### UI code ##############################################################################
+
+### Your class tab ###
+
 Your_tab = tabItem(
   tabName = "Your_Class",
   fluidRow(column(4, h2("View of your class") %>%
@@ -45,6 +49,8 @@ Your_tab = tabItem(
   br(),br(),br(),br(),br(),br(), br(), br(), br(), br(), br(), br(),
   ResponsesPlotUI('Class.Main.Responses', Demos = TRUE)
 )
+
+### Compare two of your classes tab ###
 
 Compare_tab = tabItem(
   tabName = "Compare_Classes",
@@ -66,6 +72,8 @@ Compare_tab = tabItem(
   br(), br(), br(), br(), br(),
   ResponsesPlotUI('Class.Compare.Responses', Demos = FALSE)
 )
+
+### Compare your class to national dataset tab ###
 
 Overall_tab = tabItem(
   tabName = "Compare_Overall",
@@ -92,11 +100,15 @@ Overall_tab = tabItem(
   ResponsesPlotUI('Overall.Compare.Responses', Demos = FALSE)
 )
 
+### Server code ##########################################################################
+
 server = function(input, output, session) {
   
   init.modal <- modalDialog(
     title = "How to use this dashboard",
-    'For more information about how to use this dashboard, click the "?" icons.'
+    HTML('For more information about how to use this dashboard, click the "?" icons.<br><br>
+      Note that data collected after 31 May 2020 will not be available on the data 
+      explorer until January 2021.')
   )
   
   showModal(init.modal)
@@ -130,32 +142,42 @@ server = function(input, output, session) {
   })
   
   cols <- reactive({
+    # df has additional data that isn't needed for the app...get the intersection with the
+    # headers containing relevant data columns
     cols <- intersect(colnames(header.df()), colnames(df()))
     return(cols)
   })
   
   Assessment <- reactive({
+    # define this reactive variable to update arguments below along with df
     Assessment <- input$assessment
     return(Assessment)
   })
   
-  ### Your Class ###
-  CID <- NULL
-  df.Class <- callModule(DownloadClassData, 'Class.Main.Download', data = df, header = header.df, 
-                      cols = cols, ass = Assessment, ClassID = CID)
+  ### Your Class tab ###
+  
+  CID <- NULL # set initial CID as null, update with input to retain CID between tabs
+  df.Class <- callModule(DownloadClassData, 'Class.Main.Download', data = df, 
+                         header = header.df, cols = cols, ass = Assessment, ClassID = CID)
+  # Shiny update 1.5.0 introduced moduleServer, which can be used in lieu of callModule
+  # for maintainability
   callModule(ClassStatistics, 'Class.Main.Statistics', data = df.Class)
+  # set demographic as reactive to update two plots on this tab simultaneously with
+  # demographic input
   demographic <- reactiveVal()
-  demographic <- callModule(ScalePlot, 'Class.Main.Scale', data = df.Class, ass = Assessment)
+  demographic <- callModule(ScalePlot, 'Class.Main.Scale', data = df.Class, 
+                            ass = Assessment)
   callModule(ResponsesPlot, 'Class.Main.Responses', data = df.Class, ass = Assessment, 
              Demographic = demographic)
   
-  ### Compare Classes ###
-  df.Class1 <- callModule(DownloadClassData, 'Class1.Download', data = df, header = header.df, 
-                          cols = cols, ass = Assessment, ClassID = CID)
+  ### Compare Classes tab ###
+  
+  df.Class1 <- callModule(DownloadClassData, 'Class1.Download', data = df, 
+                          header = header.df, cols = cols, ass = Assessment, ClassID = CID)
   callModule(ClassStatistics, 'Class1.Statistics', data = df.Class1)
   
-  df.Class2 <- callModule(DownloadClassData, 'Class2.Download', data = df, header = header.df, 
-                          cols = cols, ass = Assessment)
+  df.Class2 <- callModule(DownloadClassData, 'Class2.Download', data = df, 
+                          header = header.df, cols = cols, ass = Assessment)
   callModule(ClassStatistics, 'Class2.Statistics', data = df.Class2)
   
   df.Compare <- reactive({
@@ -163,15 +185,18 @@ server = function(input, output, session) {
   })
   
   df.Compare.match <- callModule(ScalePlot, 'Class.Compare.Scale', data = df.Compare, 
-                                 ass = Assessment, class.var = 'Class_ID', compare.tab = TRUE)
-  callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare.match, ass = Assessment, 
-             class.var = 'Class_ID')
+                                 ass = Assessment, class.var = 'Class_ID', 
+                                 compare.tab = TRUE)
+  callModule(ResponsesPlot, 'Class.Compare.Responses', data = df.Compare.match, 
+             ass = Assessment, class.var = 'Class_ID')
   
-  ### Compare to overall PLIC dataset ###
+  ### Compare your class to national dataset tab ###
   
   df.Class.You_temp <- callModule(DownloadClassData, 'Class.You.Download', data = df,
                     header = header.df, cols = cols, ass = Assessment, ClassID = CID)
   CID <- reactive({
+    # update CID with input from each tab...this reactive variable ensures that text input
+    # on one tab carries over to subsequent tabs so instructors don't have to re-type IDs
     if(input$tabs == 'Your_Class'){
       CID <- df.Class()[1, 'Class_ID']
     } else if(input$tabs == 'Compare_Classes'){
@@ -185,7 +210,7 @@ server = function(input, output, session) {
   
   df.Class.You <- reactive({
     df.Class.You <- df.Class.You_temp() %>%
-      mutate(Class = 'Your Class')
+      mutate(Class = 'Your Class') # add a column separating YOUR class from other classes
     return(df.Class.You)
   })
   df.Class.Other <- reactive({
@@ -194,21 +219,22 @@ server = function(input, output, session) {
     return(df.Class.Other)
   })
   
-  df.Other.filter <- callModule(ClassStatistics, 'Class.Other.Statistics', data = df.Class.Other, Overall = TRUE)
+  df.Other.filter <- callModule(ClassStatistics, 'Class.Other.Statistics', 
+                                data = df.Class.Other, Overall = TRUE)
   
   df.Overall <- reactive({
     rbind(df.Class.You(), df.Other.filter())
   })
   callModule(ScalePlot, 'Overall.Compare.Scale', data = df.Overall, ass = Assessment,
              class.var = 'Class')
-  callModule(ResponsesPlot, 'Overall.Compare.Responses', data = df.Overall, ass = Assessment,
-             class.var = 'Class')
+  callModule(ResponsesPlot, 'Overall.Compare.Responses', data = df.Overall, 
+             ass = Assessment, class.var = 'Class')
 }
 
-# Set up the Header of the dashboard
+##########################################################################################
+
 dhead = dashboardHeader(title = h4(HTML("Bio-MAPS<br>Data Explorer")))
 
-# Set up the sidebar which links to two pages
 dside = dashboardSidebar(sidebarMenu(
   id = 'tabs',
   selectInput('assessment', "Assessment:", choices = c('GenBio-MAPS', 'EcoEvo-MAPS', 
@@ -219,20 +245,14 @@ dside = dashboardSidebar(sidebarMenu(
            icon = icon("dashboard"))
 ))
 
-# Here we set up the body of the dashboard
-
 dbody = dashboardBody(
  tags$head(
-   tags$link(rel = "stylesheet", type = "text/css",
-             href = "Cornell.css")
+   tags$link(rel = "stylesheet", type = "text/css", href = "Cornell.css")
 
  ),
  tabItems(Your_tab, Compare_tab, Overall_tab)
 )
 
-# Combining header, sidebar, and body
-ui = tagList(useShinyjs(), useShinyalert(), dashboardPage(dhead, dside, dbody))#, 
-             #tags$script(HTML("$(document).ready(function(){$('[data-toggle='popover']').popover();});")))
+ui = tagList(useShinyjs(), useShinyalert(), dashboardPage(dhead, dside, dbody))
 
-# Generating a local instance of your dashboard
 shinyApp(ui, server)
