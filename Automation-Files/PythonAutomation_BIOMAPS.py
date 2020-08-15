@@ -26,7 +26,7 @@ import ReportGen_BIOMAPS
 
 # set user parameters
 global apiToken, DataCenter, BIOMAPSEmail, UserEmail, ChangeURL
-admin_info = pd.read_csv, index_col = False, header = 0).T[0] # get sensitive admininstration info
+admin_info = pd.read_csv('Admin_Info.csv', index_col = False, header = 0).T[0] # get sensitive admininstration info
 apiToken = admin_info['API'] # change token for different Qualtrics account
 SharedJenny = admin_info['SharedJenny']
 SharedMindi = admin_info['SharedMindi']
