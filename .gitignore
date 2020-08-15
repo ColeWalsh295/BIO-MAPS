@@ -18,3 +18,4 @@ Dashboard-Files/.Rhistory
 Automation-Files/PythonAutomation_BIOMAPS.py
 Instructor_Dashboard/.Rhistory
 *.dcf
+*.pyc
