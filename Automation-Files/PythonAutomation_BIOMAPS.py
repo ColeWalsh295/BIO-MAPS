@@ -128,9 +128,12 @@ def InstructorSurveyControl():
                     EcoEvoCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'EcoEvoB'])
                     EcoEvoCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'EcoEvoC']))[:20]
                     EcoEvoClass = InstructorsDF.loc[Index, 'EcoEvo_Class']
-                    EcoEvoCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'EcoEvoD_v2'], "%m-%d-%Y")
                     # set close date of survey to a point in the future
-                    if(EcoEvoCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
+                    try:
+                        EcoEvoCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'EcoEvoD_v2'], "%m-%d-%Y")
+                        if(EcoEvoCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
+                            EcoEvoCloseDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time()) + datetime.timedelta(days = 14)
+                    except:
                         EcoEvoCloseDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time()) + datetime.timedelta(days = 14)
                     EcoEvoSurveyID = MakeSurvey(School, EcoEvoCourseNumber, CourseYear, LastName, 'EcoEvo-MAPS')
                     ActivateSurvey(EcoEvoSurveyID)
@@ -169,8 +172,11 @@ def InstructorSurveyControl():
                     CapCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'CapB'])
                     CapCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'CapC']))[:20]
                     CapClass = InstructorsDF.loc[Index, 'Cap_Class']
-                    CapCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'CapD_v2'], "%m-%d-%Y")
-                    if(CapCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
+                    try:
+                        CapCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'CapD_v2'], "%m-%d-%Y")
+                        if(CapCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
+                            CapCloseDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time()) + datetime.timedelta(days = 14)
+                    except:
                         CapCloseDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time()) + datetime.timedelta(days = 14)
                     CapSurveyID = MakeSurvey(School, CapCourseNumber, CourseYear, LastName, 'Capstone')
                     ActivateSurvey(CapSurveyID)
@@ -206,8 +212,11 @@ def InstructorSurveyControl():
                     PhysCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'PhysB'])
                     PhysCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'PhysC']))[:20]
                     PhysClass = InstructorsDF.loc[Index, 'Phys_Class']
-                    PhysCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'PhysD_v2'], "%m-%d-%Y")
-                    if(PhysCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
+                    try:
+                        PhysCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'PhysD_v2'], "%m-%d-%Y")
+                        if(PhysCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
+                            PhysCloseDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time()) + datetime.timedelta(days = 14)
+                    except:
                         PhysCloseDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time()) + datetime.timedelta(days = 14)
                     PhysSurveyID = MakeSurvey(School, PhysCourseNumber, CourseYear, LastName, 'Phys-MAPS')
                     ActivateSurvey(PhysSurveyID)
@@ -243,8 +252,11 @@ def InstructorSurveyControl():
                     GenBioCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.fillna('NA').loc[Index, 'GenBioB'])
                     GenBioCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.fillna('NA').loc[Index, 'GenBioC']))[:20]
                     GenBioClass = InstructorsDF.loc[Index, 'GenBio_Class']
-                    GenBioCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'GenBioD_v2'], "%m-%d-%Y")
-                    if(GenBioCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
+                    try:
+                        GenBioCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'GenBioD_v2'], "%m-%d-%Y")
+                        if(GenBioCloseDate < datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())):
+                            GenBioCloseDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time()) + datetime.timedelta(days = 14)
+                    except:
                         GenBioCloseDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time()) + datetime.timedelta(days = 14)
                     GenBioSurveyID = MakeSurvey(School, GenBioCourseNumber, CourseYear, LastName, 'GenBio-MAPS')
                     ActivateSurvey(GenBioSurveyID)
