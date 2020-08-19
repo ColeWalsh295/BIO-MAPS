@@ -1,3 +1,5 @@
+# Instructor dashboard
+
 The scripts included here are used to construct the instructor dashboard where instructors can interactively engage with data from their class.
 
 `Get_Bio-MAPS_Data.py` includes functions to download all data collected for a given assessment and construct a master data file.
