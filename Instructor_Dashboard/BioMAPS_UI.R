@@ -5,6 +5,8 @@ library(shiny)
 library(shinyBS)
 
 DownloadClassDataUI <- function(id, label, value){
+  # create textbox for class ID input and download button for class data
+  
   # Create a namespace function using the provided id
   ns <- NS(id)
   
@@ -19,6 +21,8 @@ DownloadClassDataUI <- function(id, label, value){
 }
 
 ClassStatisticsOutput <- function(id, Overall = FALSE){
+  # create summary statistics boxes
+  
   ns <- NS(id)
   
   if(Overall){
@@ -41,6 +45,8 @@ ClassStatisticsOutput <- function(id, Overall = FALSE){
 }
 
 ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
+  # create boxplots of students' scores on selected dimensions
+  
   ns <- NS(id)
   
   if(Demos) {
@@ -82,6 +88,8 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
 }
 
 ResponsesPlotUI <- function(id, Demos = TRUE){
+  # create bar plots of fraction of students getting items correct on selected questions
+  
   ns <- NS(id)
   
   fluidRow(

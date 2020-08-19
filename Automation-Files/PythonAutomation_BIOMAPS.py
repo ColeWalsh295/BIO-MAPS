@@ -386,7 +386,6 @@ def CourseChangesControl():
 
 def SurveyControl():
     # check current time relative to specified close dates by instructors and send reminders or close the survey as necessary
-    # send Pre survey, reminders, or close the pre-survey
     print("Checking survey reminders, end dates, etc...")
     CurrentTime = datetime.datetime.now()
     MasterDF = pd.read_csv(MainDirectory + "/MasterCourseData_BIOMAPS.csv", skiprows = [0])
@@ -627,7 +626,6 @@ def MakeSurvey(Institution, Number, Year, InstructorLast, SurveyType):
     return SurveyID
 
 def ActivateSurvey(SurveyID):
-
     """Activate a Qualtrics survey.
 
     Keyword arguments:
@@ -1175,6 +1173,7 @@ def DownloadResponses(SurveyID):
     Keyword arguments:
     SurveyID -- ID of survey
     """
+
     # Setting static parameters
     FileFormat = "csv"
 
@@ -1219,6 +1218,7 @@ def ShareSurvey(UserID, SurveyID):
     UserID -- ID of user to share the survey with
     SurveyID -- ID of survey to share
     """
+
     headers = {
         'x-api-token': apiToken,
         'content-type': 'application/json',

@@ -3,7 +3,6 @@
 
 DownloadClassData <- function(input, output, session, data, header, cols, ass, 
                               ClassID = NULL) {
-  
   # retrieves relevant class data based on user input and provides downloadable data to
   # write to .csv
   
@@ -64,7 +63,6 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass,
 }
 
 ClassStatistics <- function(input, output, session, data, Overall = FALSE){
-  
   # computes and returns summary statistics for a set of data
   
   data.out <- reactive({
@@ -255,6 +253,8 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL,
 
 ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL, 
                           class.var = NULL){
+  # make bar plots of fraction of students getting each question correct
+  
   observe({
     if(ass() == 'GenBio-MAPS'){
       questions <- list('01', '02', '03', '04', '07', '08', '12', '13', '14', '15', '16', 

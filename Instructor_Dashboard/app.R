@@ -240,7 +240,8 @@ dside = dashboardSidebar(sidebarMenu(
   selectInput('assessment', "Assessment:", choices = c('GenBio-MAPS', 'EcoEvo-MAPS', 
                                                        'Phys-MAPS', 'Capstone')),
   menuItem("View of your class", tabName = "Your_Class", icon = icon("dashboard")),
-  menuItem(HTML("Compare two of<br>your classes"), tabName = "Compare_Classes", icon = icon("dashboard")),
+  menuItem(HTML("Compare two of<br>your classes"), tabName = "Compare_Classes", 
+           icon = icon("dashboard")),
   menuItem(HTML("Compare your class<br>to other classes"), tabName = "Compare_Overall", 
            icon = icon("dashboard"))
 ))
