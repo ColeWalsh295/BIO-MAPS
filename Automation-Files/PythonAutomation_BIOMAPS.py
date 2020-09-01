@@ -121,7 +121,7 @@ def InstructorSurveyControl():
                     CreditOffered = True
                 else:
                     CreditOffered = False
-                SchoolType = int(InstructorsDF.loc[Index, 'Q16'])
+                SchoolType = int(InstructorsDF.fillna(0).loc[Index, 'Q16'])
 
                 if(pd.notnull(InstructorsDF.loc[Index, 'EcoEvoD_v2'])):
                     EcoEvoType = int(InstructorsDF.loc[Index, 'EcoEvoA'])
@@ -261,7 +261,10 @@ def InstructorSurveyControl():
                     GenBioSurveyID = MakeSurvey(School, GenBioCourseNumber, CourseYear, LastName, 'GenBio-MAPS')
                     ActivateSurvey(GenBioSurveyID)
                     SurveyURL = "https://{0}.qualtrics.com/jfe/form/".format(DataCenter) + GenBioSurveyID
-                    SendSurvey(ID, Email, FirstName, LastName, GenBioCourseName, GenBioCourseNumber, GenBioCloseDate, 'GenBioMAPS', SurveyURL)
+                    try:
+                        SendSurvey(ID, Email, FirstName, LastName, GenBioCourseName, GenBioCourseNumber, GenBioCloseDate, 'GenBioMAPS', SurveyURL)
+                    except:
+                        pass # if the email won't send, we'll fill in the info and move on...is there a better way around this. Think on it. Add to other surveys though.
                     GenBioSent = time.strftime("%d-%b-%Y %H:%M:%S",time.localtime())
                     GenBioCloseDate = GenBioCloseDate.strftime("%d-%b-%Y")
 
@@ -516,7 +519,7 @@ def ReportControl():
             if(len(df.index) > 0):
                 PDFName = 'EcoEvo-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'EcoEvo Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
-                ReportGen_BIOMAPS.Generate_EcoEvoMAPS(Path + '/' + PDFName, DataFrame = df, NumReported = MasterDF.loc[Index, 'EcoEvo Class'], MainDirectory = MainDirectory, Where = 'Automation')
+                ReportGen_BIOMAPS.Generate_EcoEvoMAPS(Path + '/' + PDFName, DataFrame = df, NumReported = MasterDF.loc[Index, 'EcoEvo Class'], MainDirectory = MainDirectory)
 
                 if(MasterDF.loc[Index, 'Credit Offered']): # if the instructor is offering credit include a list of names and IDs of those who completed each of the surveys
                     NamesFileName = 'EcoEvo-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'EcoEvo Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
@@ -537,7 +540,7 @@ def ReportControl():
             if(len(df.index) > 0):
                 PDFName = 'Capstone' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Capstone Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
-                ReportGen_BIOMAPS.Generate_Capstone(Path + '/' + PDFName, DataFrame = df, NumReported = MasterDF.loc[Index, 'Capstone Class'], MainDirectory = MainDirectory, Where = 'Automation')
+                ReportGen_BIOMAPS.Generate_Capstone(Path + '/' + PDFName, DataFrame = df, NumReported = MasterDF.loc[Index, 'Capstone Class'], MainDirectory = MainDirectory)
 
                 if(MasterDF.loc[Index, 'Credit Offered']):
                     NamesFileName = 'Capstone' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Capstone Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
@@ -558,7 +561,7 @@ def ReportControl():
             if(len(df.index) > 0):
                 PDFName = 'Phys-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Phys Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
-                ReportGen_BIOMAPS.Generate_PhysMAPS(Path + '/' + PDFName, DataFrame = df, NumReported = MasterDF.loc[Index, 'Phys Class'], MainDirectory = MainDirectory, Where = 'Automation')
+                ReportGen_BIOMAPS.Generate_PhysMAPS(Path + '/' + PDFName, DataFrame = df, NumReported = MasterDF.loc[Index, 'Phys Class'], MainDirectory = MainDirectory)
 
                 if(MasterDF.loc[Index, 'Credit Offered']):
                     NamesFileName = 'Phys-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Phys Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
@@ -579,7 +582,7 @@ def ReportControl():
             if(len(df.index) > 0):
                 PDFName = 'GenBio-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'GenBio Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
-                ReportGen_BIOMAPS.Generate_GenBioMAPS(Path + '/' + PDFName, r'\textwidth', DataFrame = df, NumReported = MasterDF.loc[Index, 'GenBio Class'], MainDirectory = MainDirectory, Where = 'Automation')
+                ReportGen_BIOMAPS.Generate_GenBioMAPS(Path + '/' + PDFName, DataFrame = df, NumReported = MasterDF.loc[Index, 'GenBio Class'], MainDirectory = MainDirectory)
 
                 if(MasterDF.loc[Index, 'Credit Offered']):
                     NamesFileName = 'GenBio-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'GenBio Number']) +'_' + MasterDF.loc[Index, 'Last Name'] + '_Names.csv'
