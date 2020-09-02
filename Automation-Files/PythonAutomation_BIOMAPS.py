@@ -98,7 +98,7 @@ def InstructorSurveyControl():
     with open("MasterCourseData_BIOMAPS.csv",'a') as f0:
         MasterDataWriter = csv.writer(f0)
         for Index, Instructor in InstructorsDF.iterrows():
-            if(InstructorsDF.loc[Index, 'Finished'] == 0):
+            if((InstructorsDF.loc[Index, 'Finished'] == 0) | ('@' not in InstructorsDF.fillna('').loc[Index, 'Q4'])): # skip for unfinished or invalid email
                 continue
             MasterDataRow = 2
             PreviouslyRecorded = False
@@ -261,10 +261,7 @@ def InstructorSurveyControl():
                     GenBioSurveyID = MakeSurvey(School, GenBioCourseNumber, CourseYear, LastName, 'GenBio-MAPS')
                     ActivateSurvey(GenBioSurveyID)
                     SurveyURL = "https://{0}.qualtrics.com/jfe/form/".format(DataCenter) + GenBioSurveyID
-                    try:
-                        SendSurvey(ID, Email, FirstName, LastName, GenBioCourseName, GenBioCourseNumber, GenBioCloseDate, 'GenBioMAPS', SurveyURL)
-                    except:
-                        pass # if the email won't send, we'll fill in the info and move on...is there a better way around this. Think on it. Add to other surveys though.
+                    SendSurvey(ID, Email, FirstName, LastName, GenBioCourseName, GenBioCourseNumber, GenBioCloseDate, 'GenBioMAPS', SurveyURL)
                     GenBioSent = time.strftime("%d-%b-%Y %H:%M:%S",time.localtime())
                     GenBioCloseDate = GenBioCloseDate.strftime("%d-%b-%Y")
 
