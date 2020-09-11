@@ -1,9 +1,13 @@
 # Bio-MAPS
 
 Biology Measuring Achievement and Progression in Science (Bio-MAPS), is a suite of diagnostic assessments that aim to measure student understanding across a degree program and are aligned with the Vision and Change nationally-validated set of core biology concepts. The diagnostic assessments include:
--EcoEvo-MAPS (Ecology and Evolution)
--Molecular Biology Capstone
+
+-EcoEvo-MAPS (Ecology and Evolution), 
+
+-Molecular Biology Capstone, 
+
 -Phys-MAPS (Physiology)
+
 -GenBio-MAPS (General Biology)
 
 For more information about these assessments and how to administer them in your class, check out the [Cornell Physics Education Research Lab website](http://cperl.lassp.cornell.edu/bio-maps).
