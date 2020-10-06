@@ -1114,6 +1114,8 @@ def ValidateResponses(df, Survey):
 
     if(Survey == 'EcoEvo-MAPS'):
         df = df.loc[df['Finished'] == 1, :]
+        if(len(df.index) == 0):
+            return df, None
         df = df.rename(columns = {'PartInfo_3_TEXT':'IDs', 'PartInfo_2_TEXT':'Last Names', 'PartInfo_1_TEXT':'First Names'})
         df, Names = ProcessNames(df)
 
@@ -1123,12 +1125,16 @@ def ValidateResponses(df, Survey):
             df2 = df.loc[(df['Q55'] == 5) & (df['D.1'] == 1), :]
     if(Survey == 'Capstone'):
         df = df.loc[df['Finished'] == 1, :]
+        if(len(df.index) == 0):
+            return df, None
         df = df.rename(columns = {'ID_3_TEXT':'IDs', 'ID_2_TEXT':'Last Names', 'ID_1_TEXT':'First Names'})
         df, Names = ProcessNames(df)
 
         df2 = df.loc[(df['Q68'] == 5) & (df['Q69'] == 5), :]
     if(Survey == 'Phys-MAPS'):
         df = df.loc[df['Finished'] == 1, :]
+        if(len(df.index) == 0):
+            return df, None
         df = df.rename(columns = {'Q11_2_TEXT':'Last Names', 'Q11_1_TEXT':'First Names'})
         df, Names = ProcessNames(df, ID = False)
 
@@ -1140,7 +1146,9 @@ def ValidateResponses(df, Survey):
             except:
                 df2 = df.loc[df['Q18'] == 1, :]
     if(Survey == 'GenBio-MAPS'):
-        df = df.loc[df['Finished'] == 1, :] # &
+        df = df.loc[df['Finished'] == 1, :]
+        if(len(df.index) == 0):
+            return df, None
         df = df.rename(columns = {'ID2_1_TEXT':'IDs', 'ID1_2_TEXT':'Last Names', 'ID1_1_TEXT':'First Names'})
         df, Names = ProcessNames(df)
 
