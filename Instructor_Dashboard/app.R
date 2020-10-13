@@ -6,7 +6,6 @@ shiny_theme <- theme_classic(base_size = 18)
 library(shinydashboard)
 library(shinyBS)
 library(shinyhelper)
-library(data.table)
 library(reshape2)
 library(rsconnect)
 source('BioMAPS_Processing.R', local = TRUE)
@@ -198,11 +197,11 @@ server = function(input, output, session) {
     # update CID with input from each tab...this reactive variable ensures that text input
     # on one tab carries over to subsequent tabs so instructors don't have to re-type IDs
     if(input$tabs == 'Your_Class'){
-      CID <- df.Class()[1, 'Class_ID']
+      CID <- df.Class()$Class_ID[1]
     } else if(input$tabs == 'Compare_Classes'){
-      CID <- df.Class1()[1, 'Class_ID']
+      CID <- df.Class1()$Class_ID[1]
     } else {
-      CID <- df.Class.You_temp()[1, 'Class_ID']
+      CID <- df.Class.You_temp()$Class_ID[1]
     }
     return(CID)
   })

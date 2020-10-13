@@ -234,7 +234,7 @@ def WriteFile(df, test, directory, EndDate):
 
     return df
 
-def BuildMasterFile(test, mainDirectory, EndDate):
+def BuildMasterFile(test, mainDirectory, EndDate, Admin_ID):
     """Construct master dataframe of student responses to Bio-MAPS assessments.
 
     Keyword arguments:
@@ -273,6 +273,7 @@ def BuildMasterFile(test, mainDirectory, EndDate):
     else:
         df_out['ID'] = df_out['FullName']
 
+    df_out = pd.concat([df_out, pd.DataFrame({'Class_ID': [Admin_ID], 'EndDate': ['03/04/2020']})], join = 'outer').reset_index(drop = True)
     df_out = LabelDemographics(df_out, test)
     df_out = WriteFile(df_out, test, test_directory, EndDate)
 

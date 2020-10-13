@@ -41,11 +41,12 @@ DownloadClassData <- function(input, output, session, data, header, cols, ass,
   })
   
   data.out <- reactive({
-    drop.cols <- c('Class_ID', 'Class_Level', 'FullName', 'BackName', 'ClassStanding',
-                   'TransferStatus', 'Major', 'SexGender', 'URMStatus', 'ELL', 
-                   'ParentEducation') # instructors can't download demographics
-    data.out <- data.class()[, !(names(data.class()) %in% drop.cols)]
-    data.out <- rbind(header()[, cols(), with = FALSE], data.out[, cols()])
+    # drop.cols <- c('Class_ID', 'Class_Level', 'FullName', 'BackName', 'ClassStanding',
+    #                'TransferStatus', 'Major', 'SexGender', 'URMStatus', 'ELL', 
+    #                'ParentEducation') # instructors can't download demographics
+    # data.out <- data.class()[!(names(data.class()) %in% drop.cols)]
+    data.out <- rbind(header()[, cols(), with = FALSE], data.class()[, cols(), 
+                                                                     with = FALSE])
     data.out[is.na(data.out)] <- ''
     return(data.out)
   })
@@ -94,7 +95,8 @@ ClassStatistics <- function(input, output, session, data, Overall = FALSE){
   output$infoScore = renderInfoBox({
     infoBox(HTML("Average<br>Score"),
             paste(data.out() %>%
-                    summarize(Avg = round(mean(SC_Total_Score), 3) * 100) %>%
+                    summarize(Avg = round(mean(SC_Total_Score, na.rm = TRUE), 
+                                          3) * 100) %>%
                     pull(), '%'),
             icon = icon("list"), color = "orange")
   })
