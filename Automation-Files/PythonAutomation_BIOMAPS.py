@@ -125,8 +125,8 @@ def InstructorSurveyControl():
 
                 if(pd.notnull(InstructorsDF.loc[Index, 'EcoEvoD_v2'])):
                     EcoEvoType = int(InstructorsDF.loc[Index, 'EcoEvoA'])
-                    EcoEvoCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'EcoEvoB'])
-                    EcoEvoCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'EcoEvoC']))[:20]
+                    EcoEvoCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.fillna('NA').loc[Index, 'EcoEvoB'])
+                    EcoEvoCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.fillna('NA').loc[Index, 'EcoEvoC']))[:20]
                     EcoEvoClass = InstructorsDF.loc[Index, 'EcoEvo_Class']
                     # set close date of survey to a point in the future
                     try:
@@ -169,8 +169,8 @@ def InstructorSurveyControl():
 
                 if(pd.notnull(InstructorsDF.loc[Index, 'CapD_v2'])):
                     CapType = int(InstructorsDF.loc[Index, 'CapA'])
-                    CapCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'CapB'])
-                    CapCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'CapC']))[:20]
+                    CapCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.fillna('NA').loc[Index, 'CapB'])
+                    CapCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.fillna('NA').loc[Index, 'CapC']))[:20]
                     CapClass = InstructorsDF.loc[Index, 'Cap_Class']
                     try:
                         CapCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'CapD_v2'], "%m-%d-%Y")
@@ -209,8 +209,8 @@ def InstructorSurveyControl():
 
                 if(pd.notnull(InstructorsDF.loc[Index, 'PhysD_v2'])):
                     PhysType = int(InstructorsDF.loc[Index, 'PhysA'])
-                    PhysCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.loc[Index, 'PhysB'])
-                    PhysCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.loc[Index, 'PhysC']))[:20]
+                    PhysCourseName = re.sub('[^0-9a-zA-Z]+', '_', InstructorsDF.fillna('NA').loc[Index, 'PhysB'])
+                    PhysCourseNumber = re.sub('[^0-9a-zA-Z]+', '_', str(InstructorsDF.fillna('NA').loc[Index, 'PhysC']))[:20]
                     PhysClass = InstructorsDF.loc[Index, 'Phys_Class']
                     try:
                         PhysCloseDate = datetime.datetime.strptime(InstructorsDF.loc[Index, 'PhysD_v2'], "%m-%d-%Y")
@@ -1080,7 +1080,10 @@ def GetResponseData(SchoolName, CourseNumber, InstructorName, Year, Survey, Surv
 
     path = MainDirectory + "/" + Survey + '/' + str(Year) + "Files/" + SchoolName + '_' + str(CourseNumber) + '_' + InstructorName
 
-    os.chdir(path)
+    try:
+        os.chdir(path)
+    except:
+        os.chdir(path.replace('nan', 'NA')) # I accidentially set nan to NA for GenBio only. I've fixed that, so all will be NA going forward, but for now they're mixed
     DownloadResponses(SurveyID)
     Survey_Name = GetSurveyName(SurveyID)
     StudentDF = pd.read_csv(Survey_Name + '.csv', skiprows = [1, 2])
