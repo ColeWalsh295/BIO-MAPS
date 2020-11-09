@@ -508,7 +508,11 @@ def ReportControl():
         # EcoEvo-MAPS
         if(pd.isnull(MasterDF.loc[Index, 'EcoEvo Report']) and pd.notnull(MasterDF.loc[Index, 'EcoEvo Closed'])):
             Path = MainDirectory + "/EcoEvo-MAPS/" + str(MasterDF.loc[Index, 'Course Year']) + "Files/" + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'EcoEvo Number']) + '_' + MasterDF.loc[Index, 'Last Name']
-            os.chdir(Path)
+            try:
+                os.chdir(Path)
+            except:
+                Path = Path.replace('nan', 'NA')
+                os.chdir(Path)
             DownloadResponses(MasterDF.loc[Index, 'EcoEvo ID'])
             SurveyName = GetSurveyName(MasterDF.loc[Index, 'EcoEvo ID'])
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
@@ -529,7 +533,11 @@ def ReportControl():
         # Capstone
         if(pd.isnull(MasterDF.loc[Index, 'Capstone Report']) and pd.notnull(MasterDF.loc[Index, 'Capstone Closed'])):
             Path = MainDirectory + "/Capstone/" + str(MasterDF.loc[Index, 'Course Year']) + "Files/" + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Capstone Number']) + '_' + MasterDF.loc[Index, 'Last Name']
-            os.chdir(Path)
+            try:
+                os.chdir(Path)
+            except:
+                Path = Path.replace('nan', 'NA')
+                os.chdir(Path)
             DownloadResponses(MasterDF.loc[Index, 'Capstone ID'])
             SurveyName = GetSurveyName(MasterDF.loc[Index, 'Capstone ID'])
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
@@ -550,7 +558,11 @@ def ReportControl():
         # Phys-MAPS
         if(pd.isnull(MasterDF.loc[Index, 'Phys Report']) and pd.notnull(MasterDF.loc[Index, 'Phys Closed'])):
             Path = MainDirectory + "/Phys-MAPS/" + str(MasterDF.loc[Index, 'Course Year']) + "Files/" + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'Phys Number']) + '_' + MasterDF.loc[Index, 'Last Name']
-            os.chdir(Path)
+            try:
+                os.chdir(Path)
+            except:
+                Path = Path.replace('nan', 'NA')
+                os.chdir(Path)
             DownloadResponses(MasterDF.loc[Index, 'Phys ID'])
             SurveyName = GetSurveyName(MasterDF.loc[Index, 'Phys ID'])
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
@@ -571,13 +583,17 @@ def ReportControl():
         # GenBio-MAPS
         if(pd.isnull(MasterDF.loc[Index, 'GenBio Report']) and pd.notnull(MasterDF.loc[Index, 'GenBio Closed'])):
             Path = MainDirectory + "/GenBio-MAPS/" + str(MasterDF.loc[Index, 'Course Year']) + "Files/" + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'GenBio Number']) + '_' + MasterDF.loc[Index, 'Last Name']
-            os.chdir(Path)
+            try: # I messed up and new files have NA course numbers in place of blanks
+                os.chdir(Path)
+            except:
+                Path = Path.replace('nan', 'NA')
+                os.chdir(Path)
             DownloadResponses(MasterDF.loc[Index, 'GenBio ID'])
             SurveyName = GetSurveyName(MasterDF.loc[Index, 'GenBio ID'])
             df = pd.read_csv(SurveyName + '.csv', skiprows = [1, 2])
             df, NamesDF = ValidateResponses(df, 'GenBio-MAPS')
             if(len(df.index) > 0):
-                PDFName = 'GenBio-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.loc[Index, 'GenBio Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
+                PDFName = 'GenBio-MAPS' + str(MasterDF.loc[Index, 'Course Year']) + '_' + MasterDF.loc[Index, 'School Name'] + '_' + str(MasterDF.fillna('NA').loc[Index, 'GenBio Number']) + '_' + MasterDF.loc[Index, 'Last Name'] + '_Report'
                 print(PDFName)
                 ReportGen_BIOMAPS.Generate_GenBioMAPS(Path + '/' + PDFName, DataFrame = df, NumReported = MasterDF.loc[Index, 'GenBio Class'], MainDirectory = MainDirectory)
 
