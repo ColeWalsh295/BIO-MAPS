@@ -106,8 +106,8 @@ server = function(input, output, session) {
   init.modal <- modalDialog(
     title = "How to use this dashboard",
     HTML('For more information about how to use this dashboard, click the "?" icons.<br><br>
-      Note that data collected after 31 May 2020 will not be available on the data 
-      explorer until January 2021.')
+      Note that data collected after 1 January 2021 will not be available on the data 
+      explorer until June 2021.')
   )
   
   showModal(init.modal)
