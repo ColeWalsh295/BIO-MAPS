@@ -249,7 +249,10 @@ def BuildMasterFile(test, mainDirectory, EndDate, Admin_ID):
 
     dfs = []
     for f in Files_Data:
-        Course_Info = pd.read_csv(f[:-4] + '_CourseInfo.csv')
+        try:
+            Course_Info = pd.read_csv(f[:-4] + '_CourseInfo.csv')
+        except:
+            continue
         df = pd.read_csv(f).assign(Class_ID = Course_Info.loc[0, 'ID'],
                                                       Class_Level = Course_Info.loc[0, test + ' Level'])
 
