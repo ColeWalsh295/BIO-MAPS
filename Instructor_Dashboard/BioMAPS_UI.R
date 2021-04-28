@@ -53,8 +53,9 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
     fluidPage(
       fluidRow(
         column(4, selectInput(ns("scale"), "Question Categorization:", 
-                              choices = c('Subdisciplines', 'Core concepts'))),
-        column(4, radioButtons(ns("demographic"), 'Separate by:',
+                              choices = c('Subdisciplines', 'Core concepts')), 
+        br(),
+        radioButtons(ns("demographic"), 'Separate by:',
                                choiceNames = c('None', 'Gender', 'URM Status', 
                                                'First Generation Status', 'Class Standing', 
                                                'Major', 'Transfer Status', 
@@ -66,23 +67,22 @@ ScalePlotUI <- function(id, Demos = TRUE, MatchBox = FALSE){
                         colour = "blue",
                         type = "markdown",
                         content = "demographics")),
-        plotOutput(ns("plotScale"))
+        column(8, plotlyOutput(ns("plotScale")))
       )
     )
   } else if(MatchBox){
     fluidRow(
       column(4, selectInput(ns("scale"), "Question Categorization:", 
-                            choices = c('Subdisciplines', 'Core concepts'))),
-      column(4, checkboxInput(ns("match"), "Match Class Data", value = FALSE)),
+                            choices = c('Subdisciplines', 'Core concepts')),
       br(),
-      plotOutput(ns("plotScale"))
+      checkboxInput(ns("match"), "Match Class Data", value = FALSE)),
+      column(8, plotlyOutput(ns("plotScale")))
     )
   } else {
     fluidRow(
       column(4, selectInput(ns("scale"), "Question Categorization:", 
                             choices = c('Subdisciplines', 'Core concepts'))),
-      br(),
-      plotOutput(ns("plotScale"))
+      column(8, plotlyOutput(ns("plotScale")))
     )
   }
 }
@@ -99,7 +99,7 @@ ResponsesPlotUI <- function(id, Demos = TRUE){
                                       '27', '28', '30', '31', '32', '33', '35', '36', '37', 
                                       '38', '40', '43', '44', '45', '49', '50', '54', '55', 
                                       '59', '60', '61'))),
-    column(10, plotOutput(ns("plotResponses")))
+    column(10, plotlyOutput(ns("plotResponses")))
   )
 }
 

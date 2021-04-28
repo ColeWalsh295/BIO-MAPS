@@ -146,7 +146,7 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL,
     return(data.out)
   })
   
-  output$plotScale = renderPlot({
+  output$plotScale = renderPlotly({
     data.temp <- data.frame(data.out())
     if((ass() == 'GenBio-MAPS') & (input$scale != 'Core concepts')) {
       Scores.cols <- c('SC_T_Cellular_and_Molecular', 'SC_T_Physiology', 
@@ -244,6 +244,8 @@ ScalePlot <- function(input, output, session, data, ass, class.var = NULL,
       scale_x_discrete(labels = Labels) +
       shiny_theme +
       theme(legend.title = element_blank())
+    p <- ggplotly(p) %>%
+      layout(boxmode = 'group')
     return(p)
   })
   if(is.null(class.var)){
@@ -294,7 +296,7 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
       }
       return(Responses.df)
     })
-    output$plotResponses = renderPlot({
+    output$plotResponses = renderPlotly({
       if(Demographic() != 'None'){
         data.count <- data()[data()[, Demographic()] != '', ] %>%
           group_by_(Demographic()) %>%
@@ -314,6 +316,8 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
         shiny_theme  +
         theme(legend.title = element_blank())
 
+      p <- ggplotly(p) %>%
+        layout(boxmode = 'group')
       return(p)
     })
   } else {
@@ -326,7 +330,7 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
         melt(.)
       return(Responses.df)
     })
-    output$plotResponses = renderPlot({
+    output$plotResponses = renderPlotly({
       p <- ggplot(Responses.df(), aes_string(x = 'variable', y = 'value', 
                                              fill = class.var)) +
         geom_bar(stat = 'identity', position = position_dodge2(reverse = TRUE)) +
@@ -336,6 +340,9 @@ ResponsesPlot <- function(input, output, session, data, ass, Demographic = NULL,
         scale_fill_manual(values = c("#0072b2", "#d55e00", "#009e73", "#cc79a7")) +
         shiny_theme  +
         theme(legend.title = element_blank())
+      
+      p <- ggplotly(p) %>%
+        layout(boxmode = 'group')
       return(p)
     })
   }
